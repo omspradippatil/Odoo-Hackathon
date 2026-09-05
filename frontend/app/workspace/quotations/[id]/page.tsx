@@ -1,0 +1,1 @@
+export default function QuotationDetail() { return <div className="p-8">Quotation Detail</div>; }

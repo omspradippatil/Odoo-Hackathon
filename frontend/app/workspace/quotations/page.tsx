@@ -1,0 +1,1 @@
+export default function Quotations() { return <div className="p-8">Quotations Kanban</div>; }

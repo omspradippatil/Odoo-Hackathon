@@ -1,0 +1,1 @@
+export default function Login() { return <div className="p-8"><h1 className="text-2xl font-bold">Login</h1><div className="flex gap-4 mt-4"><button className="px-4 py-2 bg-blue-600 rounded">Admin</button><button className="px-4 py-2 bg-zinc-800 rounded">Sales</button></div></div>; }

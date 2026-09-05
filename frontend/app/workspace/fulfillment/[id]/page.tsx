@@ -1,0 +1,1 @@
+export default function Fulfillment() { return <div className="p-8">Fulfillment Split Screen</div>; }

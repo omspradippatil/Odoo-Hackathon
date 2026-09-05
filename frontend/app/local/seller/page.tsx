@@ -1,0 +1,1 @@
+export default function Seller() { return <div className="p-8">Seller Dashboard</div>; }

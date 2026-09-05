@@ -1,0 +1,1 @@
+export default function Bids() { return <div className="p-8">Vendor Bids</div>; }

@@ -1,0 +1,1 @@
+export default function LocalHome() { return <div className="p-8">Local Mode Home</div>; }

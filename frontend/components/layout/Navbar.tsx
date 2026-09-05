@@ -1,0 +1,1 @@
+export default function Navbar() { return <nav className="h-16 border-b border-zinc-800 flex items-center px-4">DEV FLOW</nav>; }
