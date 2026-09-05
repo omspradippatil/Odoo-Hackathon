@@ -47,7 +47,7 @@ public class SecurityConfig {
                 // Public: login/signup, plus the tokenised customer portal (no account required).
                 .requestMatchers("/api/auth/login", "/api/auth/signup").permitAll()
                 .requestMatchers("/api/portal/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll().requestMatchers("/api/products/**").permitAll().requestMatchers("/api/upload").permitAll().requestMatchers("/api/payments/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll().requestMatchers("/api/products/**").permitAll().requestMatchers("/api/upload").permitAll().requestMatchers("/api/payments/**", "/api/requirements/**", "/api/bids/**").permitAll()
                 // Uploaded delivery-proof images are served as static content.
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .anyRequest().authenticated()

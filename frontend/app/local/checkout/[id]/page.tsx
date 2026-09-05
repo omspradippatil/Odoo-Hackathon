@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import api from "@/lib/api";
 import { Product } from "@/types";
@@ -21,7 +21,6 @@ import {
 
 export default function CheckoutPage() {
   const params = useParams();
-  const router = useRouter();
   const productId = params?.id as string;
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -29,6 +28,8 @@ export default function CheckoutPage() {
   const [paymentId, setPaymentId] = useState<number | null>(null);
   const [mockUpiUrl, setMockUpiUrl] = useState("");
   const [paying, setPaying] = useState(false);
+  const [releasing, setReleasing] = useState(false);
+  const [escrowHeld, setEscrowHeld] = useState(false);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [confirmData, setConfirmData] = useState<any>(null);
 
@@ -43,8 +44,8 @@ export default function CheckoutPage() {
 
         // Initiate Mock UPI Escrow Payment on Backend
         const payRes = await api.post("/payments/initiate", {
-          buyerId: 5, // Customer
-          sellerId: 2, // Sales Rep / Seller
+          buyerId: 6,
+          sellerId: found.seller?.id || 7,
           amount: found.basePrice,
         });
 
@@ -67,15 +68,32 @@ export default function CheckoutPage() {
     // Simulated 1.5s UPI processing animation
     setTimeout(async () => {
       try {
-        const confirmRes = await api.post(`/payments/${paymentId}/confirm`);
-        setConfirmData(confirmRes.data);
-        setPaymentConfirmed(true);
+        const payRes = await api.post(`/payments/${paymentId}/pay`);
+        setConfirmData(payRes.data);
+        setEscrowHeld(true);
       } catch (err) {
         console.error("Payment confirmation failed", err);
       } finally {
         setPaying(false);
       }
     }, 1500);
+  };
+
+  const handleConfirmDelivery = async () => {
+    if (!paymentId) return;
+    setReleasing(true);
+    try {
+      const releaseRes = await api.post(`/payments/${paymentId}/confirm-delivery`, {
+        imageUrl: "demo://buyer-seller-delivery-proof.jpg",
+        uploadedById: 6,
+      });
+      setConfirmData(releaseRes.data);
+      setPaymentConfirmed(true);
+    } catch (err) {
+      console.error("Delivery confirmation failed", err);
+    } finally {
+      setReleasing(false);
+    }
   };
 
   if (loading) {
@@ -195,7 +213,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between border-t border-gray-200 pt-2">
                 <span className="font-bold text-gray-600">Seller Net Payout:</span>
                 <span className="font-mono font-bold text-emerald-600">
-                  ₹{confirmData?.sellerReceives?.toFixed(2) || "4900.00"}
+                  ₹{confirmData?.sellerPayout?.toFixed(2) || "4900.00"}
                 </span>
               </div>
             </div>
@@ -214,6 +232,49 @@ export default function CheckoutPage() {
                 Inspect Settlement
               </Link>
             </div>
+          </div>
+        ) : escrowHeld ? (
+          <div className="space-y-5 text-center">
+            <div className="w-14 h-14 rounded-full bg-blue-100 border border-blue-200 text-blue-600 flex items-center justify-center mx-auto">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-gray-800">Funds Held in Escrow</h2>
+              <p className="text-xs text-gray-500 mt-1">
+                Payment #{confirmData?.paymentId || paymentId} is held by DEV FLOW. Confirm delivery proof to release seller payout.
+              </p>
+            </div>
+            <div className="bg-white border border-gray-200 p-4 rounded-xl space-y-2 text-xs text-left">
+              <div className="flex justify-between">
+                <span className="text-gray-500">Escrow Status:</span>
+                <span className="font-bold text-blue-600">{confirmData?.status || "HELD"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Amount Held:</span>
+                <span className="font-mono text-gray-900">₹{confirmData?.amountHeld?.toLocaleString() || product?.basePrice.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Mock UPI Ref:</span>
+                <span className="font-mono text-gray-700 truncate max-w-[180px]">{mockUpiUrl ? new URLSearchParams(mockUpiUrl.split("?")[1]).get("tr") : "DEVFLOW"}</span>
+              </div>
+            </div>
+            <button
+              onClick={handleConfirmDelivery}
+              disabled={releasing}
+              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-black transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {releasing ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  Releasing Escrow...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-4 h-4" />
+                  Confirm Delivery Proof & Release Seller
+                </>
+              )}
+            </button>
           </div>
         ) : (
           /* Payment Action State */

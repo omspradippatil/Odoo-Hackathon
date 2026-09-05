@@ -16,6 +16,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Zap,
+  RefreshCw
 } from "lucide-react";
 
 interface CartItem {
@@ -97,9 +98,16 @@ export default function QuotationBuilder() {
   // Formula: BlendedRiskScore = Σ [ (GivenDiscount_i - AllowedDiscount_i) × LineWeight_i ]
   const calculateMetrics = () => {
     let orderTotal = 0;
+    let upfrontTotal = 0;
+    let recurringTotal = 0;
     const lines = cart.map((item) => {
       const lineTotal = item.unitPrice * item.qty * (1 - item.discountPct);
       orderTotal += lineTotal;
+      if (item.product.isRecurring) {
+        recurringTotal += lineTotal;
+      } else {
+        upfrontTotal += lineTotal;
+      }
       return { ...item, lineTotal };
     });
 
@@ -112,10 +120,10 @@ export default function QuotationBuilder() {
       }
     }
 
-    return { orderTotal, riskScore, lines };
+    return { orderTotal, upfrontTotal, recurringTotal, riskScore, lines };
   };
 
-  const { orderTotal, riskScore, lines } = calculateMetrics();
+  const { orderTotal, upfrontTotal, recurringTotal, riskScore, lines } = calculateMetrics();
 
   // Handle Submission to Backend
   const handleCreateQuote = async () => {

@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -26,24 +27,33 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() == 0) {
-            seedUsers();
+        boolean freshDatabase = userRepository.count() == 0;
+        seedUsers();
+        if (freshDatabase) {
             seedCategoriesAndProducts();
             seedWarehousesAndStock();
             seedDiscountTiersAndApprovals();
             seedSubscriptions();
             seedQuotations();
+            return;
         }
+
+        if (categoryRepository.count() == 0) seedCategoriesAndProducts();
+        if (warehouseRepository.count() == 0) seedWarehousesAndStock();
+        if (discountTierRepository.count() == 0) seedDiscountTiersAndApprovals();
+        if (subscriptionPlanRepository.count() == 0) seedSubscriptions();
+        attachDefaultSellerToProducts();
     }
 
     private void seedUsers() {
-        userRepository.saveAll(List.of(
-            User.builder().email("admin@devflow.com").passwordHash(passwordEncoder.encode("admin123")).role(Enums.Role.ADMIN).build(),
-            User.builder().email("rep@devflow.com").passwordHash(passwordEncoder.encode("rep123")).role(Enums.Role.SALES_REP).build(),
-            User.builder().email("manager@devflow.com").passwordHash(passwordEncoder.encode("mgr123")).role(Enums.Role.SALES_MANAGER).build(),
-            User.builder().email("finance@devflow.com").passwordHash(passwordEncoder.encode("fin123")).role(Enums.Role.FINANCE).build(),
-            User.builder().email("customer@acme.com").passwordHash(passwordEncoder.encode("cust123")).role(Enums.Role.CUSTOMER).build()
-        ));
+        seedUser("admin@devflow.com", "admin123", "Admin Owner", "DEV FLOW", Enums.Role.ADMIN, Enums.Mode.PROFESSIONAL, Enums.Tier.GOLD, 5.0, 50, "Mumbai");
+        seedUser("rep@devflow.com", "rep123", "Sales Rep", "DEV FLOW", Enums.Role.SALES_REP, Enums.Mode.PROFESSIONAL, Enums.Tier.SILVER, 4.2, 14, "Mumbai");
+        seedUser("manager@devflow.com", "mgr123", "Sales Manager", "DEV FLOW", Enums.Role.SALES_MANAGER, Enums.Mode.PROFESSIONAL, Enums.Tier.GOLD, 4.8, 35, "Mumbai");
+        seedUser("finance@devflow.com", "fin123", "Finance Approver", "DEV FLOW", Enums.Role.FINANCE, Enums.Mode.PROFESSIONAL, Enums.Tier.GOLD, 4.7, 30, "Mumbai");
+        seedUser("customer@acme.com", "cust123", "Acme Buyer", "Acme Corporation", Enums.Role.CUSTOMER, Enums.Mode.PROFESSIONAL, Enums.Tier.GOLD, 4.6, 24, "Pune");
+        seedUser("buyer@user.com", "buy123", "Local Buyer", null, Enums.Role.BUYER, Enums.Mode.LOCAL, Enums.Tier.BRONZE, 4.0, 3, "Pune");
+        seedUser("seller@localshop.com", "sell123", "Raj Electronics", "Raj Electronics Pune", Enums.Role.SELLER, Enums.Mode.LOCAL, Enums.Tier.GOLD, 4.8, 31, "Pune");
+        seedUser("vendor@devflow.com", "vendor123", "Anonymous Vendor", "Verified Contractor Co.", Enums.Role.VENDOR, Enums.Mode.PROFESSIONAL, Enums.Tier.SILVER, 4.1, 16, "Nashik");
     }
 
     private void seedCategoriesAndProducts() {
@@ -58,6 +68,7 @@ public class DataSeeder implements CommandLineRunner {
             Product.builder().name("Cloud Storage Plan").category(sub).basePrice(999.0).actualPrice(1499.0).imageUrl("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80").isRecurring(true).build(),
             Product.builder().name("Network Switch").category(hw).basePrice(12000.0).actualPrice(14500.0).imageUrl("https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&auto=format&fit=crop&q=80").isRecurring(false).build()
         ));
+        attachDefaultSellerToProducts();
     }
 
     private void seedWarehousesAndStock() {
@@ -104,5 +115,42 @@ public class DataSeeder implements CommandLineRunner {
 
         Quotation q2 = quotationRepository.save(Quotation.builder().customer(cust).salesRep(rep).status(Enums.QuotationStatus.PENDING_L1).build());
         quotationLineRepository.save(QuotationLine.builder().quotation(q2).product(laptop).qty(5).unitPrice(65000.0).discountPct(0.15).lineTotal(276250.0).build());
+    }
+
+    private void seedUser(String email, String password, String displayName, String companyName, Enums.Role role,
+                          Enums.Mode mode, Enums.Tier tier, Double trustScore, Integer totalTransactions, String city) {
+        userRepository.findByEmail(email).orElseGet(() -> {
+            User user = User.builder()
+                    .email(email)
+                    .passwordHash(passwordEncoder.encode(password))
+                    .displayName(displayName)
+                    .companyName(companyName)
+                    .role(role)
+                    .mode(mode)
+                    .tier(tier)
+                    .trustScore(trustScore)
+                    .totalTransactions(totalTransactions)
+                    .city(city)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            return userRepository.save(user);
+        });
+    }
+
+    private void attachDefaultSellerToProducts() {
+        User seller = userRepository.findByEmail("seller@localshop.com").orElse(null);
+        if (seller == null) return;
+
+        List<Product> products = productRepository.findAll();
+        boolean changed = false;
+        for (Product product : products) {
+            if (product.getSeller() == null) {
+                product.setSeller(seller);
+                changed = true;
+            }
+        }
+        if (changed) {
+            productRepository.saveAll(products);
+        }
     }
 }
