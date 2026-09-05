@@ -203,7 +203,7 @@ export default function SellerDashboardPage() {
 
           {/* List New Product Dialog */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger className="inline-flex">
+            <DialogTrigger asChild>
               <button className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shadow-md shadow-blue-500/20 active:scale-[0.99]">
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 List New Product
