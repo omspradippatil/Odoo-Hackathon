@@ -37,7 +37,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-navy leading-[1.1] md:leading-[1.05]"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-navy leading-[1.1] md:leading-[1.1]"
           >
             Deals shouldn't run on guesswork.<br className="hidden md:block" />
             <span className="md:hidden"> </span>

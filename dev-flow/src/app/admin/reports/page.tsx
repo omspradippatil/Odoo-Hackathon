@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { PieChart, Download, Filter, TrendingUp, Calendar, ChevronDown, CheckCircle2 } from "lucide-react";
+import { PieChart, Download, Filter, TrendingUp, Calendar, ChevronDown, CheckCircle2, DollarSign } from "lucide-react";
+import { PLATFORM_CONFIG } from "@/lib/pricingConfig";
 
 export default function ReportsPage() {
   return (
@@ -24,14 +25,16 @@ export default function ReportsPage() {
 
       {/* EXECUTIVE SUMMARY */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        
         {[
           { label: 'Deal Value', value: '₹4.8 Cr' },
           { label: 'Completed Deals', value: '428' },
-          { label: 'Avg Approval Time', value: '2.4 hrs' },
+          { label: 'Platform Revenue', value: '₹' + ((4.8 * 0.89 * 10000000) * PLATFORM_CONFIG.transactionFeeRate / 100000).toFixed(1) + 'L' },
           { label: 'On-Time Fulfilment', value: '93%' },
           { label: 'Outstanding Inv', value: '₹18.4L' },
           { label: 'Monthly ARR', value: '₹6.8L' },
         ].map(kpi => (
+
           <div key={kpi.label} className="bg-white p-5 rounded-3xl border border-navy/5 shadow-sm">
             <div className="text-xl md:text-2xl font-bold text-navy mb-1">{kpi.value}</div>
             <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest leading-tight">{kpi.label}</div>
@@ -41,6 +44,39 @@ export default function ReportsPage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         
+        
+
+        {/* PLATFORM REVENUE REPORT */}
+        <div className="w-full mt-8 bg-navy rounded-3xl border border-navy/10 shadow-sm p-6 md:p-8 text-white">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+            <div>
+              <h2 className="text-xs font-bold text-coral uppercase tracking-widest mb-1 flex items-center gap-2"><DollarSign className="w-4 h-4" /> Platform Revenue Model</h2>
+              <p className="text-sm font-medium text-white/60">Revenue generated from completed transactions.</p>
+            </div>
+            <div className="bg-white/10 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
+              Platform Fee Rate: <span className="text-coral">{PLATFORM_CONFIG.formatPercentage(PLATFORM_CONFIG.transactionFeeRate)}</span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/5 rounded-2xl p-5 border border-white/5">
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Completed Transaction Value</div>
+              <div className="text-2xl font-bold">₹4,28,00,000</div>
+              <div className="text-xs font-medium text-white/50 mt-1">From 428 completed deals</div>
+            </div>
+            <div className="bg-white/5 rounded-2xl p-5 border border-white/5">
+              <div className="text-[10px] font-bold text-coral uppercase tracking-widest mb-2">Realized Platform Revenue</div>
+              <div className="text-2xl font-bold text-coral">₹12,84,000</div>
+              <div className="text-xs font-medium text-white/50 mt-1">₹4.28Cr × 3%</div>
+            </div>
+            <div className="bg-white/5 rounded-2xl p-5 border border-white/5">
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Projected Platform Revenue</div>
+              <div className="text-2xl font-bold opacity-70">₹1,56,000</div>
+              <div className="text-xs font-medium text-white/50 mt-1">From pending deals (₹52L × 3%)</div>
+            </div>
+          </div>
+        </div>
+
         {/* FUNNEL */}
         <div className="w-full lg:w-1/2 bg-white rounded-3xl border border-navy/10 shadow-sm p-6 md:p-8">
           <h2 className="text-xs font-bold text-navy uppercase tracking-widest mb-8 flex items-center gap-2"><TrendingUp className="w-4 h-4 text-cobalt" /> Deal Conversion Funnel</h2>

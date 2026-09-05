@@ -120,7 +120,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
       <div className="min-h-screen bg-warm text-navy selection:bg-coral/20 flex flex-col relative">
         <Navbar />
         <FlowPathBackground />
-        <main className="flex-1 pt-24 px-4 md:px-8 max-w-7xl mx-auto w-full relative z-10">
+        <main className="flex-1 pt-24 px-4 pb-28 md:px-8 md:pb-28 lg:pb-10 max-w-[100vw] lg:max-w-7xl mx-auto w-full relative z-10 overflow-x-hidden min-w-0">
           {requireAuth ? <AuthGate /> : children}
         </main>
       </div>
@@ -270,7 +270,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
             <div className="text-xs font-bold text-navy/40 uppercase tracking-widest">{ROLE_TITLES[role]}</div>
           </div>
         </header>
-        <main className="flex-1 p-4 md:p-8 lg:p-10 w-full max-w-7xl mx-auto">
+        <main className="flex-1 p-4 pb-28 md:p-8 md:pb-28 lg:p-10 lg:pb-10 w-full max-w-[100vw] lg:max-w-7xl mx-auto overflow-x-hidden min-w-0">
           {children}
         </main>
       </div>

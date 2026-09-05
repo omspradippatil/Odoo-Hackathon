@@ -209,14 +209,23 @@ export default function InternalBillingPage({ params }: { params: Promise<{ deal
               <h3 className="text-xs font-bold text-navy uppercase tracking-widest mb-6 flex items-center gap-2"><Activity className="w-4 h-4 text-cobalt" /> Billing Intelligence</h3>
               
               <div className="space-y-4">
+                
                 <div className="flex justify-between items-center border-b border-navy/5 pb-3">
                   <span className="text-sm font-medium text-navy/60">One-Time Revenue</span>
                   <span className="font-bold text-navy">₹8.40L</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-navy/5 pb-3">
+                <div className="flex justify-between items-center border-b border-navy/5 pb-3 bg-navy/5 -mx-4 px-4 pt-3 rounded-lg mt-1 mb-1">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-navy">DEV FLOW Platform Fee</span>
+                    <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">3% of Transaction Value</span>
+                  </div>
+                  <span className="font-bold text-cobalt">₹25,200</span>
+                </div>
+                <div className="flex justify-between items-center border-b border-navy/5 pb-3 pt-2">
                   <span className="text-sm font-medium text-navy/60">Recurring Revenue</span>
                   <span className="font-bold text-cobalt">₹55K / mo</span>
                 </div>
+
                 <div className="flex justify-between items-center border-b border-navy/5 pb-3">
                   <span className="text-sm font-medium text-navy/60">Total Collected</span>
                   <span className="font-bold text-lime-700">₹2.52L</span>

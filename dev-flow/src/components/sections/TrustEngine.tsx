@@ -72,7 +72,7 @@ export function TrustEngine() {
           </div>
 
           <div className="flex items-end gap-3 md:gap-4 mb-12 md:mb-16 relative z-10">
-            <div className="text-6xl sm:text-7xl md:text-8xl font-bold text-lime leading-none">
+            <div className="text-6xl sm:text-7xl md:text-8xl font-bold text-lime leading-[1.1]">
               <AnimatedNumber value={92} />
             </div>
             <div className="text-xl md:text-2xl font-bold text-white/30 mb-1 md:mb-2">/ 100</div>

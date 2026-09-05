@@ -43,3 +43,8 @@ nextjs-portal,
   pointer-events: none !important;
   opacity: 0 !important;
 }
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
