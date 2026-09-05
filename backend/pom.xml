@@ -16,7 +16,7 @@
   <description>DEV FLOW - Intelligent Sales Operations Platform</description>
 
   <properties>
-    <java.version>21</java.version>
+    <java.version>17</java.version>
     <jjwt.version>0.12.6</jjwt.version>
     <lombok.version>1.18.38</lombok.version>
   </properties>
@@ -113,8 +113,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>21</source>
-          <target>21</target>
+          <source>17</source>
+          <target>17</target>
           <annotationProcessorPaths>
             <path>
               <groupId>org.projectlombok</groupId>
