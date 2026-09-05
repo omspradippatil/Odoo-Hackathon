@@ -2,16 +2,15 @@ package com.devflow.controller;
 
 import com.devflow.entity.Enums;
 import com.devflow.entity.Quotation;
-import com.devflow.repository.QuotationRepository;
-import com.devflow.repository.UserRepository;
-import com.devflow.repository.AuditLogRepository;
-import com.devflow.entity.AuditLog;
+import com.devflow.service.ApprovalService;
+import com.devflow.service.AuditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,121 +18,58 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ApprovalController {
 
-    private final QuotationRepository quotationRepository;
-    private final UserRepository userRepository;
-    private final AuditLogRepository auditLogRepository;
+    private final ApprovalService approvalService;
+    private final AuditService auditService;
 
-    /**
-     * GET /api/approvals/pending — list all quotations pending approval
-     */
     @GetMapping("/pending")
-    public ResponseEntity<?> getPending() {
-        var pendingL1 = quotationRepository.findByStatus(Enums.QuotationStatus.PENDING_L1);
-        var pendingL2 = quotationRepository.findByStatus(Enums.QuotationStatus.PENDING_L2);
-        // Remove lines to avoid serialization issues
-        pendingL1.forEach(q -> q.setLines(null));
-        pendingL2.forEach(q -> q.setLines(null));
-        return ResponseEntity.ok(Map.of("pendingL1", pendingL1, "pendingL2", pendingL2));
+    @PreAuthorize("hasAnyRole('SALES_MANAGER','FINANCE','ADMIN')")
+    public ResponseEntity<Map<String, List<Quotation>>> pending() {
+        var l1 = approvalService.pending(Enums.QuotationStatus.PENDING_L1);
+        var l2 = approvalService.pending(Enums.QuotationStatus.PENDING_L2);
+        return ResponseEntity.ok(Map.of("pendingL1", l1, "pendingL2", l2));
     }
 
-    /**
-     * POST /api/approvals/{quotationId}/approve — approve a quotation
-     */
     @PostMapping("/{quotationId}/approve")
+    @PreAuthorize("hasAnyRole('SALES_MANAGER','FINANCE','ADMIN')")
     public ResponseEntity<Quotation> approve(
             @PathVariable Long quotationId,
-            @RequestBody ApprovalRequest request,
+            @RequestBody(required = false) ApprovalRequest request,
             Authentication auth) {
-
-        Quotation q = quotationRepository.findById(quotationId)
-                .orElseThrow(() -> new RuntimeException("Quotation not found"));
-
-        var reviewer = userRepository.findByEmail(auth.getName()).orElseThrow();
-
-        // Determine next state
-        if (q.getStatus() == Enums.QuotationStatus.PENDING_L1) {
-            if (q.getBlendedRiskScore() != null && q.getBlendedRiskScore() > 0.08) {
-                q.setStatus(Enums.QuotationStatus.PENDING_L2); // Send to L2
-            } else {
-                q.setStatus(Enums.QuotationStatus.APPROVED);
-            }
-        } else if (q.getStatus() == Enums.QuotationStatus.PENDING_L2) {
-            q.setStatus(Enums.QuotationStatus.APPROVED);
-        }
-        q.setUpdatedAt(LocalDateTime.now());
-        quotationRepository.save(q);
-
-        // Audit log
-        AuditLog log = new AuditLog();
-        log.setEntityType("QUOTATION");
-        log.setEntityId(quotationId.toString());
-        log.setAction("APPROVED");
-        log.setPerformedBy(reviewer.getEmail());
-        log.setMetadata(request.reason() != null ? "Reason: " + request.reason() : "Approved");
-        log.setTimestamp(LocalDateTime.now());
-        auditLogRepository.save(log);
-
-        q.setLines(null);
-        return ResponseEntity.ok(q);
+        boolean isFinance = hasRole(auth, "ROLE_FINANCE") || hasRole(auth, "ROLE_ADMIN");
+        return ResponseEntity.ok(approvalService.approve(
+                quotationId, reasonOf(request), auth.getName(), isFinance));
     }
 
-    /**
-     * POST /api/approvals/{quotationId}/reject — reject a quotation
-     */
     @PostMapping("/{quotationId}/reject")
+    @PreAuthorize("hasAnyRole('SALES_MANAGER','FINANCE','ADMIN')")
     public ResponseEntity<Quotation> reject(
             @PathVariable Long quotationId,
-            @RequestBody ApprovalRequest request,
+            @RequestBody(required = false) ApprovalRequest request,
             Authentication auth) {
-
-        Quotation q = quotationRepository.findById(quotationId)
-                .orElseThrow(() -> new RuntimeException("Quotation not found"));
-
-        var reviewer = userRepository.findByEmail(auth.getName()).orElseThrow();
-
-        q.setStatus(Enums.QuotationStatus.REJECTED);
-        q.setUpdatedAt(LocalDateTime.now());
-        quotationRepository.save(q);
-
-        AuditLog log = new AuditLog();
-        log.setEntityType("QUOTATION");
-        log.setEntityId(quotationId.toString());
-        log.setAction("REJECTED");
-        log.setPerformedBy(reviewer.getEmail());
-        log.setMetadata(request.reason() != null ? "Reason: " + request.reason() : "Rejected");
-        log.setTimestamp(LocalDateTime.now());
-        auditLogRepository.save(log);
-
-        q.setLines(null);
-        return ResponseEntity.ok(q);
+        return ResponseEntity.ok(approvalService.reject(quotationId, reasonOf(request), auth.getName()));
     }
 
-    /**
-     * POST /api/approvals/{quotationId}/return — return for revision
-     */
     @PostMapping("/{quotationId}/return")
+    @PreAuthorize("hasAnyRole('SALES_MANAGER','FINANCE','ADMIN')")
     public ResponseEntity<Quotation> returnForRevision(
             @PathVariable Long quotationId,
-            @RequestBody ApprovalRequest request,
+            @RequestBody(required = false) ApprovalRequest request,
             Authentication auth) {
+        return ResponseEntity.ok(approvalService.returnForRevision(quotationId, reasonOf(request), auth.getName()));
+    }
 
-        Quotation q = quotationRepository.findById(quotationId).orElseThrow();
-        q.setStatus(Enums.QuotationStatus.DRAFT);
-        q.setUpdatedAt(LocalDateTime.now());
-        quotationRepository.save(q);
+    /** Full immutable audit trail for one quotation. */
+    @GetMapping("/{quotationId}/trail")
+    public ResponseEntity<?> trail(@PathVariable Long quotationId) {
+        return ResponseEntity.ok(auditService.trailFor("QUOTATION", quotationId));
+    }
 
-        var reviewer = userRepository.findByEmail(auth.getName()).orElseThrow();
-        AuditLog log = new AuditLog();
-        log.setEntityType("QUOTATION");
-        log.setEntityId(quotationId.toString());
-        log.setAction("RETURNED_FOR_REVISION");
-        log.setPerformedBy(reviewer.getEmail());
-        log.setMetadata(request.reason());
-        log.setTimestamp(LocalDateTime.now());
-        auditLogRepository.save(log);
+    private static String reasonOf(ApprovalRequest request) {
+        return request != null ? request.reason() : null;
+    }
 
-        q.setLines(null);
-        return ResponseEntity.ok(q);
+    private static boolean hasRole(Authentication auth, String role) {
+        return auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
     }
 
     public record ApprovalRequest(String reason) {}

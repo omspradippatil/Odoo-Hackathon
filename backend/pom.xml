@@ -47,6 +47,13 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- In-memory DB for the `dev` profile, so the app runs with no PostgreSQL install -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
     
     <dependency>
       <groupId>io.jsonwebtoken</groupId>

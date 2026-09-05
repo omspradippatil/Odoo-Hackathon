@@ -4,6 +4,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "trust_scores")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class TrustScore {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

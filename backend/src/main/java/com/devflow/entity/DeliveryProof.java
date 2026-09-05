@@ -4,6 +4,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "delivery_proofs")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class DeliveryProof {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,6 +4,7 @@ import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name = "quotation_lines")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class QuotationLine {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "approval_chains")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ApprovalChain {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

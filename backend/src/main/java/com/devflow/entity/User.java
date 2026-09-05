@@ -21,6 +21,12 @@ public class User {
     @JsonIgnore  // NEVER expose password hash in API responses
     private String passwordHash;
 
+    private String displayName;
+    private String companyName;
+    private String phone;
+    private String city;
+    private String gstin;
+
     @Enumerated(EnumType.STRING)
     private Enums.Role role;
 

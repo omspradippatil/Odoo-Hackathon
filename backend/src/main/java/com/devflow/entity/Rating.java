@@ -4,6 +4,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "ratings")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Rating {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

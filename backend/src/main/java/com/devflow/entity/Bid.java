@@ -4,6 +4,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "bids")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Bid {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +13,11 @@ public class Bid {
     @ManyToOne private User vendor;
     private Double amount;
     private LocalDateTime deliveryEta;
-    private String notes;
+    @Column(length = 1000) private String notes;
     private Boolean isAnonymous;
     @Enumerated(EnumType.STRING) private Enums.BidStatus status;
+
+    /** Stable per-requirement pseudonym ("Vendor A") shown while bidding is anonymous. */
+    private String aliasLabel;
+    private LocalDateTime createdAt;
 }

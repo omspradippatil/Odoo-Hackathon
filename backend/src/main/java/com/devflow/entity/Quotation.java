@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Table(name = "quotations")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Quotation {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "upsell_rules")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class UpsellRule {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

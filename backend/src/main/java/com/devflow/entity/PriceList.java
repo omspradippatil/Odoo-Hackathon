@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "price_lists")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class PriceList {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
