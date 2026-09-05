@@ -49,6 +49,7 @@ export default function OnboardingPage() {
   const [user, setUser] = useState<User | null>(null);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   
   const [profile, setProfile] = useState<OnboardingProfile>({
     role: UserRole.BUYER,
@@ -73,8 +74,17 @@ export default function OnboardingPage() {
     });
   }, []);
 
-  const handleNext = () => setStep(s => Math.min(s + 1, 3));
-  const handleBack = () => setStep(s => Math.max(s - 1, 1));
+  const handleNext = () => {
+    setError("");
+    if (step === 2 && (profile.role === UserRole.BUYER || profile.role === UserRole.SELLER)) {
+      if (!profile.city?.trim()) {
+        setError("Please enter your city / primary location.");
+        return;
+      }
+    }
+    setStep(s => Math.min(s + 1, 3));
+  };
+  const handleBack = () => { setError(""); setStep(s => Math.max(s - 1, 1)); };
   const handleComplete = () => {
     // Route based on role placeholders
     const routes: Record<string, string> = {
@@ -267,6 +277,8 @@ export default function OnboardingPage() {
                       <h1 className="text-2xl md:text-3xl font-bold text-navy mb-2 tracking-tight">Let's refine your setup.</h1>
                       <p className="text-navy/60 font-medium text-lg">Just a few more details to customize your experience.</p>
                     </div>
+
+                    {error && <div className="p-4 rounded-xl bg-coral/10 text-coral text-sm font-medium">{error}</div>}
 
                     {(isBuyer || isSeller || isSalesRep) && (
                       <div className="space-y-6">
