@@ -71,7 +71,7 @@ export default function QuotationsPage() {
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300">
+          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded bg-gray-100 border border-gray-300 text-gray-600">
             {status}
           </span>
         );
@@ -92,18 +92,18 @@ export default function QuotationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-zinc-100 flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-gray-800 flex items-center gap-2">
             <FileText className="w-7 h-7 text-blue-500" />
             Quotations
           </h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             Manage quotations, track approval states, and generate customer portal links.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={fetchQuotations}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold hover:bg-zinc-800 transition"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-600 hover:text-white text-xs font-semibold hover:bg-gray-100 transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -121,21 +121,21 @@ export default function QuotationsPage() {
       {/* Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-9000" />
           <input
             type="text"
             placeholder="Search by Quote ID or Email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-zinc-500 hidden sm:block" />
+          <Filter className="w-4 h-4 text-gray-9000 hidden sm:block" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
+            className="bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
           >
             <option value="ALL">All Statuses</option>
             <option value="DRAFT">Draft</option>
@@ -152,14 +152,14 @@ export default function QuotationsPage() {
 
       {/* Quotations List */}
       {loading ? (
-        <div className="p-12 text-center text-zinc-500 border border-zinc-800/80 rounded-xl bg-zinc-900/30">
+        <div className="p-12 text-center text-gray-9000 border border-gray-200/80 rounded-xl bg-gray-50/30">
           <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500" />
           Loading quotations...
         </div>
       ) : filteredQuotations.length === 0 ? (
-        <div className="p-12 text-center border border-dashed border-zinc-800 rounded-xl bg-zinc-900/20">
-          <p className="text-zinc-400 font-medium text-sm">No quotations found.</p>
-          <p className="text-zinc-500 text-xs mt-1">
+        <div className="p-12 text-center border border-dashed border-gray-200 rounded-xl bg-gray-50/20">
+          <p className="text-gray-500 font-medium text-sm">No quotations found.</p>
+          <p className="text-gray-9000 text-xs mt-1">
             {search || statusFilter !== "ALL"
               ? "Try adjusting your filters"
               : "Click 'Create Quotation' to get started."}
@@ -170,11 +170,11 @@ export default function QuotationsPage() {
           {filteredQuotations.map((q) => (
             <div
               key={q.id}
-              className="border border-zinc-800/80 hover:border-zinc-700 bg-zinc-900/50 hover:bg-zinc-900 rounded-xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+              className="border border-gray-200/80 hover:border-gray-300 bg-gray-50/50 hover:bg-gray-50 rounded-xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
             >
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">
                     #{q.id}
                   </span>
                   {getStatusBadge(q.status)}
@@ -192,18 +192,18 @@ export default function QuotationsPage() {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-zinc-400 flex flex-wrap gap-x-4 gap-y-1">
+                <div className="text-xs text-gray-500 flex flex-wrap gap-x-4 gap-y-1">
                   <span>
-                    <strong className="text-zinc-300">Customer:</strong>{" "}
+                    <strong className="text-gray-600">Customer:</strong>{" "}
                     {q.customer?.email || "N/A"}
                   </span>
                   <span>
-                    <strong className="text-zinc-300">Rep:</strong>{" "}
+                    <strong className="text-gray-600">Rep:</strong>{" "}
                     {q.salesRep?.email || "N/A"}
                   </span>
                   {q.createdAt && (
                     <span>
-                      <strong className="text-zinc-300">Date:</strong>{" "}
+                      <strong className="text-gray-600">Date:</strong>{" "}
                       {new Date(q.createdAt).toLocaleDateString()}
                     </span>
                   )}
@@ -226,14 +226,14 @@ export default function QuotationsPage() {
                 )}
                 <Link
                   href={`/workspace/fulfillment/${q.id}`}
-                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 text-zinc-300 transition"
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-100 text-gray-600 transition"
                   title="Fulfillment Split"
                 >
                   Fulfill
                 </Link>
                 <Link
                   href={`/workspace/billing/${q.id}`}
-                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 text-zinc-300 transition"
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-100 text-gray-600 transition"
                   title="GST Tax Invoice"
                 >
                   Invoice

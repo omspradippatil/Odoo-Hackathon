@@ -57,15 +57,15 @@ export default function BidsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="pb-6 border-b border-zinc-800 mb-8 space-y-2">
+      <div className="pb-6 border-b border-gray-200 mb-8 space-y-2">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-950/60 border border-purple-800 text-purple-400 text-xs font-bold">
           <EyeOff className="w-3.5 h-3.5" /> Anonymous B2B Procurement Protocol
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 flex items-center gap-2.5">
+        <h1 className="text-2xl sm:text-3xl font-black text-gray-800 flex items-center gap-2.5">
           <Shield className="w-7 h-7 text-purple-500" />
           Enterprise Tender Bids
         </h1>
-        <p className="text-xs text-zinc-400 max-w-2xl">
+        <p className="text-xs text-gray-500 max-w-2xl">
           Vendor identity and quoted pricing remain cryptographically anonymous to buyers and middlemen until tender selection. Prevents insider price leaks and corrupt kickbacks.
         </p>
       </div>
@@ -73,7 +73,7 @@ export default function BidsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Requirements List (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-400">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
             Open Organization Tenders
           </h2>
 
@@ -88,29 +88,29 @@ export default function BidsPage() {
                 className={`p-5 rounded-xl border transition cursor-pointer ${
                   selectedReq === req.id
                     ? "bg-purple-950/20 border-purple-800/80 shadow-md shadow-purple-900/10"
-                    : "bg-zinc-900/40 border-zinc-800 hover:border-zinc-700"
+                    : "bg-gray-50/40 border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <h3 className="font-bold text-sm text-zinc-100">{req.title}</h3>
+                  <h3 className="font-bold text-sm text-gray-800">{req.title}</h3>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-950 border border-purple-800 text-purple-300 shrink-0">
                     ANONYMOUS
                   </span>
                 </div>
 
-                <div className="text-xs text-zinc-400 space-y-1">
+                <div className="text-xs text-gray-500 space-y-1">
                   <p className="flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-zinc-500" />
+                    <Building className="w-3.5 h-3.5 text-gray-9000" />
                     {req.organization}
                   </p>
-                  <p className="flex items-center gap-1.5 font-mono text-zinc-300">
-                    <Clock className="w-3.5 h-3.5 text-zinc-500" />
+                  <p className="flex items-center gap-1.5 font-mono text-gray-600">
+                    <Clock className="w-3.5 h-3.5 text-gray-9000" />
                     Deadline: {req.deadline} | Target: {req.budget}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-zinc-800/60 flex items-center justify-between text-xs">
-                  <span className="text-zinc-500">{req.bidsCount} anonymous bids placed</span>
+                <div className="mt-4 pt-3 border-t border-gray-200/60 flex items-center justify-between text-xs">
+                  <span className="text-gray-9000">{req.bidsCount} anonymous bids placed</span>
                   <span className="text-purple-400 font-semibold hover:underline">
                     Select to Quote →
                   </span>
@@ -122,7 +122,7 @@ export default function BidsPage() {
 
         {/* Bid Submission Panel (5 Cols) */}
         <div className="lg:col-span-5">
-          <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 sm:p-6 space-y-5">
+          <div className="bg-gray-50/60 border border-gray-200 rounded-xl p-5 sm:p-6 space-y-5">
             <h2 className="text-sm font-bold text-zinc-200 flex items-center gap-2">
               <EyeOff className="w-4 h-4 text-purple-400" />
               Submit Anonymous Tender Bid
@@ -133,13 +133,13 @@ export default function BidsPage() {
                 <div className="w-12 h-12 rounded-full bg-purple-950 border border-purple-700 text-purple-400 flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-bold text-zinc-100">Bid Submitted Anonymously!</h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <h3 className="text-base font-bold text-gray-800">Bid Submitted Anonymously!</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">
                   Your bid reference is <strong>#BID-2026-X88</strong>. Your vendor profile and pricing are locked until the tender committee reveals results.
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
-                  className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold rounded-lg transition"
+                  className="mt-4 px-4 py-2 bg-gray-100 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold rounded-lg transition"
                 >
                   Submit Another Quote
                 </button>
@@ -147,7 +147,7 @@ export default function BidsPage() {
             ) : (
               <form onSubmit={handleSubmitBid} className="space-y-4">
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 block mb-1">
+                  <label className="text-xs font-semibold text-gray-500 block mb-1">
                     Quoted Unit / Lot Rate (₹)
                   </label>
                   <input
@@ -155,24 +155,24 @@ export default function BidsPage() {
                     value={bidAmount}
                     onChange={(e) => setBidAmount(e.target.value)}
                     required
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm font-mono text-zinc-100 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-800 focus:outline-none focus:border-purple-500"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 block mb-1">
+                  <label className="text-xs font-semibold text-gray-500 block mb-1">
                     Delivery ETA (Weeks)
                   </label>
                   <input
                     type="number"
                     defaultValue={2}
                     min={1}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-zinc-100 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs font-mono text-gray-800 focus:outline-none focus:border-purple-500"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-zinc-400 block mb-1">
+                  <label className="text-xs font-semibold text-gray-500 block mb-1">
                     Compliance & Warranty Notes
                   </label>
                   <textarea
@@ -180,7 +180,7 @@ export default function BidsPage() {
                     placeholder="Include OEM certification, GST compliance info..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-white border border-gray-200 rounded-lg p-2.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-purple-500"
                   />
                 </div>
 

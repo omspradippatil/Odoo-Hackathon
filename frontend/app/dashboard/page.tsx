@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-zinc-950 p-8 flex flex-col items-center justify-center text-zinc-50">
+    <div className="min-h-screen bg-white p-8 flex flex-col items-center justify-center text-gray-900">
       <h1 className="text-4xl font-bold mb-12">Select Mode</h1>
       <div className="grid md:grid-cols-2 gap-8 w-full max-w-6xl">
         <Link href="/local">

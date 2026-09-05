@@ -117,7 +117,7 @@ export default function QuotationDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-zinc-500">
+      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-gray-9000">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-blue-500" />
         Loading Quotation #{quotationId}...
       </div>
@@ -126,7 +126,7 @@ export default function QuotationDetailPage() {
 
   if (!quotation) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-zinc-400">
+      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-gray-500">
         Quotation #{quotationId} not found.
       </div>
     );
@@ -140,24 +140,24 @@ export default function QuotationDetailPage() {
       {/* Back Button */}
       <Link
         href="/workspace/quotations"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-100 mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 mb-6 transition"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Quotations
       </Link>
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-800 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 mb-8">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-black text-zinc-100">
+            <h1 className="text-2xl sm:text-3xl font-black text-gray-800">
               Quotation #{quotation.id}
             </h1>
             <span className="text-xs font-bold px-2.5 py-1 rounded bg-blue-950/80 border border-blue-800 text-blue-400">
               {quotation.status}
             </span>
           </div>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             Customer: <span className="text-zinc-200">{quotation.customer?.email}</span> |
             Rep: <span className="text-zinc-200">{quotation.salesRep?.email}</span>
           </p>
@@ -178,14 +178,14 @@ export default function QuotationDetailPage() {
           )}
           <Link
             href={`/workspace/fulfillment/${quotation.id}`}
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-zinc-200 rounded-lg text-xs font-semibold transition"
           >
             <Layers className="w-3.5 h-3.5" />
             Fulfillment Split
           </Link>
           <Link
             href={`/workspace/billing/${quotation.id}`}
-            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-lg text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-zinc-200 rounded-lg text-xs font-semibold transition"
           >
             <FileText className="w-3.5 h-3.5 text-blue-400" />
             GST Invoice
@@ -205,10 +205,10 @@ export default function QuotationDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left 2 Cols: Line items table */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
+          <div className="bg-gray-50/50 border border-gray-200 rounded-xl p-5">
             <h2 className="text-base font-bold text-zinc-200 mb-4 flex items-center justify-between">
               <span>Quotation Line Items</span>
-              <span className="text-xs font-normal text-zinc-400">
+              <span className="text-xs font-normal text-gray-500">
                 {quotation.lines?.length || 0} line(s)
               </span>
             </h2>
@@ -216,7 +216,7 @@ export default function QuotationDetailPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-zinc-400">
+                  <tr className="border-b border-gray-200 text-gray-500">
                     <th className="pb-2">Product</th>
                     <th className="pb-2 text-center">Qty</th>
                     <th className="pb-2 text-right">Unit Price</th>
@@ -226,7 +226,7 @@ export default function QuotationDetailPage() {
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60">
                   {quotation.lines?.map((line, idx) => (
-                    <tr key={idx} className="hover:bg-zinc-900/40">
+                    <tr key={idx} className="hover:bg-gray-50/40">
                       <td className="py-3 font-semibold text-zinc-200">
                         {line.product?.name}
                         {line.isRecurring && (
@@ -235,14 +235,14 @@ export default function QuotationDetailPage() {
                           </span>
                         )}
                       </td>
-                      <td className="py-3 text-center text-zinc-300 font-mono">
+                      <td className="py-3 text-center text-gray-600 font-mono">
                         {line.qty}
                       </td>
-                      <td className="py-3 text-right text-zinc-300 font-mono">
+                      <td className="py-3 text-right text-gray-600 font-mono">
                         ₹{line.unitPrice?.toLocaleString()}
                       </td>
                       <td className="py-3 text-center">
-                        <span className="px-2 py-0.5 rounded bg-zinc-800 font-mono text-zinc-300">
+                        <span className="px-2 py-0.5 rounded bg-gray-100 font-mono text-gray-600">
                           {((line.discountPct || 0) * 100).toFixed(0)}%
                         </span>
                       </td>
@@ -256,9 +256,9 @@ export default function QuotationDetailPage() {
             </div>
 
             {/* Total Row */}
-            <div className="border-t border-zinc-800 mt-4 pt-4 flex justify-between items-center text-sm">
-              <span className="font-bold text-zinc-300">Estimated Order Total</span>
-              <span className="font-black text-xl text-zinc-50 font-mono">
+            <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between items-center text-sm">
+              <span className="font-bold text-gray-600">Estimated Order Total</span>
+              <span className="font-black text-xl text-gray-900 font-mono">
                 ₹{orderTotal.toLocaleString()}
               </span>
             </div>
@@ -269,7 +269,7 @@ export default function QuotationDetailPage() {
             <div className="p-4 rounded-xl border border-blue-900/60 bg-blue-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-bold text-blue-400">Customer Access Link</p>
-                <p className="text-[11px] font-mono text-zinc-400 truncate max-w-md mt-0.5">
+                <p className="text-[11px] font-mono text-gray-500 truncate max-w-md mt-0.5">
                   {portalUrl}
                 </p>
               </div>
@@ -288,8 +288,8 @@ export default function QuotationDetailPage() {
         {/* Right Col: Risk Engine & Approval Decisions */}
         <div className="space-y-6">
           {/* Risk Score Widget */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-1.5">
+          <div className="bg-gray-50/50 border border-gray-200 rounded-xl p-5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-1.5">
               <ShieldAlert className="w-4 h-4 text-yellow-500" />
               Blended Risk Engine
             </h3>
@@ -297,7 +297,7 @@ export default function QuotationDetailPage() {
             {riskData ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-400">Risk Score:</span>
+                  <span className="text-xs text-gray-500">Risk Score:</span>
                   <span
                     className={`font-mono font-bold text-sm px-2 py-0.5 rounded ${
                       riskData.score > 0.08
@@ -311,12 +311,12 @@ export default function QuotationDetailPage() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-zinc-400">Required Level:</span>
+                  <span className="text-xs text-gray-500">Required Level:</span>
                   <span className="text-xs font-bold text-zinc-200">
                     {riskData.approvalLevel}
                   </span>
                 </div>
-                <div className="text-[11px] text-zinc-500 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800/80">
+                <div className="text-[11px] text-gray-9000 bg-white p-2.5 rounded-lg border border-gray-200/80">
                   {riskData.score > 0.08
                     ? "Requires L1 (Sales Manager) AND L2 (Finance) approval before customer contract release."
                     : riskData.score > 0
@@ -325,13 +325,13 @@ export default function QuotationDetailPage() {
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-zinc-500">Calculating risk metrics...</p>
+              <p className="text-xs text-gray-9000">Calculating risk metrics...</p>
             )}
           </div>
 
           {/* Governance & Approval Card */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-1.5">
+          <div className="bg-gray-50/50 border border-gray-200 rounded-xl p-5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-blue-400" />
               Approval Controls
             </h3>
@@ -341,7 +341,7 @@ export default function QuotationDetailPage() {
                 placeholder="Approval / Rejection notes (optional)..."
                 value={approvalReason}
                 onChange={(e) => setApprovalReason(e.target.value)}
-                className="w-full text-xs bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
+                className="w-full text-xs bg-white border border-gray-200 rounded-lg p-2.5 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500"
                 rows={3}
               />
 
@@ -365,7 +365,7 @@ export default function QuotationDetailPage() {
               <button
                 onClick={handleReturnForRevision}
                 disabled={actionLoading}
-                className="w-full flex items-center justify-center gap-1 text-xs font-semibold py-2 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-1 text-xs font-semibold py-2 px-3 rounded-lg bg-gray-100 hover:bg-zinc-700 text-gray-600 transition disabled:opacity-50"
               >
                 <RotateCcw className="w-3.5 h-3.5" /> Return for Revision
               </button>

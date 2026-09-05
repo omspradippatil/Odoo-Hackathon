@@ -46,13 +46,13 @@ export default function ReportsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="pb-6 border-b border-zinc-800 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="pb-6 border-b border-gray-200 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-800 flex items-center gap-2.5">
             <FileSpreadsheet className="w-7 h-7 text-blue-500" />
             Executive Reports & Audit Export
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             Export GST audit trails, platform escrow fees, and sales operation performance logs.
           </p>
         </div>
@@ -68,40 +68,40 @@ export default function ReportsPage() {
 
       {/* Analytics Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
-        <div className="p-5 rounded-xl bg-zinc-900/50 border border-zinc-800">
-          <p className="text-xs text-zinc-400 mb-1">Total Platform Volume</p>
+        <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-200">
+          <p className="text-xs text-gray-500 mb-1">Total Platform Volume</p>
           <p className="text-2xl font-black text-white font-mono">
             ₹{(stats?.totalRevenue ? stats.totalRevenue * 10 : 542750).toLocaleString()}
           </p>
           <p className="text-[10px] text-emerald-400 mt-1">↑ 18.4% month over month</p>
         </div>
 
-        <div className="p-5 rounded-xl bg-zinc-900/50 border border-zinc-800">
-          <p className="text-xs text-zinc-400 mb-1">Total Platform Fees (2% Escrow)</p>
+        <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-200">
+          <p className="text-xs text-gray-500 mb-1">Total Platform Fees (2% Escrow)</p>
           <p className="text-2xl font-black text-blue-400 font-mono">
             ₹{((stats?.totalRevenue ? stats.totalRevenue * 10 : 542750) * 0.02).toLocaleString()}
           </p>
-          <p className="text-[10px] text-zinc-500 mt-1">Automatic SaaS transaction take</p>
+          <p className="text-[10px] text-gray-9000 mt-1">Automatic SaaS transaction take</p>
         </div>
 
-        <div className="p-5 rounded-xl bg-zinc-900/50 border border-zinc-800">
-          <p className="text-xs text-zinc-400 mb-1">Audit Log Integrity</p>
+        <div className="p-5 rounded-xl bg-gray-50/50 border border-gray-200">
+          <p className="text-xs text-gray-500 mb-1">Audit Log Integrity</p>
           <p className="text-2xl font-black text-emerald-400 font-mono">100%</p>
-          <p className="text-[10px] text-zinc-500 mt-1">All approvals cryptographically traced</p>
+          <p className="text-[10px] text-gray-9000 mt-1">All approvals cryptographically traced</p>
         </div>
       </div>
 
       {/* Historical Logs Table */}
-      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5">
+      <div className="bg-gray-50/50 border border-gray-200 rounded-xl p-5">
         <h2 className="text-sm font-bold text-zinc-200 mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-zinc-400" />
+          <BarChart3 className="w-4 h-4 text-gray-500" />
           Recent Transaction Audit Snapshot
         </h2>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-400">
+              <tr className="border-b border-gray-200 text-gray-500">
                 <th className="pb-2">Audit Ref</th>
                 <th className="pb-2">Customer / Org</th>
                 <th className="pb-2">Status</th>
@@ -110,7 +110,7 @@ export default function ReportsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/60">
-              <tr className="hover:bg-zinc-900/40">
+              <tr className="hover:bg-gray-50/40">
                 <td className="py-3 font-mono text-blue-400 font-semibold">#AUD-8921</td>
                 <td className="py-3 text-zinc-200">Acme Corporation</td>
                 <td className="py-3">
@@ -118,10 +118,10 @@ export default function ReportsPage() {
                     CONFIRMED
                   </span>
                 </td>
-                <td className="py-3 text-zinc-400">Auto-approved by policy engine</td>
+                <td className="py-3 text-gray-500">Auto-approved by policy engine</td>
                 <td className="py-3 text-right font-mono font-bold text-zinc-200">₹1,30,000</td>
               </tr>
-              <tr className="hover:bg-zinc-900/40">
+              <tr className="hover:bg-gray-50/40">
                 <td className="py-3 font-mono text-blue-400 font-semibold">#AUD-8922</td>
                 <td className="py-3 text-zinc-200">Tata Consultancy Services</td>
                 <td className="py-3">
@@ -129,10 +129,10 @@ export default function ReportsPage() {
                     PENDING_L1
                   </span>
                 </td>
-                <td className="py-3 text-zinc-400">Sales Manager Review Triggered</td>
+                <td className="py-3 text-gray-500">Sales Manager Review Triggered</td>
                 <td className="py-3 text-right font-mono font-bold text-zinc-200">₹2,76,250</td>
               </tr>
-              <tr className="hover:bg-zinc-900/40">
+              <tr className="hover:bg-gray-50/40">
                 <td className="py-3 font-mono text-blue-400 font-semibold">#AUD-8923</td>
                 <td className="py-3 text-zinc-200">JSW Logistics Hub</td>
                 <td className="py-3">
@@ -140,7 +140,7 @@ export default function ReportsPage() {
                     APPROVED
                   </span>
                 </td>
-                <td className="py-3 text-zinc-400">Approved by manager@devflow.com</td>
+                <td className="py-3 text-gray-500">Approved by manager@devflow.com</td>
                 <td className="py-3 text-right font-mono font-bold text-zinc-200">₹1,36,500</td>
               </tr>
             </tbody>

@@ -1,1 +1,1 @@
-export default function Sidebar() { return <aside className="w-64 border-r border-zinc-800 h-screen p-4">Menu</aside>; }
+export default function Sidebar() { return <aside className="w-64 border-r border-gray-200 h-screen p-4">Menu</aside>; }

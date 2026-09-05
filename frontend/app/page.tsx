@@ -1,30 +1,25 @@
 import Link from "next/link";
 import {
   ShoppingBag,
-  ShieldCheck,
   ArrowRight,
   Sparkles,
-  Layers,
-  Activity,
   CheckCircle2,
-  Lock,
   Building,
-  Zap,
 } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+    <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-24 bg-white">
       {/* Hero Section */}
-      <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold tracking-wide">
-          <Sparkles className="w-3.5 h-3.5" />
-          India&apos;s Dual-Mode Intelligent Sales Operations Platform
+      <div className="text-center max-w-4xl mx-auto space-y-6 mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold tracking-wide border border-blue-100">
+          <Sparkles className="w-4 h-4" />
+          Intelligent Sales Operations Platform
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white">
-          Welcome to <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">DEV FLOW</span>
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900">
+          Welcome to <span className="text-blue-600">DEV FLOW</span>
         </h1>
-        <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
           Select an operating mode below to experience automated multi-tier discount governance, escrow trust, and anonymous B2B tender bidding.
         </p>
       </div>
@@ -34,44 +29,44 @@ export default function Home() {
         {/* Local Mode Card */}
         <Link
           href="/local"
-          className="group relative rounded-2xl border border-blue-500/30 bg-gradient-to-b from-blue-950/40 via-zinc-900/60 to-zinc-900 p-8 hover:border-blue-500/80 transition-all shadow-xl hover:shadow-blue-500/10 flex flex-col justify-between"
+          className="group rounded-2xl border border-gray-200 bg-white p-8 hover:border-blue-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between"
         >
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+          <div className="space-y-5">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform">
               <ShoppingBag className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-2xl font-black text-white group-hover:text-blue-400 transition">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition">
                   LOCAL MODE
                 </h2>
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
                   Consumer
                 </span>
               </div>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Buy & sell locally with verified Gold/Silver/Bronze trust tiers and instant mock UPI escrow protection.
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Buy & sell locally with verified Gold/Silver/Bronze trust tiers and instant escrow protection.
               </p>
             </div>
 
-            <ul className="space-y-2 text-xs text-zinc-300 pt-2 border-t border-zinc-800">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                Escrow vault locks funds until delivery verified
+            <ul className="space-y-2.5 text-sm text-gray-700 pt-4 border-t border-gray-100">
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Escrow vault locks funds until delivery verified</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                Transparent 2% platform fee on final seller payout
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Transparent 2% platform fee on final payout</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                One-click mock UPI payment confirmation
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Instant payment confirmation</span>
               </li>
             </ul>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs font-bold text-blue-400 group-hover:translate-x-1 transition-transform">
-            <span>Explore Local Goods & UPI Checkout</span>
+          <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
+            <span>Explore Local Goods</span>
             <ArrowRight className="w-4 h-4" />
           </div>
         </Link>
@@ -79,63 +74,60 @@ export default function Home() {
         {/* Professional Mode Card */}
         <Link
           href="/workspace/quotations"
-          className="group relative rounded-2xl border border-purple-500/30 bg-gradient-to-b from-purple-950/40 via-zinc-900/60 to-zinc-900 p-8 hover:border-purple-500/80 transition-all shadow-xl hover:shadow-purple-500/10 flex flex-col justify-between"
+          className="group rounded-2xl border border-gray-200 bg-white p-8 hover:border-blue-300 transition-all shadow-sm hover:shadow-md flex flex-col justify-between"
         >
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+          <div className="space-y-5">
+            <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 group-hover:scale-105 transition-transform">
               <Building className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-2xl font-black text-white group-hover:text-purple-400 transition">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition">
                   PROFESSIONAL MODE
                 </h2>
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                <span className="text-[10px] uppercase font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
                   Enterprise B2B
                 </span>
               </div>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Self-governing sales operations with live Blended Risk calculation, multi-warehouse splitting, and blind tender bidding.
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Self-governing sales operations with live Blended Risk calculation, multi-warehouse splitting, and automated approvals.
               </p>
             </div>
 
-            <ul className="space-y-2 text-xs text-zinc-300 pt-2 border-t border-zinc-800">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                Automated L1 / L2 approval escalation routing
+            <ul className="space-y-2.5 text-sm text-gray-700 pt-4 border-t border-gray-100">
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Automated L1 / L2 approval escalation routing</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                Greedy multi-warehouse inventory auto-split
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Greedy multi-warehouse inventory auto-split</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                Anonymous vendor bidding killing middleman corruption
+              <li className="flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                <span>Anonymous vendor bidding killing corruption</span>
               </li>
             </ul>
           </div>
 
-          <div className="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs font-bold text-purple-400 group-hover:translate-x-1 transition-transform">
-            <span>Enter Enterprise Sales Workspace</span>
+          <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
+            <span>Enter Enterprise Workspace</span>
             <ArrowRight className="w-4 h-4" />
           </div>
         </Link>
       </div>
 
       {/* Quick Links Row */}
-      <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-xs text-zinc-400">
-        <span className="text-zinc-500 font-semibold">Quick Jump:</span>
-        <Link href="/workspace/quotations/new" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+      <div className="mt-16 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-600">
+        <span className="font-semibold text-gray-900 mr-2">Quick Jump:</span>
+        <Link href="/workspace/quotations/new" className="px-3.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition text-gray-700 font-medium">
           Quotation Builder
         </Link>
-        <Link href="/workspace/pipeline" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+        <Link href="/workspace/pipeline" className="px-3.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition text-gray-700 font-medium">
           Pipeline Kanban
         </Link>
-        <Link href="/workspace/dashboard" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+        <Link href="/workspace/dashboard" className="px-3.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition text-gray-700 font-medium">
           Deal Health
-        </Link>
-        <Link href="/local/checkout/1" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
-          Mock UPI Checkout
         </Link>
       </div>
     </div>

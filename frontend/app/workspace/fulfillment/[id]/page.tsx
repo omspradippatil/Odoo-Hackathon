@@ -68,7 +68,7 @@ export default function FulfillmentPage() {
 
   if (loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-zinc-500">
+      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-gray-9000">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-blue-500" />
         Calculating fulfillment splits for Quote #{quotationId}...
       </div>
@@ -77,7 +77,7 @@ export default function FulfillmentPage() {
 
   if (!quotation) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-zinc-400">
+      <div className="max-w-5xl mx-auto px-4 py-16 text-center text-gray-500">
         Quotation #{quotationId} not found.
       </div>
     );
@@ -87,25 +87,25 @@ export default function FulfillmentPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         href={`/workspace/quotations/${quotationId}`}
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-100 mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 mb-6 transition"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Quotation
       </Link>
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-800 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 mb-8">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-zinc-100 flex items-center gap-2.5">
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-800 flex items-center gap-2.5">
             <Truck className="w-7 h-7 text-blue-500" />
             Fulfillment & Warehouse Split
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             Automated multi-warehouse inventory allocation with greedy shipping cost & weight optimization.
           </p>
         </div>
         <button
           onClick={fetchQuotationAndSplits}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-lg text-xs font-semibold self-start sm:self-auto transition"
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-zinc-200 rounded-lg text-xs font-semibold self-start sm:self-auto transition"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${computingSplits ? "animate-spin" : ""}`} />
           Recalculate
@@ -118,15 +118,15 @@ export default function FulfillmentPage() {
           return (
             <div
               key={idx}
-              className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5"
+              className="bg-gray-50/50 border border-gray-200 rounded-xl p-5"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800 pb-3 mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3 mb-4">
                 <div>
-                  <h3 className="font-bold text-sm text-zinc-100 flex items-center gap-2">
+                  <h3 className="font-bold text-sm text-gray-800 flex items-center gap-2">
                     <Boxes className="w-4 h-4 text-blue-400" />
                     {line.product?.name}
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <p className="text-xs text-gray-500 mt-0.5">
                     Category: {line.product?.category?.name || "General"} | Total Requested:{" "}
                     <span className="font-mono text-zinc-200 font-bold">{line.qty} units</span>
                   </p>
@@ -139,22 +139,22 @@ export default function FulfillmentPage() {
               {/* Warehouse allocations breakdown */}
               {split ? (
                 <div className="space-y-3">
-                  <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                     Warehouse Routing Breakdown:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {Object.entries(split.allocations).map(([whId, allocQty]) => (
                       <div
                         key={whId}
-                        className="bg-zinc-950 border border-zinc-800/80 p-3.5 rounded-lg flex items-center justify-between"
+                        className="bg-white border border-gray-200/80 p-3.5 rounded-lg flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2.5">
-                          <Warehouse className="w-4 h-4 text-zinc-400" />
+                          <Warehouse className="w-4 h-4 text-gray-500" />
                           <div>
                             <p className="text-xs font-semibold text-zinc-200">
                               {warehouseNames[Number(whId)] || `Warehouse #${whId}`}
                             </p>
-                            <p className="text-[10px] text-zinc-500">Dispatch Status: In Stock</p>
+                            <p className="text-[10px] text-gray-9000">Dispatch Status: In Stock</p>
                           </div>
                         </div>
                         <span className="font-mono font-bold text-xs bg-blue-950 text-blue-300 border border-blue-800 px-2 py-1 rounded">
@@ -183,7 +183,7 @@ export default function FulfillmentPage() {
                   )}
                 </div>
               ) : (
-                <p className="text-xs text-zinc-500">No warehouse stock data available.</p>
+                <p className="text-xs text-gray-9000">No warehouse stock data available.</p>
               )}
             </div>
           );

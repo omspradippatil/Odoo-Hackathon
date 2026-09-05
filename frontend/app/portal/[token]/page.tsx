@@ -90,7 +90,7 @@ export default function CustomerPortalPage({
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-200 text-center max-w-md">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-3" />
           <h2 className="text-lg font-bold text-zinc-900">Quotation Link Not Found</h2>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-gray-9000 mt-1">
             This token may be invalid or expired. Please contact your sales representative.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function CustomerPortalPage({
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight text-zinc-900">DEV FLOW</h1>
-              <p className="text-[10px] text-zinc-400">Customer Deal Negotiation Portal</p>
+              <p className="text-[10px] text-gray-500">Customer Deal Negotiation Portal</p>
             </div>
           </div>
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 uppercase">
@@ -127,7 +127,7 @@ export default function CustomerPortalPage({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 pb-4">
             <div>
               <h2 className="text-xl font-bold text-zinc-900">Quotation #{quotation.id}</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-gray-9000 mt-0.5">
                 Review your pricing proposal below or submit counter-terms.
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function CustomerPortalPage({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-200 text-zinc-500">
+                <tr className="border-b border-zinc-200 text-gray-9000">
                   <th className="pb-3 font-semibold">Product Description</th>
                   <th className="pb-3 font-semibold text-center">Qty</th>
                   <th className="pb-3 font-semibold text-right">Unit Price</th>

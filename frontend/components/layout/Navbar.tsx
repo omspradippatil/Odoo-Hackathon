@@ -48,7 +48,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center gap-3">
@@ -56,11 +56,11 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-lg tracking-wider shadow-lg shadow-blue-500/20">
               DF
             </div>
-            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent">
+            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r text-gray-900">
               DEV FLOW
             </span>
           </Link>
-          <span className="hidden md:inline-flex text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800 text-blue-400">
+          <span className="hidden md:inline-flex text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-600">
             PROTOTYPE v1.0
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function Navbar() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                   active
                     ? "bg-blue-600 text-white shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -90,18 +90,18 @@ export default function Navbar() {
         {/* User / Auth Controls */}
         <div className="hidden sm:flex items-center gap-3">
           {isAuthenticated && user ? (
-            <div className="flex items-center gap-2 text-xs bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 text-xs bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-full">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-zinc-300 font-medium max-w-[120px] truncate">
+              <span className="text-gray-600 font-medium max-w-[120px] truncate">
                 {user.email}
               </span>
-              <span className="text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded text-blue-400 font-semibold uppercase">
+              <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-blue-400 font-semibold uppercase">
                 {user.role}
               </span>
               <button
                 onClick={handleLogout}
                 title="Logout"
-                className="text-zinc-400 hover:text-red-400 transition-colors ml-1"
+                className="text-gray-500 hover:text-red-400 transition-colors ml-1"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>
@@ -120,7 +120,7 @@ export default function Navbar() {
         <div className="lg:hidden flex items-center">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900"
+            className="p-2 rounded-md text-gray-500 hover:text-gray-800 hover:bg-gray-50"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -129,7 +129,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-zinc-800 bg-zinc-950 px-4 pt-2 pb-4 space-y-1">
+        <div className="lg:hidden border-b border-gray-200 bg-white px-4 pt-2 pb-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -141,7 +141,7 @@ export default function Navbar() {
                 className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${
                   active
                     ? "bg-blue-600 text-white"
-                    : "text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -149,10 +149,10 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-3 border-t border-zinc-800 flex justify-between items-center text-xs">
+          <div className="pt-3 border-t border-gray-200 flex justify-between items-center text-xs">
             {isAuthenticated && user ? (
               <>
-                <span className="text-zinc-400">{user.email} ({user.role})</span>
+                <span className="text-gray-500">{user.email} ({user.role})</span>
                 <button
                   onClick={handleLogout}
                   className="text-red-400 hover:underline flex items-center gap-1"

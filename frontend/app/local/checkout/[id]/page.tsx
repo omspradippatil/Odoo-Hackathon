@@ -79,7 +79,7 @@ export default function CheckoutPage() {
 
   if (loading) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center text-zinc-500">
+      <div className="max-w-md mx-auto px-4 py-20 text-center text-gray-500">
         <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-blue-500" />
         Securing Escrow Payment Session...
       </div>
@@ -90,22 +90,22 @@ export default function CheckoutPage() {
     <div className="max-w-xl mx-auto px-4 py-8">
       <Link
         href="/local"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-100 mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-800 mb-6 transition"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Marketplace
       </Link>
 
-      <div className="border border-zinc-800 bg-zinc-900/60 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="border border-gray-200 bg-gray-50 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
         {/* Title */}
         <div className="text-center space-y-1">
-          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-[11px] font-bold">
+          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100/60 border border-emerald-200 text-emerald-600 text-[11px] font-bold">
             <Lock className="w-3 h-3" /> DEV FLOW Escrow Vault Active
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-zinc-100">
+          <h1 className="text-xl sm:text-2xl font-black text-gray-800">
             {paymentConfirmed ? "Payment Confirmed!" : "Pay via Mock UPI"}
           </h1>
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-gray-500">
             {paymentConfirmed
               ? "Funds are securely locked in escrow until delivery is verified."
               : "Prototype demo UPI payment flow with automatic 2% platform fee calculation."}
@@ -114,20 +114,20 @@ export default function CheckoutPage() {
 
         {/* Product Order Summary */}
         {product && (
-          <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 space-y-2">
+          <div className="p-4 rounded-xl bg-white border border-gray-200 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-zinc-400">Selected Item:</span>
-              <span className="font-bold text-zinc-200">{product.name}</span>
+              <span className="text-gray-500">Selected Item:</span>
+              <span className="font-bold text-gray-900">{product.name}</span>
             </div>
             <div className="flex justify-between items-center text-xs">
-              <span className="text-zinc-400">Escrow Security:</span>
-              <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="text-gray-500">Escrow Security:</span>
+              <span className="text-emerald-600 font-semibold flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5" /> Covered
               </span>
             </div>
-            <div className="border-t border-zinc-800/80 pt-2 flex justify-between items-center text-sm">
-              <span className="font-bold text-zinc-300">Total Payable:</span>
-              <span className="font-black text-lg text-white font-mono">
+            <div className="border-t border-gray-200 pt-2 flex justify-between items-center text-sm">
+              <span className="font-bold text-gray-600">Total Payable:</span>
+              <span className="font-black text-lg text-gray-900 font-mono">
                 ₹{product.basePrice.toLocaleString()}
               </span>
             </div>
@@ -137,26 +137,26 @@ export default function CheckoutPage() {
         {paymentConfirmed ? (
           /* Payment Success State */
           <div className="space-y-5 text-center">
-            <div className="w-14 h-14 rounded-full bg-emerald-950/80 border border-emerald-700 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
+            <div className="w-14 h-14 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <div className="bg-zinc-950 border border-zinc-800 p-4 rounded-xl space-y-2 text-xs text-left">
+            <div className="bg-white border border-gray-200 p-4 rounded-xl space-y-2 text-xs text-left">
               <div className="flex justify-between">
-                <span className="text-zinc-400">Payment ID:</span>
-                <span className="font-mono text-zinc-200">#{confirmData?.paymentId || paymentId}</span>
+                <span className="text-gray-500">Payment ID:</span>
+                <span className="font-mono text-gray-900">#{confirmData?.paymentId || paymentId}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">Status:</span>
-                <span className="font-bold text-emerald-400">RELEASED / SETTLED</span>
+                <span className="text-gray-500">Status:</span>
+                <span className="font-bold text-emerald-600">RELEASED / SETTLED</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-400">Platform Fee (2%):</span>
-                <span className="font-mono text-zinc-300">₹{confirmData?.platformFee?.toFixed(2) || "100.00"}</span>
+                <span className="text-gray-500">Platform Fee (2%):</span>
+                <span className="font-mono text-gray-600">₹{confirmData?.platformFee?.toFixed(2) || "100.00"}</span>
               </div>
-              <div className="flex justify-between border-t border-zinc-800 pt-2">
-                <span className="font-bold text-zinc-300">Seller Net Payout:</span>
-                <span className="font-mono font-bold text-emerald-400">
+              <div className="flex justify-between border-t border-gray-200 pt-2">
+                <span className="font-bold text-gray-600">Seller Net Payout:</span>
+                <span className="font-mono font-bold text-emerald-600">
                   ₹{confirmData?.sellerReceives?.toFixed(2) || "4900.00"}
                 </span>
               </div>
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/local"
-                className="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition"
+                className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-semibold transition"
               >
                 Continue Shopping
               </Link>
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
           /* Payment Action State */
           <div className="space-y-6">
             {/* Mock QR / UPI display */}
-            <div className="p-6 bg-zinc-950 border border-zinc-800 rounded-xl text-center space-y-3">
+            <div className="p-6 bg-white border border-gray-200 rounded-xl text-center space-y-3">
               <div className="w-32 h-32 mx-auto bg-white p-3 rounded-lg flex items-center justify-center shadow-inner">
                 {/* SVG Mock QR Code */}
                 <svg viewBox="0 0 100 100" className="w-full h-full">
@@ -201,8 +201,8 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-1">
-                <p className="text-xs font-mono font-bold text-zinc-300">UPI ID: devflow@ybl</p>
-                <p className="text-[10px] text-zinc-500">Scan using GPay, PhonePe, Paytm or click Pay below</p>
+                <p className="text-xs font-mono font-bold text-gray-600">UPI ID: devflow@ybl</p>
+                <p className="text-[10px] text-gray-500">Scan using GPay, PhonePe, Paytm or click Pay below</p>
               </div>
             </div>
 
