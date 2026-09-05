@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   ArrowRightLeft, Home, FileText, PlusCircle, MapPin, Activity, User, 
   Search, Bell, Menu, ShieldCheck, Briefcase, UserCog, Calculator, Settings, X
@@ -10,6 +10,9 @@ import {
 import { cn } from "@/lib/utils";
 import { UserRole } from "@/types/auth";
 import { FlowPathBackground } from "@/components/ui/dashboard/FlowPathBackground";
+import { Navbar } from "@/components/sections/Navbar";
+import { AuthGate } from "@/components/ui/AuthGate";
+import { authService } from "@/lib/authService";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 
@@ -68,11 +71,40 @@ const ROLE_TITLES = {
   [UserRole.ADMIN]: "Admin"
 };
 
-export function WorkspaceLayout({ children, role }: { children: React.ReactNode, role: UserRole }) {
+export function WorkspaceLayout({ children, role, requireAuth = false }: { children: React.ReactNode, role: UserRole, requireAuth?: boolean }) {
   const pathname = usePathname();
   const navItems = NAV_CONFIG[role] || [];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authService.logout();
+    router.push("/");
+  };
+
+  React.useEffect(() => {
+    const user = sessionStorage.getItem("devflow_user");
+    setIsGuest(!user);
+    setIsLoaded(true);
+  }, []);
   
+  if (!isLoaded) return null; // Hydration guard
+
+  if (isGuest) {
+    return (
+      <div className="min-h-screen bg-warm text-navy selection:bg-coral/20 flex flex-col relative">
+        <Navbar />
+        <FlowPathBackground />
+        <main className="flex-1 pt-24 px-4 md:px-8 max-w-7xl mx-auto w-full relative z-10">
+          {requireAuth ? <AuthGate /> : children}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-warm text-navy selection:bg-coral/20 flex relative">
       <FlowPathBackground />
@@ -112,15 +144,34 @@ export function WorkspaceLayout({ children, role }: { children: React.ReactNode,
             </nav>
           </div>
         </div>
-        <div className="p-6 border-t border-white/5 bg-white/5 m-4 rounded-2xl flex items-center justify-between cursor-pointer hover:bg-white/10 transition-colors">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">U</div>
-            <div>
-              <div className="text-sm font-bold text-white">Demo User</div>
-              <div className="text-xs font-medium text-white/50">Settings</div>
+        <div className="relative m-4">
+          <button 
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="w-full p-4 border-t border-white/5 bg-white/5 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">U</div>
+              <div className="text-left">
+                <div className="text-sm font-bold text-white">Demo User</div>
+                <div className="text-xs font-medium text-white/50">Settings</div>
+              </div>
             </div>
-          </div>
-          <Settings className="w-4 h-4 text-white/40" />
+            <Settings className="w-4 h-4 text-white/40" />
+          </button>
+          
+          <AnimatePresence>
+            {dropdownOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute bottom-full left-0 w-full mb-2 bg-white rounded-xl shadow-xl overflow-hidden z-[100]"
+              >
+                <Link href="/buyer/profile" className="block w-full text-left px-4 py-3 text-sm font-bold text-navy hover:bg-navy/5">Profile Settings</Link>
+                <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm font-bold text-coral hover:bg-coral/5 border-t border-navy/5">Logout</button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </aside>
 
@@ -137,7 +188,22 @@ export function WorkspaceLayout({ children, role }: { children: React.ReactNode,
             <Bell className="w-5 h-5" />
             <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-coral border-2 border-white" />
           </button>
-          <div className="w-8 h-8 rounded-full bg-coral flex items-center justify-center text-white font-bold text-xs">U</div>
+          <div className="relative">
+            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="w-8 h-8 rounded-full bg-coral flex items-center justify-center text-white font-bold text-xs">U</button>
+            <AnimatePresence>
+              {dropdownOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl overflow-hidden z-[100] border border-navy/5"
+                >
+                  <Link href="/buyer/profile" className="block w-full text-left px-4 py-3 text-sm font-bold text-navy hover:bg-navy/5">Profile Settings</Link>
+                  <button onClick={handleLogout} className="block w-full text-left px-4 py-3 text-sm font-bold text-coral hover:bg-coral/5 border-t border-navy/5">Logout</button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 

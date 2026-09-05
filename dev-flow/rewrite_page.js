@@ -1,11 +1,13 @@
-"use client";
+const fs = require('fs');
+
+const content = `"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { RequirementRequest, RequirementDealType, RequirementItem, PriorityType } from "@/types/requirement";
-import { ArrowRight, Search, PlusCircle, Check, X, Settings, MapPin, Activity, Trash2, Edit2, AlertCircle } from "lucide-react";
+import { ArrowRight, Search, PlusCircle, Check, X, ShieldCheck, Settings, MapPin, Activity, Trash2, Edit2, AlertCircle } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -93,7 +95,7 @@ export default function NewRequirementPage() {
   }, []);
 
   // Determine if form has unsaved changes
-  const hasChanges = req.items.length > 0 || req.city !== "";
+  const hasChanges = req.items.length > 0 || req.city !== "" || req.hasBudget;
 
   const handleAddItem = () => {
     if (!tempItem.productName || tempItem.quantity <= 0) return;
@@ -122,7 +124,7 @@ export default function NewRequirementPage() {
     if (isDrafting) return;
     
     // Minimal validation for draft: just something needs to exist
-    if (req.items.length === 0 && (!req.city || req.city.trim() === "")) {
+    if (req.items.length === 0 && !req.city) {
       setErrors({ general: "Add at least an item or location to save a draft." });
       return;
     }
@@ -184,7 +186,7 @@ export default function NewRequirementPage() {
   const totalItems = req.items.reduce((acc, i) => acc + i.quantity, 0);
 
   return (
-    <WorkspaceLayout role={UserRole.BUYER} requireAuth>
+    <WorkspaceLayout role={UserRole.BUYER}>
       
       {/* UNSAVED CHANGES MODAL */}
       <AnimatePresence>
@@ -260,11 +262,12 @@ export default function NewRequirementPage() {
                     <div>
                       <h4 className="font-bold text-navy text-lg">{item.productName}</h4>
                       <div className="text-xs font-bold text-navy/40 uppercase tracking-widest mt-1">
-                        {item.quantity} {item.unit} {item.description ? "• Has specs" : "• Standard"}
+                        {item.quantity} {item.unit} • {item.description ? "Has specs" : "Standard"}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button className="w-10 h-10 rounded-xl flex items-center justify-center text-navy/40 hover:bg-navy/5 hover:text-navy transition-colors"><Edit2 className="w-4 h-4" /></button>
                     <button onClick={() => handleRemoveItem(item.id)} className="w-10 h-10 rounded-xl flex items-center justify-center text-coral/60 hover:bg-coral/10 hover:text-coral transition-colors"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
@@ -513,7 +516,7 @@ export default function NewRequirementPage() {
             disabled={isDrafting || isCreating}
             className="flex-1 py-4 rounded-xl bg-white text-navy font-bold shadow-sm border border-navy/10 disabled:opacity-50"
           >
-            {isDrafting ? "Saving..." : draftSaved ? "Draft Saved" : "Save Draft"}
+            {isDrafting ? "Saving..." : "Save Draft"}
           </button>
           <button 
             onClick={handleSubmit}
@@ -528,3 +531,5 @@ export default function NewRequirementPage() {
     </WorkspaceLayout>
   );
 }
+`
+fs.writeFileSync('src/app/buyer/requirements/new/page.tsx', content);

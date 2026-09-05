@@ -50,7 +50,7 @@ export function TwoWorlds() {
                 <li className="flex items-start md:items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-coral shrink-0 mt-2 md:mt-0" /> <span>Structured negotiation</span></li>
               </ul>
 
-              <PrimaryButton href="/professional" variant="secondary" showArrow className="w-full sm:w-auto">Explore Professional</PrimaryButton>
+              <PrimaryButton href="/signup" variant="secondary" showArrow className="w-full sm:w-auto">Explore Professional</PrimaryButton>
             </div>
           </motion.div>
 
@@ -82,7 +82,7 @@ export function TwoWorlds() {
                 <li className="flex items-start md:items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-cobalt shrink-0 mt-2 md:mt-0" /> <span>Delivery or store pickup</span></li>
               </ul>
 
-              <PrimaryButton href="/local" variant="outline" showArrow className="w-full sm:w-auto">Explore Local</PrimaryButton>
+              <PrimaryButton href="/signup" variant="outline" showArrow className="w-full sm:w-auto">Explore Local</PrimaryButton>
             </div>
           </motion.div>
 

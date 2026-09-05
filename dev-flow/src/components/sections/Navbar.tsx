@@ -11,8 +11,13 @@ import { AnimatePresence } from "framer-motion";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = sessionStorage.getItem("devflow_user");
+      if (stored) setUser(JSON.parse(stored));
+    }
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -40,7 +45,9 @@ export function Navbar() {
 
           {/* DESKTOP NAV */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-navy/70">
+            <Link href="/explore" className="hover:text-navy transition-colors">Explore</Link>
             <Link href="#how-it-works" className="hover:text-navy transition-colors">How It Works</Link>
+            <Link href="/buyer/local" className="hover:text-navy transition-colors">Local Sellers</Link>
             <Link href="#solutions" className="hover:text-navy transition-colors">Solutions</Link>
             <Link href="#trust-engine" className="hover:text-navy transition-colors">Trust Engine</Link>
             <Link href="#professional" className="hover:text-navy transition-colors">For Business</Link>
@@ -48,12 +55,20 @@ export function Navbar() {
 
           {/* DESKTOP CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium text-navy hover:opacity-70 transition-opacity">
-              Sign In
-            </Link>
-            <PrimaryButton href="/signup" className="py-2 px-5 text-sm" showArrow>
-              Start a Deal
-            </PrimaryButton>
+            {!user ? (
+              <>
+                <Link href="/login" className="text-sm font-medium text-navy hover:opacity-70 transition-opacity">
+                  Sign In
+                </Link>
+                <PrimaryButton href="/login?returnTo=/buyer/requirements/new" className="py-2 px-5 text-sm" showArrow>
+                  Start a Deal
+                </PrimaryButton>
+              </>
+            ) : (
+              <PrimaryButton href="/buyer" className="py-2 px-5 text-sm" showArrow>
+                Go to Workspace
+              </PrimaryButton>
+            )}
           </div>
 
           {/* MOBILE MENU TOGGLE */}
@@ -77,18 +92,28 @@ export function Navbar() {
             className="fixed inset-0 z-40 bg-warm pt-24 px-6 pb-6 md:hidden flex flex-col"
           >
             <nav className="flex flex-col gap-6 text-xl font-bold text-navy mb-12">
+              <Link href="/explore" onClick={() => setMobileMenuOpen(false)}>Explore</Link>
               <Link href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
+              <Link href="/buyer/local" onClick={() => setMobileMenuOpen(false)}>Local Sellers</Link>
               <Link href="#solutions" onClick={() => setMobileMenuOpen(false)}>Solutions</Link>
               <Link href="#trust-engine" onClick={() => setMobileMenuOpen(false)}>Trust Engine</Link>
               <Link href="#professional" onClick={() => setMobileMenuOpen(false)}>For Business</Link>
             </nav>
             <div className="flex flex-col gap-4 mt-auto border-t border-navy/10 pt-8">
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-center font-bold text-navy py-3">
-                Sign In
-              </Link>
-              <PrimaryButton href="/signup" onClick={() => setMobileMenuOpen(false)} showArrow className="w-full">
-                Start a Deal
-              </PrimaryButton>
+              {!user ? (
+                <>
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-center font-bold text-navy py-3">
+                    Sign In
+                  </Link>
+                  <PrimaryButton href="/login?returnTo=/buyer/requirements/new" onClick={() => setMobileMenuOpen(false)} showArrow className="w-full">
+                    Start a Deal
+                  </PrimaryButton>
+                </>
+              ) : (
+                <PrimaryButton href="/buyer" onClick={() => setMobileMenuOpen(false)} showArrow className="w-full">
+                  Go to Workspace
+                </PrimaryButton>
+              )}
             </div>
           </motion.div>
         )}

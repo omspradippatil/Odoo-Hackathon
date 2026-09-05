@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRightLeft, Eye, EyeOff, Loader2, CheckCircle2, ChevronRight, Briefcase, ShoppingBag, Store, UserCog, Calculator } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
@@ -20,9 +20,10 @@ const ROLES = [
   { id: UserRole.FINANCE_OPERATIONS, title: "Finance / Operations", desc: "Manage high-level approvals, billing, fulfilment and payment operations.", best: "", icon: Calculator, color: "text-orange-600", border: "border-orange-600", bg: "bg-orange-600/10" }
 ];
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -173,19 +174,19 @@ export default function SignupPage() {
                 <div className="space-y-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Full Name <span className="text-coral">*</span></label>
-                    <Input placeholder="John Doe" value={formData.fullName} onChange={e => handleChange("fullName", e.target.value)} />
+                    <Input placeholder="John Doe" value={formData.fullName} onChange={e => handleChange("fullName", e.target.value)} autoComplete="name" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Email Address <span className="text-coral">*</span></label>
-                    <Input type="email" placeholder="name@company.com" value={formData.email} onChange={e => handleChange("email", e.target.value)} />
+                    <Input type="email" placeholder="name@company.com" value={formData.email} onChange={e => handleChange("email", e.target.value)} autoComplete="email" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Phone Number <span className="text-coral">*</span></label>
-                    <Input type="tel" placeholder="+1 (555) 000-0000" value={formData.phone} onChange={e => handleChange("phone", e.target.value)} />
+                    <Input type="tel" placeholder="+1 (555) 000-0000" value={formData.phone} onChange={e => handleChange("phone", e.target.value)} autoComplete="tel" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Company / Organization <span className="text-navy/30 font-normal lowercase tracking-normal">(Optional)</span></label>
-                    <Input placeholder="Acme Corp" value={formData.company} onChange={e => handleChange("company", e.target.value)} />
+                    <Input placeholder="Acme Corp" value={formData.company} onChange={e => handleChange("company", e.target.value)} autoComplete="organization" />
                   </div>
 
                   <div className="pt-6">
@@ -252,7 +253,7 @@ export default function SignupPage() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Password</label>
                     <div className="relative">
-                      <Input type={showPassword ? "text" : "password"} value={formData.password} onChange={e => handleChange("password", e.target.value)} className="pr-12" />
+                      <Input type={showPassword ? "text" : "password"} value={formData.password} onChange={e => handleChange("password", e.target.value)} className="pr-12" autoComplete="new-password" />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-navy/40 hover:text-navy/70 transition-colors">
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -262,7 +263,7 @@ export default function SignupPage() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Confirm Password</label>
                     <div className="relative">
-                      <Input type={showConfirm ? "text" : "password"} value={formData.confirmPassword} onChange={e => handleChange("confirmPassword", e.target.value)} className="pr-12" />
+                      <Input type={showConfirm ? "text" : "password"} value={formData.confirmPassword} onChange={e => handleChange("confirmPassword", e.target.value)} className="pr-12" autoComplete="new-password" />
                       <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-navy/40 hover:text-navy/70 transition-colors">
                         {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -329,5 +330,14 @@ export default function SignupPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-warm flex items-center justify-center">Loading...</div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

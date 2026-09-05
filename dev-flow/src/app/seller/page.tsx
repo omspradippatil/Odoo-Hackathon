@@ -1,12 +1,15 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { ShieldCheck, ArrowRight, TrendingUp } from "lucide-react";
 import * as motion from "framer-motion/client";
 
 export default function SellerHome() {
+  const router = useRouter();
+
   return (
     <WorkspaceLayout role={UserRole.SELLER}>
       <div className="space-y-6 md:space-y-8">
@@ -18,10 +21,16 @@ export default function SellerHome() {
             <p className="text-navy/60 font-medium text-lg">You have opportunities waiting.</p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="px-6 py-3.5 rounded-xl bg-white border border-navy/10 text-navy font-bold hover:bg-navy/5 transition-colors shadow-sm">
+            <button 
+              onClick={() => router.push('/seller')}
+              className="px-6 py-3.5 rounded-xl bg-white border border-navy/10 text-navy font-bold hover:bg-navy/5 transition-colors shadow-sm"
+            >
               Manage Products
             </button>
-            <button className="px-6 py-3.5 rounded-xl bg-navy text-white font-bold hover:bg-navy/90 transition-colors shadow-lg shadow-navy/20">
+            <button 
+              onClick={() => router.push('/seller')}
+              className="px-6 py-3.5 rounded-xl bg-navy text-white font-bold hover:bg-navy/90 transition-colors shadow-lg shadow-navy/20"
+            >
               View Opportunities
             </button>
           </div>
@@ -67,7 +76,7 @@ export default function SellerHome() {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-navy/5">
-                  <button className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Submit Quote <ArrowRight className="w-4 h-4" /></button>
+                  <button onClick={() => router.push('/seller')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Submit Quote <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
 
@@ -80,7 +89,7 @@ export default function SellerHome() {
                   <div className="bg-navy/10 text-navy px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Match: Medium</div>
                 </div>
                 <div className="flex justify-end pt-4 border-t border-navy/5">
-                  <button className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Details <ArrowRight className="w-4 h-4" /></button>
+                  <button onClick={() => router.push('/seller')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Details <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
@@ -120,7 +129,10 @@ export default function SellerHome() {
                 Your fulfilment reliability places you among high-trust vendors.
               </p>
               
-              <button className="w-full py-3 bg-white/10 hover:bg-white/20 transition-colors rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+              <button 
+                onClick={() => router.push('/vendors/vertex-systems/trust')}
+                className="w-full py-3 bg-white/10 hover:bg-white/20 transition-colors rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+              >
                 View Trust Profile <ArrowRight className="w-4 h-4" />
               </button>
             </div>

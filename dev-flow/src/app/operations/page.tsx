@@ -1,12 +1,15 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { ArrowRight, AlertCircle, Calculator, FileText, Truck, Box } from "lucide-react";
 import * as motion from "framer-motion/client";
 
 export default function OperationsHome() {
+  const router = useRouter();
+
   return (
     <WorkspaceLayout role={UserRole.FINANCE_OPERATIONS}>
       <div className="space-y-6 md:space-y-8">
@@ -22,14 +25,14 @@ export default function OperationsHome() {
         {/* 4 OPERATIONAL AREAS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
           {[
-            { label: "PAYMENTS", icon: Calculator, value: "3", sub: "awaiting confirmation", color: "text-cobalt", bg: "bg-cobalt/10" },
-            { label: "BILLING", icon: FileText, value: "5", sub: "invoices ready", color: "text-navy", bg: "bg-navy/10" },
-            { label: "FULFILMENT", icon: Truck, value: "4", sub: "active orders", color: "text-lime", bg: "bg-lime/20" },
-            { label: "WAREHOUSE", icon: Box, value: "2", sub: "stock allocation issues", color: "text-orange-500", bg: "bg-orange-500/10" },
+            { label: "PAYMENTS", icon: Calculator, value: "3", sub: "awaiting confirmation", color: "text-cobalt", bg: "bg-cobalt/10", route: "/operations" },
+            { label: "BILLING", icon: FileText, value: "5", sub: "invoices ready", color: "text-navy", bg: "bg-navy/10", route: "/operations" },
+            { label: "FULFILMENT", icon: Truck, value: "4", sub: "active orders", color: "text-lime", bg: "bg-lime/20", route: "/operations/fulfilment/DF-2048" },
+            { label: "WAREHOUSE", icon: Box, value: "2", sub: "stock allocation issues", color: "text-orange-500", bg: "bg-orange-500/10", route: "/operations/fulfilment/DF-2048" },
           ].map((area, i) => {
             const Icon = area.icon;
             return (
-              <motion.div key={area.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-white rounded-3xl p-6 border border-navy/5 shadow-sm hover:shadow-lg transition-all group cursor-pointer flex flex-col justify-between">
+              <motion.div key={area.label} onClick={() => router.push(area.route)} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-white rounded-3xl p-6 border border-navy/5 shadow-sm hover:shadow-lg transition-all group cursor-pointer flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-8">
                   <div className={`w-10 h-10 rounded-xl ${area.bg} ${area.color} flex items-center justify-center`}>
                     <Icon className="w-5 h-5" />
@@ -75,16 +78,16 @@ export default function OperationsHome() {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-navy/5">
-                  <button className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Allocation <ArrowRight className="w-4 h-4" /></button>
+                  <button onClick={() => router.push('/operations/fulfilment/DF-2048')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Allocation <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-navy/5 shadow-sm hover:border-navy/20 cursor-pointer transition-colors group">
+                <div onClick={() => router.push('/operations/payments/DF-1990')} className="bg-white p-5 rounded-2xl border border-navy/5 shadow-sm hover:border-navy/20 cursor-pointer transition-colors group">
                   <div className="font-bold text-sm text-navy mb-1 group-hover:text-cobalt">Payment verification pending</div>
                   <div className="text-xs font-medium text-navy/60">Order DF-1990</div>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-navy/5 shadow-sm hover:border-navy/20 cursor-pointer transition-colors group">
+                <div onClick={() => router.push('/operations/billing/DF-1985')} className="bg-white p-5 rounded-2xl border border-navy/5 shadow-sm hover:border-navy/20 cursor-pointer transition-colors group">
                   <div className="font-bold text-sm text-navy mb-1 group-hover:text-cobalt">Invoice generation waiting</div>
                   <div className="text-xs font-medium text-navy/60">Order DF-1985 completed delivery</div>
                 </div>
@@ -115,7 +118,10 @@ export default function OperationsHome() {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-lime">Billing Type: Hybrid</span>
               </div>
 
-              <button className="w-full py-3 bg-cobalt hover:bg-cobalt/90 transition-colors rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+              <button 
+                onClick={() => router.push('/operations/billing/DF-2048')}
+                className="w-full py-3 bg-cobalt hover:bg-cobalt/90 transition-colors rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+              >
                 Review Billing <ArrowRight className="w-4 h-4" />
               </button>
             </div>

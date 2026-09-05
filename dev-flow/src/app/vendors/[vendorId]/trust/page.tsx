@@ -1,13 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ShieldCheck, Star, Package, Clock, MessageSquare, ShieldAlert, ArrowRight, CheckCircle2, AlertCircle, Building2, ChevronDown, Check, TrendingUp, Info, MapPin, Activity } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function VendorTrustPage({ params }: { params: Promise<{ vendorId: string }> }) {
+  const router = useRouter();
   const [isBronzeMode, setIsBronzeMode] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+  React.useEffect(() => {
+    setIsGuest(!sessionStorage.getItem("devflow_user"));
+  }, []);
   const [animatedScore, setAnimatedScore] = useState(0);
 
   const targetScore = isBronzeMode ? 61 : 92;
@@ -86,7 +92,7 @@ export default function VendorTrustPage({ params }: { params: Promise<{ vendorId
             
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <button className="px-5 py-3 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors text-sm flex-1 sm:flex-none">Compare Vendor</button>
-              <button className="px-5 py-3 rounded-xl font-bold text-white bg-cobalt shadow-lg shadow-cobalt/20 hover:bg-cobalt/90 transition-colors text-sm flex-1 sm:flex-none">Request Quote</button>
+              <button onClick={() => router.push("/login?returnTo=/buyer/requirements/new")} className="px-5 py-3 rounded-xl font-bold text-white bg-cobalt shadow-lg shadow-cobalt/20 hover:bg-cobalt/90 transition-colors text-sm flex-1 sm:flex-none">Request Quote</button>
             </div>
           </div>
         </div>
@@ -434,7 +440,7 @@ export default function VendorTrustPage({ params }: { params: Promise<{ vendorId
 
       {/* MOBILE STICKY CTA */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-navy/5 z-40 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-        <button className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2">
+        <button onClick={() => router.push("/login?returnTo=/buyer/requirements/new")} className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2">
           Request Quote <ArrowRight className="w-5 h-5" />
         </button>
       </div>

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRightLeft, Eye, EyeOff, Loader2, CheckCircle2, ShieldCheck, Activity } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
@@ -10,8 +10,10 @@ import { Input } from "@/components/ui/Input";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { authService } from "@/lib/authService";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,8 +45,21 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      await authService.login(email, password);
-      router.push("/onboarding");
+      const authRes = await authService.login(email, password);
+      if (returnTo && returnTo.startsWith("/")) {
+        router.push(returnTo);
+      } else {
+        // Role-based redirect
+        switch(authRes?.user?.role) {
+          case "BUYER": router.push("/buyer"); break;
+          case "SELLER": router.push("/seller"); break;
+          case "SALES_REP": router.push("/sales"); break;
+          case "SALES_MANAGER": router.push("/approvals"); break;
+          case "FINANCE_OPERATIONS": router.push("/operations"); break;
+          case "ADMIN": router.push("/admin"); break;
+          default: router.push("/buyer");
+        }
+      }
     } catch (err: any) {
       setError(err.message || "Email or password is incorrect.");
     } finally {
@@ -226,28 +241,40 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-2 mt-4">
             <button 
               type="button"
-              onClick={() => router.push('/buyer')}
+              onClick={() => {
+                if (returnTo && returnTo.startsWith("/")) router.push(returnTo);
+                else router.push('/buyer');
+              }}
               className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
             >
               Continue as Buyer
             </button>
             <button 
               type="button"
-              onClick={() => router.push('/approvals')}
+              onClick={() => {
+                if (returnTo && returnTo.startsWith("/")) router.push(returnTo);
+                else router.push('/approvals');
+              }}
               className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
             >
               Continue as Manager
             </button>
             <button 
               type="button"
-              onClick={() => router.push('/operations')}
+              onClick={() => {
+                if (returnTo && returnTo.startsWith("/")) router.push(returnTo);
+                else router.push('/operations');
+              }}
               className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
             >
               Continue as Ops
             </button>
             <button 
               type="button"
-              onClick={() => router.push('/admin')}
+              onClick={() => {
+                if (returnTo && returnTo.startsWith("/")) router.push(returnTo);
+                else router.push('/admin');
+              }}
               className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
             >
               Continue as Admin
@@ -261,5 +288,14 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-warm flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
