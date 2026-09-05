@@ -13,6 +13,7 @@ import { FlowPathBackground } from "@/components/ui/dashboard/FlowPathBackground
 import { Navbar } from "@/components/sections/Navbar";
 import { AuthGate } from "@/components/ui/AuthGate";
 import { authService } from "@/lib/authService";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 
@@ -184,10 +185,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
           <span className="font-bold text-base tracking-tight text-navy">DEV FLOW</span>
         </Link>
         <div className="flex items-center gap-4">
-          <button className="relative text-navy/60">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-coral border-2 border-white" />
-          </button>
+          <NotificationBell />
           <div className="relative">
             <button onClick={() => setDropdownOpen(!dropdownOpen)} className="w-8 h-8 rounded-full bg-coral flex items-center justify-center text-white font-bold text-xs">U</button>
             <AnimatePresence>
@@ -239,10 +237,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
             <input type="text" placeholder="Search products, suppliers, or deals..." className="w-full h-11 pl-11 pr-4 rounded-full bg-white border border-navy/5 focus:outline-none focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 transition-all text-sm font-medium placeholder:text-navy/30" />
           </div>
           <div className="flex items-center gap-6">
-            <button className="relative text-navy/60 hover:text-navy transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-coral border-2 border-warm" />
-            </button>
+            <NotificationBell />
             <div className="text-xs font-bold text-navy/40 uppercase tracking-widest">{ROLE_TITLES[role]}</div>
           </div>
         </header>

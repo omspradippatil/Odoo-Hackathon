@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
@@ -8,6 +8,7 @@ import { ArrowRight, Check, ShieldCheck, Activity, X, TrendingDown, Clock, Messa
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { demoState } from "@/lib/demoState";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
@@ -20,11 +21,42 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    const currentState = demoState.getQuotationApprovalState(resolvedParams.quotationId);
+    if (currentState === 'APPROVED') {
+      setStatus('APPROVED');
+    } else if (currentState === 'REJECTED') {
+      setStatus('REJECTED');
+    } else if (currentState === 'PENDING_APPROVAL') {
+      setStatus('PENDING');
+    }
+  }, [resolvedParams.quotationId]);
+
   const handleSubmit = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      setStatus(modalType === 'APPROVE' ? 'APPROVED' : modalType === 'REJECT' ? 'REJECTED' : 'SENT_BACK');
+      const newStatus = modalType === 'APPROVE' ? 'APPROVED' : modalType === 'REJECT' ? 'REJECTED' : 'SENT_BACK';
+      setStatus(newStatus);
+      if (newStatus === 'APPROVED') {
+        demoState.setQuotationApprovalState(resolvedParams.quotationId, 'APPROVED');
+        demoState.addNotification({
+          title: "Quotation Approved",
+          message: `${resolvedParams.quotationId} was approved`,
+          type: "approval",
+          targetUrl: `/negotiation/${resolvedParams.quotationId}`,
+          badgeText: "Approved"
+        });
+      } else if (newStatus === 'REJECTED') {
+        demoState.setQuotationApprovalState(resolvedParams.quotationId, 'REJECTED');
+        demoState.addNotification({
+          title: "Quotation Rejected",
+          message: `${resolvedParams.quotationId} was rejected`,
+          type: "approval",
+          targetUrl: `/buyer/requirements/REQ-2048/quotation`,
+          badgeText: "Rejected"
+        });
+      }
       setModalType(null);
     }, 800);
   };

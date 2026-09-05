@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { Check, ShieldCheck, Activity, ArrowRight, MessageSquare, TrendingDown, Clock, Eye, Send, Lock } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { cn } from "@/lib/utils";
+import { demoState } from "@/lib/demoState";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
@@ -16,6 +17,31 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
 
   // Internal simulated state (starts in "Counter-offer received" state)
   const [reapprovalRequested, setReapprovalRequested] = useState(false);
+  const [isRequestingReapproval, setIsRequestingReapproval] = useState(false);
+
+  useEffect(() => {
+    const st = demoState.getQuotationApprovalState(resolvedParams.quotationId);
+    if (st === 'REAPPROVAL_PENDING') {
+      setReapprovalRequested(true);
+    }
+  }, [resolvedParams.quotationId]);
+
+  const handleRequestReapproval = () => {
+    if (isRequestingReapproval || reapprovalRequested) return;
+    setIsRequestingReapproval(true);
+    setTimeout(() => {
+      setIsRequestingReapproval(false);
+      setReapprovalRequested(true);
+      demoState.setQuotationApprovalState(resolvedParams.quotationId, 'REAPPROVAL_PENDING');
+      demoState.addNotification({
+        title: "Reapproval Requested",
+        message: `Reapproval required for quotation V2 (${resolvedParams.quotationId})`,
+        type: "approval",
+        targetUrl: `/approvals/${resolvedParams.quotationId}`,
+        badgeText: "Reapproval"
+      });
+    }, 600);
+  };
 
   return (
     <WorkspaceLayout role={UserRole.SALES_REP}>
@@ -218,9 +244,11 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
             <div className="bg-white rounded-3xl border border-orange-200 shadow-xl shadow-orange-500/10 overflow-hidden">
               <div className="bg-orange-500 text-white p-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none" />
-                <h2 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-4 flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> Reapproval Required</h2>
+                <h2 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-4 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4" /> {reapprovalRequested ? "REAPPROVAL PENDING" : "REAPPROVAL REQUIRED"}
+                </h2>
                 <div className="text-lg font-bold leading-tight mb-2 relative z-10">
-                  Current terms exceed approved commercial authority.
+                  {reapprovalRequested ? "Reapproval request submitted to Sales Manager." : "Current terms exceed approved commercial authority."}
                 </div>
                 <div className="text-sm font-medium text-white/80 relative z-10">
                   The requested discount (15%) is greater than the previously approved maximum (12%).
@@ -228,15 +256,21 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
               </div>
               <div className="p-6 bg-white space-y-3">
                 <button 
-                  onClick={() => setReapprovalRequested(true)}
-                  disabled={reapprovalRequested}
-                  className={cn("w-full py-4 rounded-xl text-white text-sm font-bold shadow-lg transition-colors flex items-center justify-center gap-2", reapprovalRequested ? "bg-lime-600 shadow-lime-600/20" : "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20")}
+                  onClick={handleRequestReapproval}
+                  disabled={reapprovalRequested || isRequestingReapproval}
+                  className={cn("w-full py-4 rounded-xl text-white text-sm font-bold shadow-lg transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed", reapprovalRequested ? "bg-lime-600 shadow-lime-600/20" : "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20")}
                 >
-                  {reapprovalRequested ? <><Check className="w-4 h-4" /> Reapproval Requested</> : <><ShieldCheck className="w-4 h-4" /> Request Reapproval</>}
+                  {isRequestingReapproval ? (
+                    <><Activity className="w-4 h-4 animate-spin" /> Requesting Reapproval...</>
+                  ) : reapprovalRequested ? (
+                    <><Check className="w-4 h-4" /> Reapproval Requested ✓</>
+                  ) : (
+                    <><ShieldCheck className="w-4 h-4" /> Request Reapproval</>
+                  )}
                 </button>
                 <div className="grid grid-cols-2 gap-3">
-                  <button disabled={reapprovalRequested} className="w-full py-3 rounded-xl bg-navy/5 text-navy text-sm font-bold hover:bg-navy/10 transition-colors disabled:opacity-50">Counter Propose</button>
-                  <button disabled={reapprovalRequested} className="w-full py-3 rounded-xl bg-coral/10 text-coral text-sm font-bold hover:bg-coral/20 transition-colors disabled:opacity-50">Decline Change</button>
+                  <button disabled={reapprovalRequested || isRequestingReapproval} className="w-full py-3 rounded-xl bg-navy/5 text-navy text-sm font-bold hover:bg-navy/10 transition-colors disabled:opacity-50">Counter Propose</button>
+                  <button disabled={reapprovalRequested || isRequestingReapproval} className="w-full py-3 rounded-xl bg-coral/10 text-coral text-sm font-bold hover:bg-coral/20 transition-colors disabled:opacity-50">Decline Change</button>
                 </div>
                 {reapprovalRequested && (
                   <p className="text-[10px] font-bold text-navy/40 uppercase tracking-widest text-center mt-4">
@@ -257,7 +291,7 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
                   <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0 border-[3px] border-white text-[9px] font-bold text-orange-600">V2</div>
                   <div className="pt-0.5">
                     <div className="text-sm font-bold text-navy">Customer Counter-offer</div>
-                    <div className="text-xs font-medium text-navy/60 mt-0.5">15% Discount • 5:14 PM</div>
+                    <div className="text-xs font-medium text-navy/60 mt-0.5">15% Discount • 5:14 PM {reapprovalRequested ? "(Pending Review)" : ""}</div>
                   </div>
                 </div>
 
@@ -277,11 +311,17 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
         {/* MOBILE STICKY ACTIONS */}
         <div className="lg:hidden fixed bottom-[80px] left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-navy/5 z-40 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
           <button 
-            onClick={() => setReapprovalRequested(true)}
-            disabled={reapprovalRequested}
+            onClick={handleRequestReapproval}
+            disabled={reapprovalRequested || isRequestingReapproval}
             className={cn("w-full py-4 rounded-xl text-white font-bold shadow-lg flex items-center justify-center gap-2", reapprovalRequested ? "bg-lime-600" : "bg-orange-500")}
           >
-            {reapprovalRequested ? "Reapproval Requested" : "Request Reapproval"}
+            {isRequestingReapproval ? (
+              <><Activity className="w-4 h-4 animate-spin" /> Requesting Reapproval...</>
+            ) : reapprovalRequested ? (
+              "Reapproval Requested ✓"
+            ) : (
+              "Request Reapproval"
+            )}
           </button>
         </div>
 

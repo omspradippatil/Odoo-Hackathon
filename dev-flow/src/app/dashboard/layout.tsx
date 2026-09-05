@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRightLeft, LayoutDashboard, FileText, Store, ShieldCheck, Settings, Bell, Search, Menu, X } from "lucide-react";
+import { ArrowRightLeft, LayoutDashboard, FileText, Store, ShieldCheck, Settings, Search, Menu, X } from "lucide-react";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 import { cn } from "@/lib/utils";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
@@ -122,10 +123,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <input type="text" placeholder="Search requirements, vendors or deals..." className="w-full h-12 pl-12 pr-4 rounded-full bg-white border border-navy/5 focus:outline-none focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 transition-all text-sm font-medium placeholder:text-navy/30" />
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-3 rounded-full bg-white border border-navy/5 text-navy/60 hover:text-navy hover:shadow-md transition-all">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-coral border-2 border-white" />
-            </button>
+            <NotificationBell className="p-3 rounded-full bg-white border border-navy/5 hover:shadow-md" />
             <Link href="/dashboard/new" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-navy text-white text-sm font-bold hover:bg-navy/90 hover:shadow-lg transition-all active:scale-95">
               Start New Deal
             </Link>

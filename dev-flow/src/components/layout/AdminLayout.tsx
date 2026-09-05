@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 import { 
   Settings, Users, Package, DollarSign, Percent, GitMerge, 
   Building2, Boxes, Calendar, ShieldCheck, Activity, PieChart, 
-  List, Search, Bell, Menu
+  List, Search, Menu
 } from "lucide-react";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -105,10 +106,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative text-navy/60 hover:text-navy">
-              <Bell className="w-5 h-5" />
-              <div className="absolute 0 right-0 w-2 h-2 bg-coral rounded-full border-2 border-white" />
-            </button>
+            <NotificationBell />
             <div className="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold shrink-0">AD</div>
           </div>
         </header>

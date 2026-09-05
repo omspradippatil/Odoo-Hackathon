@@ -9,6 +9,7 @@ import { ArrowRight, Check, Activity, ShieldCheck, Tag, Plus, PlusCircle, Buildi
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { demoState, QuotationApprovalState } from "@/lib/demoState";
 
 // --- MOCK INITIAL DATA ---
 const INITIAL_ITEMS: QuotationItem[] = [
@@ -79,6 +80,18 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
   const [summary, setSummary] = useState<QuotationSummary | null>(null);
   const [availableUpsells, setAvailableUpsells] = useState(UPSELLS);
   const [showUpsellAnim, setShowUpsellAnim] = useState<string | null>(null);
+  const [approvalState, setApprovalState] = useState<QuotationApprovalState>('DRAFT');
+  const [isRequestingApproval, setIsRequestingApproval] = useState(false);
+  const [approvalError, setApprovalError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const syncState = () => {
+      setApprovalState(demoState.getQuotationApprovalState('QT-2048'));
+    };
+    syncState();
+    const unsub = demoState.subscribeQuotationState(syncState);
+    return () => unsub();
+  }, []);
 
   // MOCK BUSINESS LOGIC (Will be owned by Spring Boot later)
   useEffect(() => {
@@ -170,9 +183,38 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
     setItems([...items, newItem]);
   };
 
+  const handleRequestApproval = () => {
+    if (isRequestingApproval || approvalState === 'PENDING_APPROVAL' || approvalState === 'APPROVED') return;
+    setIsRequestingApproval(true);
+    setApprovalError(null);
+
+    setTimeout(() => {
+      try {
+        demoState.setQuotationApprovalState('QT-2048', 'PENDING_APPROVAL');
+        demoState.addNotification({
+          title: "Approval Requested",
+          message: "Approval requested for QT-2048 (Discount exceeds current approval authority)",
+          type: "approval",
+          targetUrl: "/approvals/QT-2048",
+          badgeText: "Approval"
+        });
+        setIsRequestingApproval(false);
+      } catch {
+        setIsRequestingApproval(false);
+        setApprovalError("Approval request could not be submitted. Please try again.");
+      }
+    }, 700);
+  };
+
   const handleContinue = () => {
-    if (summary?.requiresApproval) {
-      router.push(`/approvals/QT-2048`);
+    if (approvalState === 'APPROVED') {
+      router.push(`/negotiation/QT-2048`);
+    } else if (summary?.requiresApproval) {
+      if (approvalState === 'PENDING_APPROVAL') {
+        router.push(`/approvals/QT-2048`);
+      } else {
+        handleRequestApproval();
+      }
     } else {
       router.push(`/negotiation/QT-2048`);
     }
@@ -229,9 +271,9 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
             {[
               { id: 'REQUEST', label: 'REQUEST', state: 'done' },
               { id: 'DISCOVER', label: 'DISCOVER', state: 'done' },
-              { id: 'QUOTE', label: 'QUOTE', state: 'active' },
-              { id: 'APPROVE', label: 'APPROVE', state: summary.requiresApproval ? 'next' : 'idle' },
-              { id: 'NEGOTIATE', label: 'NEGOTIATE', state: !summary.requiresApproval ? 'next' : 'idle' },
+              { id: 'QUOTE', label: 'QUOTE', state: approvalState === 'PENDING_APPROVAL' || approvalState === 'APPROVED' ? 'done' : 'active' },
+              { id: 'APPROVE', label: 'APPROVE', state: approvalState === 'APPROVED' ? 'done' : approvalState === 'PENDING_APPROVAL' ? 'active' : summary.requiresApproval ? 'next' : 'idle' },
+              { id: 'NEGOTIATE', label: 'NEGOTIATE', state: approvalState === 'APPROVED' ? 'active' : !summary.requiresApproval ? 'next' : 'idle' },
               { id: 'PROTECT', label: 'PROTECT', state: 'idle' },
               { id: 'FULFIL', label: 'FULFIL', state: 'idle' },
               { id: 'BILL', label: 'BILL', state: 'idle' },
@@ -542,42 +584,133 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
               <div className="p-6 md:p-8 bg-warm/30 relative">
                 <AnimatePresence mode="wait">
                   {summary.requiresApproval ? (
-                    <motion.div key="approval" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
-                      <div className="flex items-center gap-2 text-orange-600 bg-orange-100 p-3 rounded-lg border border-orange-200">
-                        <Activity className="w-5 h-5 shrink-0" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Approval Required</span>
-                      </div>
-                      <p className="text-xs font-medium text-navy/60 leading-relaxed bg-white p-4 rounded-xl shadow-sm border border-navy/5">
-                        <strong className="text-navy block mb-1">Policy Triggered</strong>
-                        {summary.approvalReason}
-                      </p>
-                      
-                      <div className="pt-4 mt-4 border-t border-navy/10 relative">
-                        <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-4">Approval Path Preview</div>
-                        
-                        <div className="space-y-0 relative">
-                          <div className="absolute left-[9px] top-4 bottom-4 w-[2px] bg-navy/10" />
-                          <div className="flex items-start gap-4 py-2 relative z-10">
-                            <div className="w-5 h-5 rounded-full bg-lime text-lime-950 flex items-center justify-center shrink-0 mt-0.5 shadow-sm"><Check className="w-3 h-3" /></div>
+                    approvalState === 'APPROVED' ? (
+                      <motion.div key="approved" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+                        <div className="flex items-center gap-2 text-lime-800 bg-lime/20 p-3 rounded-lg border border-lime/30">
+                          <Check className="w-5 h-5 shrink-0" />
+                          <span className="text-xs font-bold uppercase tracking-widest">QT-2048 Approved</span>
+                        </div>
+                        <p className="text-xs font-medium text-navy/70 leading-relaxed bg-white p-4 rounded-xl shadow-sm border border-navy/5">
+                          Commercial terms have been approved by the Sales Manager. Quotation is authorized to move to customer negotiation.
+                        </p>
+                        <button 
+                          onClick={() => router.push('/negotiation/QT-2048')} 
+                          className="w-full py-4 rounded-xl bg-cobalt hover:bg-cobalt/90 transition-colors text-white font-bold text-sm shadow-lg shadow-cobalt/20 flex items-center justify-center gap-2 mt-2"
+                        >
+                          Continue to Negotiation <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </motion.div>
+                    ) : approvalState === 'PENDING_APPROVAL' ? (
+                      <motion.div key="pending" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+                        <div className="flex items-center gap-2 text-orange-700 bg-orange-100 p-3 rounded-lg border border-orange-200">
+                          <Activity className="w-5 h-5 shrink-0 animate-pulse" />
+                          <span className="text-xs font-bold uppercase tracking-widest">PENDING APPROVAL</span>
+                        </div>
+
+                        {/* APPROVAL STATUS CARD */}
+                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-navy/10 space-y-3">
+                          <div className="flex items-center justify-between pb-2 border-b border-navy/5">
+                            <span className="text-xs font-bold text-navy uppercase tracking-wider">Approval Requested</span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">Pending Review</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs">
                             <div>
-                              <div className="text-xs font-bold text-navy">Sales Rep</div>
-                              <div className="text-[10px] font-medium text-navy/50">Current Step</div>
+                              <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest block">Quotation</span>
+                              <span className="font-bold text-navy">QT-2048</span>
+                            </div>
+                            <div>
+                              <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest block">Version</span>
+                              <span className="font-bold text-navy">V1</span>
                             </div>
                           </div>
-                          <div className="flex items-start gap-4 py-2 relative z-10">
-                            <div className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-[0_0_10px_rgba(249,115,22,0.4)]"><Activity className="w-3 h-3" /></div>
+                          <div>
+                            <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest block">Reason</span>
+                            <span className="font-medium text-navy/70 text-xs">{summary.approvalReason || "Discount exceeds current approval authority"}</span>
+                          </div>
+                          <div className="pt-2 border-t border-navy/5 flex items-center justify-between">
                             <div>
-                              <div className="text-xs font-bold text-navy">Sales Manager</div>
-                              <div className="text-[10px] font-medium text-navy/50">Next Approver</div>
+                              <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest block">Requested From</span>
+                              <span className="font-bold text-navy text-xs">Sales Manager</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest block">Status</span>
+                              <span className="font-bold text-orange-600 text-xs">Pending Review</span>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <button onClick={handleContinue} className="w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-600 transition-colors text-white font-bold text-sm shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 mt-2">
-                        Request Approval <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </motion.div>
+                        {/* Non-destructive status/action area */}
+                        <div className="p-4 bg-orange-50/80 rounded-xl border border-orange-200/80 text-center space-y-2">
+                          <div className="text-xs font-bold text-orange-800 flex items-center justify-center gap-1.5">
+                            <Check className="w-4 h-4 text-orange-600" /> Approval Requested ✓
+                          </div>
+                          <div className="text-[11px] font-medium text-orange-700/80">
+                            Waiting for Manager Review
+                          </div>
+                          <button 
+                            onClick={() => router.push('/approvals/QT-2048')}
+                            className="w-full mt-2 py-2.5 rounded-lg bg-white border border-orange-200 text-orange-800 text-xs font-bold hover:bg-orange-100 transition-colors flex items-center justify-center gap-1.5"
+                          >
+                            View in Approval Center <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div key="approval-request" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+                        <div className="flex items-center gap-2 text-orange-600 bg-orange-100 p-3 rounded-lg border border-orange-200">
+                          <Activity className="w-5 h-5 shrink-0" />
+                          <span className="text-xs font-bold uppercase tracking-widest">Approval Required</span>
+                        </div>
+                        <p className="text-xs font-medium text-navy/60 leading-relaxed bg-white p-4 rounded-xl shadow-sm border border-navy/5">
+                          <strong className="text-navy block mb-1">Policy Triggered</strong>
+                          {summary.approvalReason}
+                        </p>
+                        
+                        <div className="pt-4 mt-4 border-t border-navy/10 relative">
+                          <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-4">Approval Path Preview</div>
+                          
+                          <div className="space-y-0 relative">
+                            <div className="absolute left-[9px] top-4 bottom-4 w-[2px] bg-navy/10" />
+                            <div className="flex items-start gap-4 py-2 relative z-10">
+                              <div className="w-5 h-5 rounded-full bg-lime text-lime-950 flex items-center justify-center shrink-0 mt-0.5 shadow-sm"><Check className="w-3 h-3" /></div>
+                              <div>
+                                <div className="text-xs font-bold text-navy">Sales Rep</div>
+                                <div className="text-[10px] font-medium text-navy/50">Current Step</div>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-4 py-2 relative z-10">
+                              <div className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-[0_0_10px_rgba(249,115,22,0.4)]"><Activity className="w-3 h-3" /></div>
+                              <div>
+                                <div className="text-xs font-bold text-navy">Sales Manager</div>
+                                <div className="text-[10px] font-medium text-navy/50">Next Approver</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {approvalError && (
+                          <div className="p-3 bg-coral/10 text-coral text-xs font-bold rounded-xl border border-coral/20">
+                            {approvalError}
+                          </div>
+                        )}
+
+                        <button 
+                          onClick={handleRequestApproval}
+                          disabled={isRequestingApproval} 
+                          className="w-full py-4 rounded-xl bg-orange-500 hover:bg-orange-600 transition-colors text-white font-bold text-sm shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 mt-2 disabled:opacity-75 disabled:cursor-not-allowed"
+                        >
+                          {isRequestingApproval ? (
+                            <>
+                              <Activity className="w-4 h-4 animate-spin" /> Requesting Approval...
+                            </>
+                          ) : (
+                            <>
+                              Request Approval <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </motion.div>
+                    )
                   ) : (
                     <motion.div key="ready" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                       <div className="flex items-center gap-2 text-lime-700 bg-lime/20 p-3 rounded-lg border border-lime/30">
@@ -611,12 +744,45 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
               <div className={cn("text-sm font-bold", summary.marginHealth === 'LOW' ? "text-coral" : "text-lime-700")}>{summary.marginPercentage.toFixed(1)}%</div>
             </div>
           </div>
-          <button 
-            onClick={handleContinue}
-            className={cn("w-full py-4 rounded-xl text-white font-bold shadow-lg flex items-center justify-center gap-2", summary.requiresApproval ? "bg-orange-500 shadow-orange-500/20" : "bg-cobalt shadow-cobalt/20")}
-          >
-            {summary.requiresApproval ? "Review & Request Approval" : "Review Quote"} <ArrowRight className="w-5 h-5" />
-          </button>
+
+          {approvalState === 'APPROVED' ? (
+            <button 
+              onClick={() => router.push('/negotiation/QT-2048')}
+              className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2"
+            >
+              QT-2048 Approved • Continue <ArrowRight className="w-5 h-5" />
+            </button>
+          ) : approvalState === 'PENDING_APPROVAL' ? (
+            <button 
+              onClick={() => router.push('/approvals/QT-2048')}
+              className="w-full py-4 rounded-xl bg-orange-500 text-white font-bold shadow-lg flex items-center justify-center gap-2"
+            >
+              Approval Requested ✓ (Pending Review) <ArrowRight className="w-5 h-5" />
+            </button>
+          ) : summary.requiresApproval ? (
+            <button 
+              onClick={handleRequestApproval}
+              disabled={isRequestingApproval}
+              className="w-full py-4 rounded-xl bg-orange-500 text-white font-bold shadow-lg flex items-center justify-center gap-2 disabled:opacity-75"
+            >
+              {isRequestingApproval ? (
+                <>
+                  <Activity className="w-5 h-5 animate-spin" /> Requesting Approval...
+                </>
+              ) : (
+                <>
+                  Request Approval <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          ) : (
+            <button 
+              onClick={handleContinue}
+              className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2"
+            >
+              Review Quote <ArrowRight className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
       </div>
