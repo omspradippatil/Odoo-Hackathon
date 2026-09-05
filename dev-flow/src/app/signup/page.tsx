@@ -22,7 +22,7 @@ const ROLES = [
 
 export default function SignupPage() {
   const router = useRouter();
-  
+
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -125,9 +125,9 @@ export default function SignupPage() {
             const isActive = step === stepNum;
             const isPast = step > stepNum;
             const isSuccess = step === 4;
-            
+
             return (
-              <div key={item.num} className={cn("flex gap-6 transition-all duration-500", (isActive || (isSuccess && stepNum===3)) ? "opacity-100 scale-105" : "opacity-40")}>
+              <div key={item.num} className={cn("flex gap-6 transition-all duration-500", (isActive || (isSuccess && stepNum === 3)) ? "opacity-100 scale-105" : "opacity-40")}>
                 <div className="flex flex-col items-center">
                   <div className={cn("w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-colors duration-500", isActive ? "border-coral bg-coral text-white" : isPast ? "border-lime bg-lime text-navy" : "border-white/20 text-white/50")}>
                     {isPast ? <CheckCircle2 className="w-5 h-5" /> : item.num}
@@ -159,9 +159,9 @@ export default function SignupPage() {
       {/* RIGHT PANEL - FORM */}
       <div className="flex-1 flex flex-col overflow-y-auto">
         <div className="w-full max-w-[500px] mx-auto px-6 py-12 lg:py-24">
-          
+
           <AnimatePresence mode="wait">
-            
+
             {/* STEP 1: BASIC INFO */}
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
@@ -187,7 +187,7 @@ export default function SignupPage() {
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Company / Organization <span className="text-navy/30 font-normal lowercase tracking-normal">(Optional)</span></label>
                     <Input placeholder="Acme Corp" value={formData.company} onChange={e => handleChange("company", e.target.value)} />
                   </div>
-                  
+
                   <div className="pt-6">
                     <PrimaryButton onClick={nextStep} className="w-full flex justify-center py-3.5 shadow-lg text-base" showArrow>Continue</PrimaryButton>
                   </div>
@@ -312,9 +312,9 @@ export default function SignupPage() {
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.2 }} className="w-24 h-24 rounded-full bg-lime/20 flex items-center justify-center mb-8 shadow-xl shadow-lime/10">
                   <CheckCircle2 className="w-12 h-12 text-lime" />
                 </motion.div>
-                
+
                 <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4 tracking-tight">Welcome to DEV FLOW,<br />{formData.fullName.split(' ')[0]}.</h1>
-                
+
                 <div className="bg-white border border-navy/10 rounded-2xl p-6 mb-10 shadow-lg shadow-navy/5 max-w-sm w-full mx-auto">
                   <div className="text-xs font-bold uppercase tracking-widest text-navy/40 mb-2">Workspace Preparation</div>
                   <div className="font-bold text-navy">{ROLES.find(r => r.id === formData.role)?.title}</div>
