@@ -35,7 +35,7 @@ export function DealJourney() {
   }, [scrollYProgress]);
 
   return (
-    <section id="how-it-works" className="py-32 bg-white px-6 overflow-hidden">
+    <section id="how-it-works" className="py-20 md:py-32 bg-white px-4 md:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <SectionHeading
           title={
@@ -44,10 +44,10 @@ export function DealJourney() {
               <span className="text-cobalt">One continuous deal.</span>
             </>
           }
-          className="mb-24"
+          className="mb-16 md:mb-24"
         />
 
-        <div ref={containerRef} className="relative pb-10">
+        <div ref={containerRef} className="relative pb-6 md:pb-10">
           {/* DESKTOP HORIZONTAL LINE */}
           <div className="hidden md:block absolute top-6 left-0 right-0 h-1 bg-navy/5 rounded-full overflow-hidden">
             <motion.div className="h-full bg-cobalt" style={{ width: lineWidth }} />
@@ -58,22 +58,22 @@ export function DealJourney() {
             <motion.div className="w-full bg-cobalt" style={{ height: lineHeight }} />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-7 gap-12 md:gap-4 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-8 md:gap-4 relative z-10">
             {STAGES.map((stage, i) => {
               const isActive = i <= activeStage;
               const isCurrent = i === activeStage;
               
               return (
-                <div key={stage.num} className="relative flex md:flex-col items-center md:items-start gap-6 md:gap-8 pl-16 md:pl-0">
+                <div key={stage.num} className="relative flex md:flex-col items-center md:items-start gap-5 md:gap-8 pl-16 md:pl-0">
                   <div 
-                    className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-sm md:text-base border-2 transition-all duration-500 absolute md:relative left-0 md:left-auto top-0 md:top-auto -translate-x-1/2 md:translate-x-0 ${isActive ? 'border-cobalt bg-cobalt text-white' : 'border-navy/10 bg-white text-navy/40'} ${isCurrent ? 'ring-4 ring-cobalt/20 scale-110' : ''}`}
+                    className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-xs md:text-base border-2 transition-all duration-500 absolute md:relative left-6 md:left-auto top-1/2 md:top-auto -translate-y-1/2 md:-translate-y-0 -translate-x-1/2 md:translate-x-0 ${isActive ? 'border-cobalt bg-cobalt text-white' : 'border-navy/10 bg-white text-navy/40'} ${isCurrent ? 'ring-4 ring-cobalt/20 scale-110' : ''}`}
                   >
                     {stage.num}
                   </div>
                   
-                  <div className={`transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-40'}`}>
-                    <h4 className="text-sm md:text-xs lg:text-sm font-bold text-navy mb-1 md:mb-2 tracking-widest">{stage.title}</h4>
-                    <p className="text-sm md:text-xs lg:text-sm font-medium text-navy/60">{stage.desc}</p>
+                  <div className={`transition-opacity duration-500 w-full ${isActive ? 'opacity-100' : 'opacity-40'}`}>
+                    <h4 className="text-sm lg:text-sm font-bold text-navy mb-1 tracking-widest">{stage.title}</h4>
+                    <p className="text-xs lg:text-sm font-medium text-navy/60">{stage.desc}</p>
                   </div>
                 </div>
               );

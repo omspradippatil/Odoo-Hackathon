@@ -6,7 +6,7 @@ import * as motion from "framer-motion/client";
 
 export function FinalCTA() {
   return (
-    <section className="py-32 bg-navy text-white relative overflow-hidden px-6">
+    <section className="py-24 md:py-32 bg-navy text-white relative overflow-hidden px-4 md:px-6">
       <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
         <svg className="w-full h-full max-w-[2000px]" viewBox="0 0 1000 200" preserveAspectRatio="none">
           <path d="M0,100 Q250,200 500,100 T1000,100" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -18,7 +18,7 @@ export function FinalCTA() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="inline-flex px-3 py-1 text-xs font-semibold tracking-widest uppercase rounded-full bg-white/5 border border-white/10 mb-8"
+          className="inline-flex px-3 py-1 text-[10px] md:text-xs font-semibold tracking-widest uppercase rounded-full bg-white/5 border border-white/10 mb-6 md:mb-8"
         >
           READY TO FLOW?
         </motion.div>
@@ -28,7 +28,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8"
+          className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 md:mb-8 leading-[1.1]"
         >
           Stop chasing deals.<br />
           <span className="text-white/50">Start controlling the flow.</span>
@@ -39,7 +39,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-lg md:text-xl text-white/60 mb-12 max-w-2xl leading-relaxed"
+          className="text-base md:text-lg lg:text-xl text-white/60 mb-10 md:mb-12 max-w-2xl leading-relaxed"
         >
           One intelligent platform for sourcing, trust, negotiation, approvals, fulfilment and billing.
         </motion.p>
@@ -49,10 +49,10 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-4"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 w-full sm:w-auto"
         >
-          <PrimaryButton href="/signup" variant="secondary" showArrow className="px-8 py-4 text-lg">Start a Deal</PrimaryButton>
-          <PrimaryButton href="/login" className="bg-white/10 text-white hover:bg-white/20 px-8 py-4 text-lg">Sign In</PrimaryButton>
+          <PrimaryButton href="/signup" variant="secondary" showArrow className="px-6 md:px-8 py-3 md:py-4 text-base md:text-lg w-full sm:w-auto">Start a Deal</PrimaryButton>
+          <PrimaryButton href="/login" className="bg-white/10 text-white hover:bg-white/20 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg w-full sm:w-auto">Sign In</PrimaryButton>
         </motion.div>
       </div>
     </section>
