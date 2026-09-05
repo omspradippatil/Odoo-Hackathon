@@ -1,4 +1,5 @@
 package com.devflow.controller;
+
 import com.devflow.entity.Product;
 import com.devflow.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,10 @@ public class ProductController {
     private final ProductService productService;
     
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String q) {
+        if (q != null && !q.isBlank()) {
+            return ResponseEntity.ok(productService.searchProducts(q));
+        }
         return ResponseEntity.ok(productService.getAllProducts());
     }
     

@@ -15,4 +15,7 @@ public class Product {
     private Double taxRate;
     private String description;
     private Boolean isRecurring;
+    @ManyToOne private User seller;
+    private String imageUrl;
+
 }

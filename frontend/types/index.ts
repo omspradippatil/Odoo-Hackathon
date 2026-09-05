@@ -11,7 +11,7 @@ export type UserRole =
 export type UserMode = 'LOCAL' | 'PROFESSIONAL';
 export type UserTier = 'BRONZE' | 'SILVER' | 'GOLD';
 
-export interface User {
+export interface User { displayName?: string; companyName?: string; 
   id: number;
   email: string;
   role: UserRole;
@@ -27,7 +27,7 @@ export interface Category {
   maxDiscountPct: number;
 }
 
-export interface Product {
+export interface Product { imageUrl?: string; seller?: User; 
   id: number;
   name: string;
   category: Category;
@@ -96,4 +96,15 @@ export interface PaymentConfirmResponse {
   platformFee: number;
   sellerReceives: number;
   message: string;
+}
+
+// Add the fields we need
+export interface ExtendedUser extends User {
+  displayName?: string;
+  companyName?: string;
+}
+
+export interface ExtendedProduct extends Product {
+  imageUrl?: string;
+  seller?: ExtendedUser;
 }
