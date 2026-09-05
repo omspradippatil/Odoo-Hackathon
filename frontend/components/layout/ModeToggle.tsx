@@ -1,1 +1,0 @@
-export default function ModeToggle() { return <div>Mode Toggle</div>; }

@@ -1,1 +1,0 @@
-export default function Requirements() { return <div className="p-8">Requirements</div>; }
