@@ -148,7 +148,7 @@ export default function QuotationBuilder() {
     return matchesSearch && matchesCat;
   });
 
-  const categories = ["ALL", ...Array.from(new Set(products.map((p) => p.category?.name).filter(Boolean)))];
+  const categories = ["ALL", ...Array.from(new Set(products.map((p) => p.category?.name).filter((name): name is string => Boolean(name))))];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

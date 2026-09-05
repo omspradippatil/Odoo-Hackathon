@@ -18,6 +18,8 @@ import {
   Menu,
   X,
   CreditCard,
+  Store,
+  Star,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -41,9 +43,9 @@ export default function Navbar() {
     { label: "Quotations", href: "/workspace/quotations", icon: FileText },
     { label: "New Quote", href: "/workspace/quotations/new", icon: PlusCircle },
     { label: "Pipeline", href: "/workspace/pipeline", icon: Kanban },
-    { label: "Deal Health", href: "/workspace/dashboard", icon: Activity },
-    { label: "Local Mode", href: "/local", icon: ShoppingBag },
-    { label: "B2B Bids", href: "/professional/bids", icon: Shield },
+    { label: "Seller Hub", href: "/local/seller", icon: Store },
+    { label: "Marketplace", href: "/local", icon: ShoppingBag },
+    { label: "Reviews", href: "/reviews", icon: Star },
     { label: "Admin", href: "/admin", icon: FileCheck },
   ];
 

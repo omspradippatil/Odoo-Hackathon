@@ -90,23 +90,38 @@ export default function LocalModeHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {products.map((p) => {
-            const tier = p.basePrice > 50000 ? "GOLD" : p.basePrice > 10000 ? "SILVER" : "BRONZE";
+            const tier = p.seller?.tier || (p.basePrice > 50000 ? "GOLD" : p.basePrice > 10000 ? "SILVER" : "BRONZE");
+            const actPrice = p.actualPrice || (p.basePrice ? Math.round(p.basePrice * 1.15) : 0);
+            const hasDiscount = actPrice > p.basePrice;
+            const discountPct = hasDiscount ? Math.round(((actPrice - p.basePrice) / actPrice) * 100) : 0;
+
             return (
               <div
                 key={p.id}
-                className="bg-white border border-gray-200 hover:border-blue-200 rounded-2xl overflow-hidden flex flex-col justify-between transition shadow-sm hover:shadow-md group"
+                className="bg-white border border-gray-200 hover:border-blue-300 rounded-2xl overflow-hidden flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-lg group"
               >
-                {/* Image Placeholder or Actual Image */}
-                <div className="w-full h-48 bg-gray-100 border-b border-gray-100 flex items-center justify-center overflow-hidden">
-                   {p.imageUrl ? (
-                     <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                   ) : (
-                     <ShoppingBag className="w-12 h-12 text-gray-300" />
-                   )}
+                {/* Image & Badges */}
+                <div className="relative w-full h-48 bg-gray-100 border-b border-gray-100 flex items-center justify-center overflow-hidden">
+                  {p.imageUrl ? (
+                    <img
+                      src={p.imageUrl}
+                      alt={p.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <ShoppingBag className="w-12 h-12 text-gray-300" />
+                  )}
+
+                  {/* Discount ribbon */}
+                  {hasDiscount && (
+                    <span className="absolute top-2.5 left-2.5 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-md tracking-wider uppercase">
+                      {discountPct}% OFF
+                    </span>
+                  )}
                 </div>
 
                 <div className="p-5 flex flex-col flex-1">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                         tier === "GOLD"
@@ -116,33 +131,46 @@ export default function LocalModeHome() {
                           : "bg-orange-50 text-orange-700 border-orange-200"
                       }`}
                     >
-                      🥇 {tier} VENDOR
+                      {tier === "GOLD" ? "🥇 GOLD" : tier === "SILVER" ? "🥈 SILVER" : "🥉 BRONZE"} SELLER
                     </span>
-                    <div className="flex items-center gap-1 text-xs text-amber-600 font-semibold">
+                    <div className="flex items-center gap-1 text-xs text-amber-600 font-bold">
                       <Star className="w-3.5 h-3.5 fill-amber-400" />
-                      4.8
+                      4.9
                     </div>
                   </div>
 
-                  <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition leading-tight mb-1">
+                  <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition leading-tight mb-1">
                     {p.name}
                   </h3>
-                  <p className="text-xs text-gray-500 mb-4 flex-1">
-                    {p.category?.name || "General"} • Nearby Shop
+                  <p className="text-xs text-gray-500 mb-4 flex-1 line-clamp-1">
+                    {p.category?.name || "General"} • Local Escrow Store
                   </p>
 
-                  <div className="pt-4 border-t border-gray-100 flex items-end justify-between mt-auto">
+                  <div className="pt-3 border-t border-gray-100 flex items-end justify-between mt-auto">
                     <div>
-                      <p className="text-[10px] text-gray-500 uppercase font-semibold mb-0.5">Listed Price</p>
-                      <p className="text-lg font-black text-gray-900 font-mono">
-                        ₹{p.basePrice.toLocaleString()}
-                      </p>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-xl font-black text-gray-900 font-mono">
+                          ₹{p.basePrice.toLocaleString()}
+                        </span>
+                        {hasDiscount && (
+                          <span className="text-xs text-gray-400 line-through font-mono">
+                            ₹{actPrice.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      {hasDiscount ? (
+                        <p className="text-[10px] font-bold text-emerald-600">
+                          Save ₹{(actPrice - p.basePrice).toLocaleString()}
+                        </p>
+                      ) : (
+                        <p className="text-[10px] text-gray-400">Regular Price</p>
+                      )}
                     </div>
                     <Link
                       href={`/local/checkout/${p.id}`}
-                      className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white text-xs font-semibold rounded-lg transition"
+                      className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition shadow-sm"
                     >
-                      Buy
+                      Buy Now
                     </Link>
                   </div>
                 </div>

@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
     List<Rating> findByRatee(User ratee);
+    List<Rating> findByRateeOrderByCreatedAtDesc(User ratee);
 }

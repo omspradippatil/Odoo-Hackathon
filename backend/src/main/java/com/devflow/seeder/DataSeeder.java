@@ -52,11 +52,11 @@ public class DataSeeder implements CommandLineRunner {
         Category sub = categoryRepository.save(Category.builder().name("Subscriptions").maxDiscountPct(0.20).build());
 
         productRepository.saveAll(List.of(
-            Product.builder().name("Dell Laptop").category(hw).basePrice(65000.0).isRecurring(false).build(),
-            Product.builder().name("iPhone 15").category(hw).basePrice(79000.0).isRecurring(false).build(),
-            Product.builder().name("Setup Service").category(svc).basePrice(5000.0).isRecurring(false).build(),
-            Product.builder().name("Cloud Storage Plan").category(sub).basePrice(999.0).isRecurring(true).build(),
-            Product.builder().name("Network Switch").category(hw).basePrice(12000.0).isRecurring(false).build()
+            Product.builder().name("Dell Laptop").category(hw).basePrice(65000.0).actualPrice(74999.0).imageUrl("https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=500&auto=format&fit=crop&q=80").isRecurring(false).build(),
+            Product.builder().name("iPhone 15").category(hw).basePrice(79000.0).actualPrice(89900.0).imageUrl("https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500&auto=format&fit=crop&q=80").isRecurring(false).build(),
+            Product.builder().name("Setup Service").category(svc).basePrice(5000.0).actualPrice(6500.0).imageUrl("https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&auto=format&fit=crop&q=80").isRecurring(false).build(),
+            Product.builder().name("Cloud Storage Plan").category(sub).basePrice(999.0).actualPrice(1499.0).imageUrl("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80").isRecurring(true).build(),
+            Product.builder().name("Network Switch").category(hw).basePrice(12000.0).actualPrice(14500.0).imageUrl("https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&auto=format&fit=crop&q=80").isRecurring(false).build()
         ));
     }
 

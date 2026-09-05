@@ -16,6 +16,7 @@ import {
   Sparkles,
   RefreshCw,
   Clock,
+  ShoppingBag,
 } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -113,26 +114,63 @@ export default function CheckoutPage() {
         </div>
 
         {/* Product Order Summary */}
-        {product && (
-          <div className="p-4 rounded-xl bg-white border border-gray-200 space-y-2">
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-gray-500">Selected Item:</span>
-              <span className="font-bold text-gray-900">{product.name}</span>
+        {product && (() => {
+          const actPrice = product.actualPrice || (product.basePrice ? Math.round(product.basePrice * 1.15) : 0);
+          const hasDiscount = actPrice > product.basePrice;
+          const savings = hasDiscount ? actPrice - product.basePrice : 0;
+          const discountPct = hasDiscount ? Math.round((savings / actPrice) * 100) : 0;
+
+          return (
+            <div className="p-4 rounded-2xl bg-white border border-gray-200 space-y-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <ShoppingBag className="w-6 h-6 text-gray-400" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-gray-900 text-sm truncate">{product.name}</p>
+                  <p className="text-xs text-gray-500">{product.category?.name || "General"}</p>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-2 border-t border-gray-100 text-xs">
+                {hasDiscount && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Actual Price (MRP):</span>
+                    <span className="font-mono text-gray-400 line-through">₹{actPrice.toLocaleString()}</span>
+                  </div>
+                )}
+                {hasDiscount && (
+                  <div className="flex justify-between items-center text-emerald-600 font-semibold">
+                    <span>Store Instant Discount ({discountPct}% OFF):</span>
+                    <span className="font-mono">-₹{savings.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Escrow Security:</span>
+                  <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" /> 100% Escrow Protection
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 pt-2.5 flex justify-between items-center">
+                <div>
+                  <span className="font-bold text-gray-700 text-xs uppercase tracking-wide">Total Payable (Selling Price):</span>
+                  {hasDiscount && (
+                    <p className="text-[10px] text-emerald-600 font-semibold">You save ₹{savings.toLocaleString()} on this order</p>
+                  )}
+                </div>
+                <span className="font-black text-xl text-gray-900 font-mono">
+                  ₹{product.basePrice.toLocaleString()}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-gray-500">Escrow Security:</span>
-              <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> Covered
-              </span>
-            </div>
-            <div className="border-t border-gray-200 pt-2 flex justify-between items-center text-sm">
-              <span className="font-bold text-gray-600">Total Payable:</span>
-              <span className="font-black text-lg text-gray-900 font-mono">
-                ₹{product.basePrice.toLocaleString()}
-              </span>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {paymentConfirmed ? (
           /* Payment Success State */

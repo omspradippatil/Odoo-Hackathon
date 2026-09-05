@@ -10,12 +10,12 @@ public class Product {
     private Long id;
     private String name;
     @ManyToOne private Category category;
-    private Double basePrice;
+    private Double basePrice; // Selling / Offer price
+    private Double actualPrice; // Original MRP / List price
     private String unit;
     private Double taxRate;
     private String description;
     private Boolean isRecurring;
     @ManyToOne private User seller;
     private String imageUrl;
-
 }
