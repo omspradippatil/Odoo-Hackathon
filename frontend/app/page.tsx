@@ -1,69 +1,143 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  ShoppingBag,
+  ShieldCheck,
+  ArrowRight,
+  Sparkles,
+  Layers,
+  Activity,
+  CheckCircle2,
+  Lock,
+  Building,
+  Zap,
+} from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+      {/* Hero Section */}
+      <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold tracking-wide">
+          <Sparkles className="w-3.5 h-3.5" />
+          India&apos;s Dual-Mode Intelligent Sales Operations Platform
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white">
+          Welcome to <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">DEV FLOW</span>
+        </h1>
+        <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
+          Select an operating mode below to experience automated multi-tier discount governance, escrow trust, and anonymous B2B tender bidding.
+        </p>
+      </div>
+
+      {/* Dual Mode Big Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+        {/* Local Mode Card */}
+        <Link
+          href="/local"
+          className="group relative rounded-2xl border border-blue-500/30 bg-gradient-to-b from-blue-950/40 via-zinc-900/60 to-zinc-900 p-8 hover:border-blue-500/80 transition-all shadow-xl hover:shadow-blue-500/10 flex flex-col justify-between"
+        >
+          <div className="space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+              <ShoppingBag className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-2xl font-black text-white group-hover:text-blue-400 transition">
+                  LOCAL MODE
+                </h2>
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800">
+                  Consumer
+                </span>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Buy & sell locally with verified Gold/Silver/Bronze trust tiers and instant mock UPI escrow protection.
+              </p>
+            </div>
+
+            <ul className="space-y-2 text-xs text-zinc-300 pt-2 border-t border-zinc-800">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                Escrow vault locks funds until delivery verified
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                Transparent 2% platform fee on final seller payout
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                One-click mock UPI payment confirmation
+              </li>
+            </ul>
+          </div>
+
+          <div className="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs font-bold text-blue-400 group-hover:translate-x-1 transition-transform">
+            <span>Explore Local Goods & UPI Checkout</span>
+            <ArrowRight className="w-4 h-4" />
+          </div>
+        </Link>
+
+        {/* Professional Mode Card */}
+        <Link
+          href="/workspace/quotations"
+          className="group relative rounded-2xl border border-purple-500/30 bg-gradient-to-b from-purple-950/40 via-zinc-900/60 to-zinc-900 p-8 hover:border-purple-500/80 transition-all shadow-xl hover:shadow-purple-500/10 flex flex-col justify-between"
+        >
+          <div className="space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+              <Building className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-2xl font-black text-white group-hover:text-purple-400 transition">
+                  PROFESSIONAL MODE
+                </h2>
+                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">
+                  Enterprise B2B
+                </span>
+              </div>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Self-governing sales operations with live Blended Risk calculation, multi-warehouse splitting, and blind tender bidding.
+              </p>
+            </div>
+
+            <ul className="space-y-2 text-xs text-zinc-300 pt-2 border-t border-zinc-800">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                Automated L1 / L2 approval escalation routing
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                Greedy multi-warehouse inventory auto-split
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                Anonymous vendor bidding killing middleman corruption
+              </li>
+            </ul>
+          </div>
+
+          <div className="pt-6 mt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs font-bold text-purple-400 group-hover:translate-x-1 transition-transform">
+            <span>Enter Enterprise Sales Workspace</span>
+            <ArrowRight className="w-4 h-4" />
+          </div>
+        </Link>
+      </div>
+
+      {/* Quick Links Row */}
+      <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-xs text-zinc-400">
+        <span className="text-zinc-500 font-semibold">Quick Jump:</span>
+        <Link href="/workspace/quotations/new" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+          Quotation Builder
+        </Link>
+        <Link href="/workspace/pipeline" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+          Pipeline Kanban
+        </Link>
+        <Link href="/workspace/dashboard" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+          Deal Health
+        </Link>
+        <Link href="/local/checkout/1" className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:text-white transition">
+          Mock UPI Checkout
+        </Link>
+      </div>
     </div>
   );
 }

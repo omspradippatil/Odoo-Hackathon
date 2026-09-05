@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Next.js Frontend for DEV FLOW",
 };
 
+import Navbar from "@/components/layout/Navbar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,9 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-zinc-50 min-h-screen`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-zinc-50 min-h-screen flex flex-col`}>
         <AuthProvider>
-          {children}
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
         </AuthProvider>
       </body>
     </html>
