@@ -183,6 +183,13 @@ export default function QuotationDetailPage() {
             <Layers className="w-3.5 h-3.5" />
             Fulfillment Split
           </Link>
+          <Link
+            href={`/workspace/billing/${quotation.id}`}
+            className="flex items-center gap-1.5 px-3 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 rounded-lg text-xs font-semibold transition"
+          >
+            <FileText className="w-3.5 h-3.5 text-blue-400" />
+            GST Invoice
+          </Link>
           <button
             onClick={handleSendToCustomer}
             disabled={actionLoading}

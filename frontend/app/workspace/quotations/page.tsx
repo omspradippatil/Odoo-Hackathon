@@ -232,6 +232,13 @@ export default function QuotationsPage() {
                   Fulfill
                 </Link>
                 <Link
+                  href={`/workspace/billing/${q.id}`}
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 text-zinc-300 transition"
+                  title="GST Tax Invoice"
+                >
+                  Invoice
+                </Link>
+                <Link
                   href={`/workspace/quotations/${q.id}`}
                   className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition shadow-sm"
                 >

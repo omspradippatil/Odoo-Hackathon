@@ -277,9 +277,9 @@ export default function QuotationBuilder() {
             <div className="p-4 rounded-xl border border-blue-900/40 bg-blue-950/20 flex items-start gap-3">
               <Zap className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-bold text-blue-300">Live Upsell Recommendation</p>
+                <p className="text-xs font-bold text-blue-300">Live Hardware Bundle Upsell</p>
                 <p className="text-[11px] text-zinc-400 mt-0.5">
-                  Bundling Setup Service or Cloud Storage Plan with Hardware unlocks higher margins and offsets single-item discount ceilings.
+                  Frequently bundled: Pairing <strong>Apple AirPods Pro</strong> or <strong>Logitech MX Master 3S Mouse</strong> with MacBooks unlocks bulk bundle discounts while keeping the Blended Risk Score safely below the L1 approval threshold.
                 </p>
               </div>
             </div>
