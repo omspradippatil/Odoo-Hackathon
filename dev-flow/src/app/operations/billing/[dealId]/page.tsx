@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { ShieldCheck, Activity, Check, ArrowRight, Package, Truck, AlertCircle, Clock, MapPin, Building2, Search, X, FileText, Calendar, CreditCard, Download, Eye } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { cn } from "@/lib/utils";
+import { InvoiceModal } from "@/components/ui/InvoiceModal";
 
 export default function InternalBillingPage({ params }: { params: Promise<{ dealId: string }> }) {
   const router = useRouter();
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   return (
     <WorkspaceLayout role={UserRole.FINANCE_OPERATIONS}>
@@ -131,9 +133,21 @@ export default function InternalBillingPage({ params }: { params: Promise<{ deal
               </div>
 
               <div className="flex gap-2">
-                <button className="flex-[2] py-3 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors border border-navy/5 flex items-center justify-center gap-2"><Eye className="w-4 h-4" /> View Invoice</button>
-                <button className="flex-1 py-3 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors border border-navy/5 flex items-center justify-center"><Download className="w-4 h-4" /></button>
+                <button 
+                  onClick={() => setIsInvoiceOpen(true)}
+                  className="flex-[2] py-3 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors border border-navy/5 flex items-center justify-center gap-2"
+                >
+                  <Eye className="w-4 h-4" /> View Invoice
+                </button>
+                <button 
+                  onClick={() => setIsInvoiceOpen(true)}
+                  className="flex-1 py-3 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors border border-navy/5 flex items-center justify-center"
+                  aria-label="Download Invoice"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
               </div>
+              <InvoiceModal isOpen={isInvoiceOpen} onClose={() => setIsInvoiceOpen(false)} />
             </div>
 
             {/* SUBSCRIPTION BILLING */}

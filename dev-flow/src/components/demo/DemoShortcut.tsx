@@ -103,9 +103,18 @@ export function DemoShortcut() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const [isAuth, setIsAuth] = useState<boolean | null>(null);
+
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (typeof window !== "undefined") {
+      setIsAuth(!!sessionStorage.getItem("devflow_user"));
+    }
+  }, [pathname]);
+
+  if (isAuth === true || isAuth === null) {
+    return null;
+  }
 
   // Handle ESC key to close on desktop
   useEffect(() => {

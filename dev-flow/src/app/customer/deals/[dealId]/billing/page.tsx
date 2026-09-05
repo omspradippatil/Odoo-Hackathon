@@ -6,6 +6,7 @@ import { FileText, Download, Eye, Calendar, CreditCard, Check, Clock, ShieldChec
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { InvoiceModal } from "@/components/ui/InvoiceModal";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
@@ -102,9 +103,7 @@ export default function CustomerBillingPage({ params }: { params: Promise<{ deal
                       <button onClick={() => setShowInvoicePreview(true)} className="flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors flex items-center justify-center gap-2 border border-navy/5">
                         <Eye className="w-3.5 h-3.5" /> View
                       </button>
-                      <button className="flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors flex items-center justify-center gap-2 border border-navy/5">
-                        <Download className="w-3.5 h-3.5" /> PDF
-                      </button>
+                      <button onClick={() => setShowInvoicePreview(true)} className="flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-navy/5 text-navy text-xs font-bold hover:bg-navy/10 transition-colors flex items-center justify-center gap-2 border border-navy/5"><Download className="w-3.5 h-3.5" /> PDF</button>
                     </div>
                     <button className="w-full sm:w-auto py-2.5 px-6 rounded-xl bg-navy text-white text-xs font-bold hover:bg-navy/90 shadow-lg shadow-navy/20 transition-colors flex items-center justify-center gap-2">
                       Pay ₹7.39L <ArrowRight className="w-3.5 h-3.5" />
@@ -202,142 +201,8 @@ export default function CustomerBillingPage({ params }: { params: Promise<{ deal
         </div>
       </main>
 
-      {/* INVOICE PREVIEW MODAL */}
-      <AnimatePresence>
-        {showInvoicePreview && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-navy/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-8 overflow-y-auto">
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
-              
-              <div className="p-4 sm:p-6 bg-navy text-white flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><FileText className="w-4 h-4 text-white" /></div>
-                  <div>
-                    <h2 className="text-lg font-bold">INV-2048-01</h2>
-                    <div className="text-xs font-medium text-white/60">Tax Invoice</div>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <button className="hidden sm:flex px-4 py-2 bg-white/10 hover:bg-white/20 transition-colors rounded-xl text-xs font-bold items-center gap-2"><Download className="w-3.5 h-3.5" /> Download PDF</button>
-                  <button onClick={() => setShowInvoicePreview(false)} className="w-10 h-10 bg-white/10 hover:bg-white/20 transition-colors rounded-xl flex items-center justify-center"><X className="w-5 h-5" /></button>
-                </div>
-              </div>
-              
-              {/* DOCUMENT BODY */}
-              <div className="p-6 sm:p-12 overflow-y-auto bg-warm/10">
-                <div className="bg-white shadow-xl shadow-navy/5 max-w-3xl mx-auto rounded-sm border border-navy/10 p-8 sm:p-12 text-navy text-sm font-medium">
-                  
-                  <div className="flex justify-between items-start mb-12 border-b border-navy/10 pb-8">
-                    <div>
-                      <div className="flex items-center gap-2 font-bold text-xl tracking-tight mb-4 text-navy">
-                        <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
-                      </div>
-                      <div className="text-navy/60 leading-relaxed">
-                        DEV FLOW Technologies Pvt Ltd<br/>
-                        Level 4, Trade Centre, BKC<br/>
-                        Mumbai, Maharashtra 400051<br/>
-                        GSTIN: 27AACCD1234E1Z5
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <h1 className="text-3xl font-light tracking-tight text-navy mb-4">TAX INVOICE</h1>
-                      <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-right">
-                        <div className="text-navy/50 font-bold uppercase text-[10px] tracking-widest mt-1">Invoice No.</div>
-                        <div className="font-bold">INV-2048-01</div>
-                        <div className="text-navy/50 font-bold uppercase text-[10px] tracking-widest mt-1">Issue Date</div>
-                        <div>09 Sep 2026</div>
-                        <div className="text-navy/50 font-bold uppercase text-[10px] tracking-widest mt-1">Due Date</div>
-                        <div className="font-bold text-orange-600">16 Sep 2026</div>
-                        <div className="text-navy/50 font-bold uppercase text-[10px] tracking-widest mt-1">Place of Supply</div>
-                        <div>Maharashtra (27)</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-12">
-                    <div className="text-navy/50 font-bold uppercase text-[10px] tracking-widest mb-2">Billed To</div>
-                    <div className="font-bold text-lg mb-1">Nova Retail</div>
-                    <div className="text-navy/60 leading-relaxed">
-                      Tower B, Cyber City<br/>
-                      Pune, Maharashtra 411014<br/>
-                      GSTIN: 27BBBBBB9999C1Z
-                    </div>
-                  </div>
-
-                  <table className="w-full mb-8 text-left border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-navy">
-                        <th className="py-3 font-bold text-[10px] uppercase tracking-widest">Description</th>
-                        <th className="py-3 font-bold text-[10px] uppercase tracking-widest text-right">Qty</th>
-                        <th className="py-3 font-bold text-[10px] uppercase tracking-widest text-right">Unit Price</th>
-                        <th className="py-3 font-bold text-[10px] uppercase tracking-widest text-right">Taxable Val</th>
-                        <th className="py-3 font-bold text-[10px] uppercase tracking-widest text-right">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b border-navy/5">
-                        <td className="py-4">
-                          <div className="font-bold">Business Laptops</div>
-                          <div className="text-xs text-navy/50 mt-1">Including pre-configured software</div>
-                        </td>
-                        <td className="py-4 text-right">50</td>
-                        <td className="py-4 text-right">₹15,000</td>
-                        <td className="py-4 text-right">₹7,50,000</td>
-                        <td className="py-4 text-right font-bold">₹7,50,000</td>
-                      </tr>
-                      <tr className="border-b border-navy/5">
-                        <td className="py-4">
-                          <div className="font-bold">Extended Warranty (3 Years)</div>
-                        </td>
-                        <td className="py-4 text-right">50</td>
-                        <td className="py-4 text-right">₹1,800</td>
-                        <td className="py-4 text-right">₹90,000</td>
-                        <td className="py-4 text-right font-bold">₹90,000</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <div className="flex justify-end mb-12">
-                    <div className="w-64 space-y-3 text-right">
-                      <div className="flex justify-between">
-                        <span className="text-navy/60">Subtotal</span>
-                        <span>₹8,40,000</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-navy/60">CGST @ 9%</span>
-                        <span>₹75,600</span>
-                      </div>
-                      <div className="flex justify-between border-b border-navy/10 pb-3">
-                        <span className="text-navy/60">SGST @ 9%</span>
-                        <span>₹75,600</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-lg pt-1">
-                        <span>Invoice Total</span>
-                        <span>₹9,91,200</span>
-                      </div>
-                      
-                      <div className="flex justify-between text-lime-700 pt-4">
-                        <span>Less: Advance Paid</span>
-                        <span>− ₹2,52,000</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-xl pt-2 border-t border-navy/20 text-orange-600">
-                        <span>Outstanding</span>
-                        <span>₹7,39,200</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-navy/10 pt-8 text-xs text-navy/50 leading-relaxed text-center">
-                    This is a computer-generated invoice and does not require a physical signature.<br/>
-                    Payment is due by 16 Sep 2026. Late payments may incur a 1.5% monthly penalty.
-                  </div>
-
-                </div>
-              </div>
-
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <InvoiceModal isOpen={showInvoicePreview} onClose={() => setShowInvoicePreview(false)} />
+      
 
     </div>
   );
