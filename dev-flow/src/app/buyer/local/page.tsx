@@ -1,177 +1,134 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
-import { 
-  MapPin, Search, Filter, ShieldCheck, Star, Building2, 
-  ExternalLink, ArrowRight, CheckCircle2, Phone, Mail
-} from "lucide-react";
+import { Search, MapPin, Building2, ShieldCheck, Star, Package, ChevronLeft, ChevronRight, Truck, Store, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface LocalSeller {
-  id: string;
-  name: string;
-  category: string;
-  city: string;
-  state: string;
-  rating: number;
-  trustScore: number;
-  trustTier: "Gold" | "Silver" | "Bronze";
-  warehouses: string[];
-  productCount: number;
-}
-
-const SAMPLE_LOCAL_SELLERS: LocalSeller[] = [
-  {
-    id: "ven-1",
-    name: "Tata Steel Industrial Supplies Ltd",
-    category: "Raw Materials, Metals & Structural Steel",
-    city: "Mumbai",
-    state: "Maharashtra",
-    rating: 4.9,
-    trustScore: 96,
-    trustTier: "Gold",
-    warehouses: ["Bhiwandi Central Logistics Hub", "Talegaon MIDC Fulfillment"],
-    productCount: 28
-  },
-  {
-    id: "ven-2",
-    name: "Larsen & Toubro Heavy Equipment",
-    category: "Industrial Power & Heavy Machining",
-    city: "Pune",
-    state: "Maharashtra",
-    rating: 4.8,
-    trustScore: 95,
-    trustTier: "Gold",
-    warehouses: ["Chakan Industrial Logistic Park"],
-    productCount: 22
-  },
-  {
-    id: "ven-3",
-    name: "Siemens Industrial Automation India",
-    category: "PLC, VFD Drives & Factory Automation",
-    city: "Bengaluru",
-    state: "Karnataka",
-    rating: 4.9,
-    trustScore: 98,
-    trustTier: "Gold",
-    warehouses: ["Whitefield Supply Depot", "Peenya Stores Hub"],
-    productCount: 35
-  },
-  {
-    id: "ven-4",
-    name: "Schneider Electric Infrastructure",
-    category: "Switchgear, Circuit Breakers & Solar",
-    city: "Gurugram",
-    state: "Haryana",
-    rating: 4.8,
-    trustScore: 94,
-    trustTier: "Gold",
-    warehouses: ["Manesar Auto & Electrical Depot"],
-    productCount: 19
-  },
-  {
-    id: "ven-5",
-    name: "SKF Bearings & Lubrication Solutions",
-    category: "Ball Bearings, Pillow Blocks & Couplings",
-    city: "Pune",
-    state: "Maharashtra",
-    rating: 4.7,
-    trustScore: 93,
-    trustTier: "Gold",
-    warehouses: ["Chakan Logistics Unit 2"],
-    productCount: 16
-  },
-  {
-    id: "ven-6",
-    name: "Festo Pneumatics & Automation Corp",
-    category: "Pneumatic Cylinders, Valves & FRL Units",
-    city: "Chennai",
-    state: "Tamil Nadu",
-    rating: 4.8,
-    trustScore: 92,
-    trustTier: "Gold",
-    warehouses: ["Sriperumbudur Mega Distribution Center"],
-    productCount: 24
-  },
-  {
-    id: "ven-7",
-    name: "Polycab Industrial Wires & Cables",
-    category: "Armored Copper Power Cables & Busbars",
-    city: "Vadodara",
-    state: "Gujarat",
-    rating: 4.5,
-    trustScore: 87,
-    trustTier: "Gold",
-    warehouses: ["Sanand Logistics Facility"],
-    productCount: 18
-  },
-  {
-    id: "ven-8",
-    name: "Finolex Industrial Cables Ltd",
-    category: "Submersible Cables & Flexible Wires",
-    city: "Pune",
-    state: "Maharashtra",
-    rating: 4.4,
-    trustScore: 84,
-    trustTier: "Silver",
-    warehouses: ["Talegaon MIDC Unit 2"],
-    productCount: 14
-  },
-  {
-    id: "ven-9",
-    name: "Apex Industrial Tools & Hardware",
-    category: "Fasteners, Metric Bolts & Anchors",
-    city: "Ahmedabad",
-    state: "Gujarat",
-    rating: 4.2,
-    trustScore: 79,
-    trustTier: "Silver",
-    warehouses: ["Changodar Express Hub"],
-    productCount: 26
-  }
-];
+import { SAMPLE_PRODUCTS, LocalProduct } from "@/lib/mockLocalProducts";
 
 export default function LocalSellersPage() {
   const router = useRouter();
+  
+  // Filters & Search
   const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [cityFilter, setCityFilter] = useState("ALL");
   const [tierFilter, setTierFilter] = useState("ALL");
+  const [sortOrder, setSortOrder] = useState("BEST_MATCH");
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const cities = ["ALL", "Mumbai", "Pune", "Bengaluru", "Chennai", "Ahmedabad", "Gurugram"];
+  const categories = ["ALL", ...Array.from(new Set(SAMPLE_PRODUCTS.map(p => p.category))).sort()];
+  const cities = ["ALL", ...Array.from(new Set(SAMPLE_PRODUCTS.map(p => p.sellerLocation))).sort()];
 
-  const filtered = SAMPLE_LOCAL_SELLERS.filter((s) => {
-    const match = 
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.category.toLowerCase().includes(search.toLowerCase()) ||
-      s.city.toLowerCase().includes(search.toLowerCase());
-    const matchCity = cityFilter === "ALL" || s.city === cityFilter;
-    const matchTier = tierFilter === "ALL" || s.trustTier === tierFilter;
-    return match && matchCity && matchTier;
-  });
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, categoryFilter, cityFilter, tierFilter, sortOrder]);
+
+  const filteredAndSorted = useMemo(() => {
+    let result = SAMPLE_PRODUCTS.filter((p) => {
+      const matchSearch = 
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.brand.toLowerCase().includes(search.toLowerCase()) ||
+        p.category.toLowerCase().includes(search.toLowerCase()) ||
+        p.sellerName.toLowerCase().includes(search.toLowerCase());
+        
+      const matchCat = categoryFilter === "ALL" || p.category === categoryFilter;
+      const matchCity = cityFilter === "ALL" || p.sellerLocation === cityFilter;
+      const matchTier = tierFilter === "ALL" || p.trustTier === tierFilter;
+      
+      return matchSearch && matchCat && matchCity && matchTier;
+    });
+
+    switch (sortOrder) {
+      case "PRICE_ASC":
+        result.sort((a, b) => a.sellingPrice - b.sellingPrice);
+        break;
+      case "PRICE_DESC":
+        result.sort((a, b) => b.sellingPrice - a.sellingPrice);
+        break;
+      case "TRUST_DESC":
+        result.sort((a, b) => b.trustScore - a.trustScore);
+        break;
+      case "RATING_DESC":
+        result.sort((a, b) => b.rating - a.rating);
+        break;
+      case "NEAREST":
+        result.sort((a, b) => a.distanceKm - b.distanceKm);
+        break;
+      case "BEST_MATCH":
+      default:
+        // Keep original order
+        break;
+    }
+
+    return result;
+  }, [search, categoryFilter, cityFilter, tierFilter, sortOrder]);
+
+  const totalItems = filteredAndSorted.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  
+  const currentProducts = filteredAndSorted.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    let start = Math.max(1, currentPage - 2);
+    let end = Math.min(totalPages, start + 4);
+    
+    if (end - start < 4) {
+      start = Math.max(1, end - 4);
+    }
+    
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setCategoryFilter("ALL");
+    setCityFilter("ALL");
+    setTierFilter("ALL");
+    setSortOrder("BEST_MATCH");
+  };
 
   return (
     <WorkspaceLayout role={UserRole.BUYER}>
-      <div className="space-y-6 md:space-y-8 pb-16">
+      <div className="space-y-6 md:space-y-8 pb-24">
         
         {/* HEADER */}
         <div>
           <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Supplier Discovery</div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Verified Local Sellers</h1>
+          <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Local Products</h1>
           <p className="text-navy/60 font-medium text-sm md:text-base">
-            Explore audited B2B suppliers near your fulfillment sites with verified Trust Tiers.
+            Browse and source verified local products available from nearby registered sellers.
           </p>
         </div>
 
         {/* SEARCH & FILTERS */}
-        <div className="bg-white rounded-2xl p-4 border border-navy/5 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
-          <div className="relative w-full md:w-96">
+        <div className="bg-white rounded-2xl p-4 border border-navy/5 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center z-20 relative">
+          <div className="relative w-full md:w-80 lg:w-96">
             <Search className="w-4 h-4 text-navy/40 absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
               type="text" 
-              placeholder="Search vendor name, product category, or city..." 
+              placeholder="Search products, brands, or sellers..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-navy/5 rounded-xl text-sm font-medium text-navy placeholder:text-navy/40 focus:outline-none focus:ring-2 focus:ring-navy/20"
@@ -180,9 +137,20 @@ export default function LocalSellersPage() {
 
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="px-3 py-2 bg-navy/5 text-navy font-bold text-xs rounded-xl focus:outline-none max-w-[140px] truncate"
+            >
+              <option value="ALL">All Categories</option>
+              {categories.filter(c => c !== "ALL").map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            
+            <select
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
-              className="px-3 py-2 bg-navy/5 text-navy font-bold text-xs rounded-xl focus:outline-none"
+              className="px-3 py-2 bg-navy/5 text-navy font-bold text-xs rounded-xl focus:outline-none max-w-[120px] truncate"
             >
               {cities.map((c) => (
                 <option key={c} value={c}>{c === "ALL" ? "All Cities" : c}</option>
@@ -195,74 +163,219 @@ export default function LocalSellersPage() {
               className="px-3 py-2 bg-navy/5 text-navy font-bold text-xs rounded-xl focus:outline-none"
             >
               <option value="ALL">All Tiers</option>
-              <option value="Gold">Gold Tier (90+)</option>
-              <option value="Silver">Silver Tier (75+)</option>
-              <option value="Bronze">Bronze Tier</option>
+              <option value="Gold">Gold</option>
+              <option value="Silver">Silver</option>
+              <option value="Bronze">Bronze</option>
+            </select>
+            
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="px-3 py-2 bg-navy/5 text-navy font-bold text-xs rounded-xl focus:outline-none hidden md:block border border-navy/10"
+            >
+              <option value="BEST_MATCH">Best Match</option>
+              <option value="PRICE_ASC">Price: Low to High</option>
+              <option value="PRICE_DESC">Price: High to Low</option>
+              <option value="TRUST_DESC">Highest Trust</option>
+              <option value="RATING_DESC">Highest Rating</option>
+              <option value="NEAREST">Nearest</option>
             </select>
           </div>
         </div>
+        
+        {/* Mobile Sort (Visible only on small screens) */}
+        <div className="md:hidden flex justify-end">
+           <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="px-3 py-2 bg-white border border-navy/10 text-navy font-bold text-xs rounded-xl focus:outline-none shadow-sm"
+            >
+              <option value="BEST_MATCH">Sort: Best Match</option>
+              <option value="PRICE_ASC">Price: Low to High</option>
+              <option value="PRICE_DESC">Price: High to Low</option>
+              <option value="TRUST_DESC">Highest Trust</option>
+              <option value="RATING_DESC">Highest Rating</option>
+              <option value="NEAREST">Nearest</option>
+            </select>
+        </div>
+
+        {/* RESULTS INFO */}
+        <div className="text-sm font-bold text-navy/60 px-1">
+          {totalItems > 0 ? (
+            `Showing ${(currentPage - 1) * itemsPerPage + 1}–${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems} products`
+          ) : (
+            `0 products found`
+          )}
+        </div>
 
         {/* CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((vendor) => (
-            <div 
-              key={vendor.id}
-              className="bg-white rounded-3xl p-6 border border-navy/5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <span className={cn(
-                    "text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1",
-                    vendor.trustTier === "Gold" && "bg-amber-400/20 text-amber-900 border border-amber-400/30",
-                    vendor.trustTier === "Silver" && "bg-slate-200 text-slate-800 border border-slate-300",
-                    vendor.trustTier === "Bronze" && "bg-orange-200 text-orange-900"
+        {totalItems > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {currentProducts.map((product) => (
+              <div 
+                key={product.id}
+                className="bg-white rounded-3xl p-5 border border-navy/5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group cursor-pointer"
+                onClick={() => router.push(`/vendors/${product.sellerId}/trust`)}
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <span className={cn(
+                      "text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full",
+                      product.availabilityStatus === "In Stock" && "bg-lime/20 text-lime-800",
+                      product.availabilityStatus === "Low Stock" && "bg-amber-400/20 text-amber-900",
+                      product.availabilityStatus === "Out of Stock" && "bg-coral/10 text-coral",
+                      product.availabilityStatus === "Backorder" && "bg-navy/10 text-navy"
+                    )}>
+                      {product.availabilityStatus}
+                    </span>
+                    <div className="text-lg font-black text-navy">{formatPrice(product.sellingPrice)}</div>
+                  </div>
+
+                  <h3 className="text-base font-bold text-navy mb-1 leading-snug group-hover:text-cobalt transition-colors">
+                    {product.name}
+                  </h3>
+                  <div className="text-xs font-bold text-navy/40 mb-4 uppercase tracking-widest">
+                    {product.brand} • {product.category}
+                  </div>
+
+                  <div className="p-3 bg-navy/5 rounded-2xl space-y-2 text-xs font-medium text-navy/70 mb-5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 font-bold text-navy">
+                        <Store className="w-3.5 h-3.5 text-navy/40" />
+                        {product.sellerName}
+                      </div>
+                      <div className="flex items-center gap-1 text-[10px] font-bold">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        {product.rating}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-navy/40" />
+                        {product.sellerLocation}
+                      </div>
+                      <div className="text-[10px] font-bold text-navy/50">{product.distanceKm} km away</div>
+                    </div>
+                    <div className="flex items-center gap-3 pt-1">
+                      {product.deliveryAvailable && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-cobalt bg-cobalt/5 px-2 py-0.5 rounded-md">
+                          <Truck className="w-3 h-3" /> Delivery
+                        </div>
+                      )}
+                      {product.pickupAvailable && (
+                        <div className="flex items-center gap-1 text-[10px] font-bold text-lime-700 bg-lime/10 px-2 py-0.5 rounded-md">
+                          <Package className="w-3 h-3" /> Pickup
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-navy/5">
+                   <div className={cn(
+                    "text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md flex items-center gap-1",
+                    product.trustTier === "Gold" && "text-amber-700 bg-amber-50",
+                    product.trustTier === "Silver" && "text-slate-600 bg-slate-50",
+                    product.trustTier === "Bronze" && "text-orange-800 bg-orange-50"
                   )}>
-                    <ShieldCheck className="w-3 h-3 text-amber-600" />
-                    {vendor.trustTier} Tier ({vendor.trustScore})
-                  </span>
-
-                  <div className="flex items-center gap-1 text-xs font-bold text-navy">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    {vendor.rating}
+                    <ShieldCheck className="w-3 h-3" />
+                    {product.trustTier} ({product.trustScore})
                   </div>
-                </div>
-
-                <h3 className="text-lg font-bold text-navy mb-1 leading-snug">
-                  {vendor.name}
-                </h3>
-                <div className="text-xs font-medium text-navy/60 mb-4">
-                  {vendor.category}
-                </div>
-
-                <div className="p-3 bg-navy/5 rounded-2xl space-y-1.5 text-xs text-navy/70 mb-6">
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <MapPin className="w-3.5 h-3.5 text-navy/40" />
-                    {vendor.city}, {vendor.state}
-                  </div>
-                  <div className="flex items-center gap-1.5 font-medium">
-                    <Building2 className="w-3.5 h-3.5 text-navy/40" />
-                    {vendor.warehouses.length} Active Warehouse Hubs
-                  </div>
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push("/login?returnTo=/buyer/requirements/new");
+                    }}
+                    className="py-2 px-4 text-xs font-bold text-white bg-navy hover:bg-navy/90 rounded-xl transition-colors shadow-sm flex items-center gap-1"
+                  >
+                    Buy / Quote <ArrowRight className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-3xl p-12 text-center border border-navy/5 flex flex-col items-center justify-center min-h-[40vh]">
+            <Search className="w-12 h-12 text-navy/20 mb-4" />
+            <h3 className="text-xl font-bold text-navy mb-2">No local products found</h3>
+            <p className="text-navy/60 font-medium mb-6 max-w-sm mx-auto">
+              No local products match these filters. Try adjusting your search criteria or clear all filters.
+            </p>
+            <button 
+              onClick={handleClearFilters}
+              className="px-6 py-3 font-bold text-navy bg-navy/5 hover:bg-navy/10 rounded-xl transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
 
-              <div className="flex items-center gap-2 pt-4 border-t border-navy/5">
-                <button
-                  onClick={() => router.push("/vendors/" + vendor.id + "/trust")}
-                  className="flex-1 py-2.5 text-xs font-bold text-navy bg-navy/5 hover:bg-navy/10 rounded-xl transition-colors text-center"
-                >
-                  Trust Scorecard
-                </button>
-                <button
-                  onClick={() => router.push("/buyer/requirements/new")}
-                  className="flex-1 py-2.5 text-xs font-bold text-white bg-navy hover:bg-navy/90 rounded-xl transition-colors text-center shadow-xs"
-                >
-                  Request Quote
-                </button>
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex flex-col items-center border-t border-navy/10 pt-8">
+            
+            {/* Desktop Pagination */}
+            <div className="hidden md:flex items-center gap-2">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-bold text-navy hover:bg-navy/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" /> Previous
+              </button>
+              
+              <div className="flex items-center gap-1 px-4">
+                {getPageNumbers().map(pageNum => (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={cn(
+                      "w-10 h-10 rounded-xl text-sm font-bold transition-colors flex items-center justify-center",
+                      currentPage === pageNum 
+                        ? "bg-navy text-white shadow-md" 
+                        : "text-navy hover:bg-navy/5"
+                    )}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
               </div>
+
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-bold text-navy hover:bg-navy/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+              >
+                Next <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          ))}
-        </div>
+
+            {/* Mobile Pagination */}
+            <div className="flex md:hidden items-center justify-between w-full max-w-sm mx-auto bg-white p-2 rounded-2xl shadow-sm border border-navy/5">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-3 rounded-xl text-navy hover:bg-navy/5 disabled:opacity-30 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
+              <div className="text-sm font-bold text-navy">
+                Page {currentPage} of {totalPages}
+              </div>
+
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-3 rounded-xl text-navy hover:bg-navy/5 disabled:opacity-30 transition-colors"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+          </div>
+        )}
 
       </div>
     </WorkspaceLayout>
