@@ -219,17 +219,44 @@ export default function LoginPage() {
 
           <div className="mt-8 relative flex items-center py-4">
             <div className="flex-grow border-t border-navy/10"></div>
-            <span className="flex-shrink-0 mx-4 text-xs font-bold text-navy/30 uppercase tracking-widest">Or</span>
+            <span className="flex-shrink-0 mx-4 text-xs font-bold text-navy/30 uppercase tracking-widest">Demo Access</span>
             <div className="flex-grow border-t border-navy/10"></div>
           </div>
 
-          <button 
-            type="button"
-            onClick={handleDemoLogin}
-            className="w-full py-3.5 rounded-xl border-2 border-navy/10 text-navy font-bold text-sm hover:border-navy/20 hover:bg-navy/5 transition-all active:scale-[0.98]"
-          >
-            Continue with Demo Account
-          </button>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            <button 
+              type="button"
+              onClick={() => router.push('/buyer')}
+              className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
+            >
+              Continue as Buyer
+            </button>
+            <button 
+              type="button"
+              onClick={() => router.push('/approvals')}
+              className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
+            >
+              Continue as Manager
+            </button>
+            <button 
+              type="button"
+              onClick={() => router.push('/operations')}
+              className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
+            >
+              Continue as Ops
+            </button>
+            <button 
+              type="button"
+              onClick={() => router.push('/admin')}
+              className="py-2.5 rounded-xl border border-navy/10 text-navy font-bold text-xs hover:border-navy/20 hover:bg-navy/5 transition-all"
+            >
+              Continue as Admin
+            </button>
+          </div>
+
+          <div className="mt-4 text-center">
+            <p className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">For Evaluators: Use Demo Access to bypass auth.</p>
+          </div>
 
         </div>
       </div>

@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { DemoShortcut } from "@/components/demo/DemoShortcut";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,6 +46,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <DemoShortcut />
       </body>
     </html>
   );
