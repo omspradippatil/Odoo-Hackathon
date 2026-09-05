@@ -1,23 +1,115 @@
-import React from "react";
-import Link from "next/link";
-import { ArrowRightLeft } from "lucide-react";
+"use client";
 
-export default function BuyerPlaceholder() {
+import React from "react";
+import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
+import { UserRole } from "@/types/auth";
+import { DealCard } from "@/components/ui/dashboard/DealCard";
+import { DealStage } from "@/types/dashboard";
+import { ArrowRight, Activity, MapPin, Search } from "lucide-react";
+import * as motion from "framer-motion/client";
+
+export default function BuyerHome() {
   return (
-    <main className="min-h-screen bg-warm flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-[32px] p-10 md:p-14 border border-navy/5 shadow-2xl shadow-navy/5 text-center">
-        <div className="w-16 h-16 rounded-xl bg-navy text-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-navy/20">
-          <ArrowRightLeft className="w-8 h-8" />
+    <WorkspaceLayout role={UserRole.BUYER}>
+      <div className="space-y-6 md:space-y-8">
+        
+        {/* HERO */}
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Good evening, Kadambari.</h1>
+          <p className="text-navy/60 font-medium text-lg">What are you looking to source today?</p>
         </div>
-        <div className="text-xs font-bold text-navy/40 uppercase tracking-widest mb-2">DEV FLOW</div>
-        <h1 className="text-3xl font-bold text-navy mb-4 tracking-tight">Buyer Workspace</h1>
-        <p className="text-navy/60 font-medium mb-10 leading-relaxed">
-          Workspace coming next. This is a minimal placeholder to verify role routing.
-        </p>
-        <Link href="/" className="inline-flex items-center justify-center w-full px-6 py-4 rounded-full bg-navy/5 text-navy font-bold text-sm hover:bg-navy/10 transition-colors">
-          Return to Landing Page
-        </Link>
+
+        {/* SEARCH & CTAS */}
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative w-full sm:flex-1 lg:max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-navy/40" />
+            <input type="text" placeholder="Search products, suppliers or categories..." className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white border border-navy/10 focus:outline-none focus:border-cobalt focus:ring-4 focus:ring-cobalt/10 transition-all text-base font-medium shadow-sm" />
+          </div>
+          <button className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-navy text-white font-bold hover:bg-navy/90 transition-colors shadow-lg shadow-navy/20 whitespace-nowrap">
+            + Create Requirement
+          </button>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-6 pt-4">
+          
+          {/* ACTIVE DEALS */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-lg font-bold text-navy">Active Deals</h2>
+              <button className="text-xs font-bold text-cobalt hover:text-navy uppercase tracking-widest transition-colors">View All</button>
+            </div>
+            
+            <div className="space-y-4">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                <DealCard deal={{
+                  id: "REQ-092",
+                  title: "Office Laptop Procurement",
+                  amount: 482000,
+                  stage: DealStage.COMPARING,
+                  statusLabel: "COMPARING",
+                  health: 'HEALTHY',
+                  updatedAt: new Date().toISOString(),
+                  insight: "12 vendors found • 3 quotations received"
+                }} showCustomer={false} />
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                <DealCard deal={{
+                  id: "REQ-095",
+                  title: "Office Furniture",
+                  amount: 150000,
+                  stage: DealStage.SOURCING,
+                  statusLabel: "WAITING FOR QUOTES",
+                  health: 'NEEDS_ATTENTION',
+                  updatedAt: new Date().toISOString(),
+                  insight: "Awaiting 2 vendor quotations"
+                }} showCustomer={false} showVendor={false} />
+              </motion.div>
+            </div>
+          </div>
+
+          {/* INSIGHTS & LOCAL */}
+          <div className="space-y-6">
+            <div className="bg-navy rounded-3xl p-6 text-white shadow-2xl shadow-navy/20 relative overflow-hidden">
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-coral/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="w-4 h-4 text-coral" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-coral">DEV FLOW INSIGHT</span>
+              </div>
+              <p className="text-sm font-medium text-white/80 leading-relaxed mb-6">
+                A vendor offering ₹18,000 less currently has lower delivery reliability. Best overall vendor remains <strong className="text-white">Vertex Systems</strong>.
+              </p>
+              <button className="w-full py-3 bg-white/10 hover:bg-white/20 transition-colors rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+                Compare Vendors <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-navy/5 shadow-xl shadow-navy/5">
+              <h3 className="text-sm font-bold text-navy mb-4 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-cobalt" /> Nearby trusted sellers
+              </h3>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center justify-between p-3 rounded-xl hover:bg-navy/5 cursor-pointer transition-colors">
+                  <div>
+                    <div className="font-bold text-sm text-navy mb-1">TechSquare</div>
+                    <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">1.8 km away</div>
+                  </div>
+                  <div className="text-[10px] font-bold text-gold uppercase tracking-widest bg-gold/10 px-2 py-1 rounded">GOLD</div>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-xl hover:bg-navy/5 cursor-pointer transition-colors">
+                  <div>
+                    <div className="font-bold text-sm text-navy mb-1">ByteMart</div>
+                    <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">2.4 km away</div>
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">SILVER</div>
+                </div>
+              </div>
+              <button className="w-full text-xs font-bold text-cobalt uppercase tracking-widest hover:text-navy transition-colors">Explore Local →</button>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </main>
+    </WorkspaceLayout>
   );
 }
