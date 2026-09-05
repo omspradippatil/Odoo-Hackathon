@@ -23,6 +23,20 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleForBusinessClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (typeof window !== "undefined") {
+      const isLanding = window.location.pathname === "/" || window.location.pathname === "";
+      if (isLanding) {
+        const el = document.getElementById("for-business") || document.getElementById("professional");
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", "#for-business");
+        }
+      }
+    }
+  };
+
   return (
     <>
       <motion.header
@@ -50,7 +64,7 @@ export function Navbar() {
             <Link href="/buyer/local" className="hover:text-navy transition-colors">Local Sellers</Link>
             <Link href="#solutions" className="hover:text-navy transition-colors">Solutions</Link>
             <Link href="#trust-engine" className="hover:text-navy transition-colors">Trust Engine</Link>
-            <Link href="#professional" className="hover:text-navy transition-colors">For Business</Link>
+            <Link href="/#for-business" onClick={handleForBusinessClick} className="hover:text-navy transition-colors">For Business</Link>
           </nav>
 
           {/* DESKTOP CTA */}
@@ -97,7 +111,7 @@ export function Navbar() {
               <Link href="/buyer/local" onClick={() => setMobileMenuOpen(false)}>Local Sellers</Link>
               <Link href="#solutions" onClick={() => setMobileMenuOpen(false)}>Solutions</Link>
               <Link href="#trust-engine" onClick={() => setMobileMenuOpen(false)}>Trust Engine</Link>
-              <Link href="#professional" onClick={() => setMobileMenuOpen(false)}>For Business</Link>
+              <Link href="/#for-business" onClick={(e) => { setMobileMenuOpen(false); handleForBusinessClick(e); }}>For Business</Link>
             </nav>
             <div className="flex flex-col gap-4 mt-auto border-t border-navy/10 pt-8">
               {!user ? (

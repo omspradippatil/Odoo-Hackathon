@@ -24,12 +24,14 @@ export function TwoWorlds() {
           
           {/* PROFESSIONAL DEALS */}
           <motion.div
+            id="for-business"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             whileHover={{ y: -5 }}
-            className="bg-navy rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-10 lg:p-14 text-white relative overflow-hidden group"
+            className="bg-navy rounded-[32px] md:rounded-[40px] p-6 sm:p-8 md:p-10 lg:p-14 text-white relative overflow-hidden group scroll-mt-28"
           >
+            <span id="professional" className="absolute -top-28" />
             <div className="absolute top-0 right-0 p-8 md:p-12 opacity-5 pointer-events-none transition-transform duration-700 group-hover:scale-110">
               <Building2 className="w-48 h-48 md:w-64 md:h-64" />
             </div>

@@ -72,6 +72,27 @@ const ROLE_TITLES = {
   [UserRole.ADMIN]: "Admin"
 };
 
+function isNavItemActive(itemHref: string, pathname: string): boolean {
+  // Base role home routes match strictly to avoid default matching
+  const exactRoots = ["/buyer", "/seller", "/sales", "/approvals", "/operations"];
+  if (exactRoots.includes(itemHref)) {
+    return pathname === itemHref;
+  }
+
+  // Create requirements flow
+  if (itemHref === "/buyer/requirements/new") {
+    return pathname === "/buyer/requirements/new" || pathname.startsWith("/buyer/requirements/new/");
+  }
+
+  // Sales quote create flow
+  if (itemHref === "/sales/quotations/new") {
+    return pathname === "/sales/quotations/new" || pathname.startsWith("/sales/quotations/new/");
+  }
+
+  // Other sub-routes
+  return pathname === itemHref || pathname.startsWith(itemHref + "/");
+}
+
 export function WorkspaceLayout({ children, role, requireAuth = false }: { children: React.ReactNode, role: UserRole, requireAuth?: boolean }) {
   const pathname = usePathname();
   const navItems = NAV_CONFIG[role] || [];
@@ -125,7 +146,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
             <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">{ROLE_TITLES[role]}</div>
             <nav className="space-y-1.5 mt-6">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = isNavItemActive(item.href, pathname);
                 const Icon = item.icon;
                 return (
                   <Link 
@@ -133,8 +154,11 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
                     href={item.href} 
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200", 
-                      isActive ? "bg-white text-navy shadow-lg" : "text-white/60 hover:bg-white/5 hover:text-white",
-                      item.isCreate ? "bg-cobalt text-white hover:bg-cobalt/90 hover:text-white" : ""
+                      isActive 
+                        ? item.isCreate 
+                          ? "bg-cobalt text-white shadow-lg shadow-cobalt/30" 
+                          : "bg-white text-navy shadow-lg"
+                        : "text-white/60 hover:bg-white/5 hover:text-white"
                     )}
                   >
                     <Icon className={cn("w-5 h-5", isActive && !item.isCreate ? "text-cobalt" : "")} />
@@ -208,22 +232,27 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
       {/* MOBILE BOTTOM NAV */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-navy/5 flex items-center justify-around px-2 z-40 pb-4 shadow-[0_-10px_40px_rgba(11,16,32,0.05)]">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = isNavItemActive(item.href, pathname);
           const Icon = item.icon;
           if (item.isCreate) {
             return (
               <Link key={item.label} href={item.href} className="relative -top-5 flex flex-col items-center">
-                <div className="w-14 h-14 rounded-full bg-cobalt text-white flex items-center justify-center shadow-xl shadow-cobalt/30 active:scale-95 transition-transform border-4 border-white">
+                <div className={cn(
+                  "w-14 h-14 rounded-full text-white flex items-center justify-center transition-all border-4 border-white",
+                  isActive 
+                    ? "bg-cobalt shadow-xl shadow-cobalt/40 ring-2 ring-cobalt/30 scale-105" 
+                    : "bg-navy/80 hover:bg-navy shadow-md"
+                )}>
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-bold text-navy mt-1">{item.label}</span>
+                <span className={cn("text-[10px] font-bold mt-1 transition-colors", isActive ? "text-cobalt font-bold" : "text-navy/50 font-medium")}>{item.label}</span>
               </Link>
             );
           }
           return (
             <Link key={item.label} href={item.href} className="flex flex-col items-center gap-1 p-2 w-16">
-              <Icon className={cn("w-5 h-5", isActive ? "text-cobalt" : "text-navy/40")} />
-              <span className={cn("text-[9px] font-bold text-center", isActive ? "text-navy" : "text-navy/40")}>{item.label}</span>
+              <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-cobalt" : "text-navy/40")} />
+              <span className={cn("text-[9px] font-bold text-center transition-colors", isActive ? "text-navy font-bold" : "text-navy/40")}>{item.label}</span>
             </Link>
           );
         })}
