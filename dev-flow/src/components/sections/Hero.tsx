@@ -1,17 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { VendorCard } from "@/components/ui/VendorCard";
-import { Check, Network } from "lucide-react";
+import { Check, Network, Activity } from "lucide-react";
 import * as motion from "framer-motion/client";
+import { AnimatePresence } from "framer-motion";
 
 export function Hero() {
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    // 0: Initial (Cards enter)
+    // 1: Comparing (Cards active, text shows)
+    // 2: Recommended (Central node + insight)
+    const t1 = setTimeout(() => setPhase(1), 2000);
+    const t2 = setTimeout(() => setPhase(2), 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+
   return (
     <section className="relative pt-28 pb-16 md:pt-32 md:pb-20 lg:pt-48 lg:pb-32 px-4 md:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
         
-        {/* LEFT COPY */}
+        {/* LEFT COPY - Preserved from desktop design */}
         <div className="flex flex-col items-start gap-6 md:gap-8 z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -71,15 +83,14 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* RIGHT VISUAL */}
-        <div className="relative h-[500px] md:h-[550px] lg:h-[600px] flex items-center justify-center mt-8 lg:mt-0 w-full">
+        {/* RIGHT VISUAL - Adapts to app-style sequence on mobile */}
+        <div className="relative h-[550px] md:h-[550px] lg:h-[600px] flex items-center justify-center mt-4 md:mt-8 lg:mt-0 w-full">
           <div className="absolute inset-0 bg-gradient-to-tr from-coral/5 to-cobalt/5 rounded-[32px] md:rounded-[40px] -z-10" />
           
-          <div className="w-full max-w-[320px] md:max-w-md relative scale-90 sm:scale-100 origin-center">
+          <div className="w-full max-w-[340px] md:max-w-md relative scale-[0.95] sm:scale-100 origin-center">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
               className="bg-navy rounded-2xl p-3 md:p-4 shadow-2xl relative z-10 text-center mb-6 md:mb-8 mx-auto w-4/5 md:w-full"
             >
               <div className="text-[8px] md:text-[10px] font-bold text-white/50 tracking-widest uppercase mb-1">Requirement</div>
@@ -89,55 +100,64 @@ export function Hero() {
             {/* Connecting Line from Requirement to Intelligence */}
             <div className="absolute left-1/2 top-14 md:top-16 w-0.5 h-10 md:h-12 bg-navy/10 -translate-x-1/2 -z-10" />
 
-            <div className="grid grid-cols-1 gap-3 md:gap-4 relative">
-              {/* Intelligence Node Background */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64 bg-lime/10 rounded-full blur-3xl -z-10" />
+            <div className="relative">
+              {/* Desktop Intelligence Node Background (Kept for desktop) */}
+              <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-lime/10 rounded-full blur-3xl -z-10 transition-opacity duration-1000" style={{ opacity: phase === 2 ? 1 : 0 }} />
               
-              <VendorCard
-                name="Vendor B"
-                price="₹88,000"
-                tier="BRONZE"
-                rating={3.6}
-                delivery="5-day delivery"
-                delay={0.5}
-                className="scale-[0.85] md:scale-90 opacity-70 origin-bottom"
-              />
-              
-              <VendorCard
-                name="Vendor A"
-                price="₹94,000"
-                tier="GOLD"
-                rating={4.8}
-                delivery="2-day delivery"
-                isRecommended
-                delay={0.7}
-                className="z-20 -my-5 md:-my-4"
-              />
-              
-              <VendorCard
-                name="Vendor C"
-                price="₹97,000"
-                tier="GOLD"
-                rating={4.9}
-                delivery="1-day delivery"
-                delay={0.9}
-                className="scale-[0.85] md:scale-90 opacity-70 origin-top"
-              />
-            </div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-              className="mt-6 md:mt-8 text-center bg-white/80 md:bg-white/60 backdrop-blur rounded-xl p-3 md:p-4 border border-navy/5 shadow-lg md:shadow-none mx-auto w-[95%] md:w-full"
-            >
-              <Network className="w-4 h-4 md:w-5 md:h-5 mx-auto mb-1 md:mb-2 text-cobalt" />
-              <p className="text-xs md:text-sm font-medium text-navy/80">
-                <span className="text-coral font-bold block md:inline mb-1 md:mb-0">DEV FLOW INTELLIGENCE: </span> 
-                ₹6K more than cheapest, but significantly higher trust and faster fulfilment.
-              </p>
-            </motion.div>
+              {/* Animated Cards Container */}
+              <div className="grid grid-cols-1 gap-3 md:gap-4 relative z-20">
+                <motion.div animate={{ opacity: phase === 1 ? 0.4 : phase === 2 ? 0.3 : 1, scale: phase === 2 ? 0.9 : 0.95 }} transition={{ duration: 0.5 }}>
+                  <VendorCard name="Vendor B" price="₹88,000" tier="BRONZE" rating={3.6} delivery="5-day delivery" className="origin-bottom shadow-sm" />
+                </motion.div>
+                
+                <motion.div animate={{ scale: phase === 2 ? 1.05 : 1, zIndex: phase === 2 ? 30 : 20, y: phase === 2 ? -10 : 0 }} transition={{ duration: 0.5 }}>
+                  <VendorCard name="Vendor A" price="₹94,000" tier="GOLD" rating={4.8} delivery="2-day delivery" isRecommended={phase === 2} className={`shadow-xl ${phase === 2 ? 'border-coral shadow-coral/20' : ''}`} />
+                </motion.div>
+                
+                <motion.div animate={{ opacity: phase === 1 ? 0.4 : phase === 2 ? 0.3 : 1, scale: phase === 2 ? 0.9 : 0.95 }} transition={{ duration: 0.5 }}>
+                  <VendorCard name="Vendor C" price="₹97,000" tier="GOLD" rating={4.9} delivery="1-day delivery" className="origin-top shadow-sm" />
+                </motion.div>
+              </div>
 
+              {/* Mobile "Comparing..." Overlay state */}
+              <AnimatePresence>
+                {phase === 1 && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }} 
+                    animate={{ opacity: 1, scale: 1 }} 
+                    exit={{ opacity: 0, scale: 1.1 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center z-40"
+                  >
+                    <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-3xl" />
+                    <div className="relative bg-navy text-white rounded-2xl p-6 shadow-2xl border border-navy/10 flex flex-col items-center text-center max-w-[240px]">
+                      <Activity className="w-8 h-8 text-coral animate-pulse mb-4" />
+                      <div className="text-[10px] font-bold tracking-widest text-white/50 uppercase mb-2">DEV FLOW IS COMPARING</div>
+                      <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
+                        <span className="text-lime">Price</span> • <span>Trust</span> • <span>Experience</span> • <span className="text-cobalt">Delivery</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Phase 2: Insight Reveal */}
+              <AnimatePresence>
+                {phase === 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute -bottom-16 left-0 right-0 z-50 mt-6 md:mt-8 text-center bg-white/95 md:bg-white/80 backdrop-blur-md rounded-xl p-3 md:p-4 border border-navy/10 shadow-xl mx-auto w-[105%] md:w-full"
+                  >
+                    <Network className="w-4 h-4 md:w-5 md:h-5 mx-auto mb-1 md:mb-2 text-cobalt" />
+                    <p className="text-[11px] md:text-sm font-medium text-navy/80 leading-relaxed">
+                      <span className="text-coral font-bold block md:inline mb-1 md:mb-0">DEV FLOW INTELLIGENCE: </span> 
+                      ₹6K more than the cheapest option, but significantly higher trust and faster fulfilment.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+            </div>
           </div>
         </div>
 
