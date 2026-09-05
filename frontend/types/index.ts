@@ -27,15 +27,18 @@ export interface Category {
   maxDiscountPct: number;
 }
 
-export interface Product { imageUrl?: string; seller?: User; 
+export interface Product {
   id: number;
   name: string;
-  category: Category;
-  basePrice: number;
+  category?: Category;
+  basePrice: number; // Selling price
+  actualPrice?: number; // Actual MRP / Original price
   unit?: string;
   taxRate?: number;
   description?: string;
   isRecurring: boolean;
+  imageUrl?: string;
+  seller?: User;
 }
 
 export interface QuotationLine {
@@ -107,4 +110,39 @@ export interface ExtendedUser extends User {
 export interface ExtendedProduct extends Product {
   imageUrl?: string;
   seller?: ExtendedUser;
+}
+
+// ─── Review & Tier Rating System ────────────────────────────────────
+
+export interface Rating {
+  id?: number;
+  orderId?: number;
+  rater?: User;
+  ratee?: User;
+  stars: number;
+  reviewText?: string;
+  imageUrl?: string;
+  createdAt?: string;
+}
+
+export interface TrustScore {
+  id?: number;
+  user?: User;
+  tier: UserTier;
+  avgStars: number;
+  totalTransactions: number;
+  aiSummary?: string;
+  updatedAt?: string;
+}
+
+export interface SellerLeaderboardEntry {
+  sellerId: number;
+  displayName?: string;
+  companyName?: string;
+  email: string;
+  tier: UserTier;
+  avgStars: number;
+  totalTransactions: number;
+  reviewCount: number;
+  aiSummary?: string;
 }
