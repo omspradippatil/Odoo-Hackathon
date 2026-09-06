@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { 
-  ChevronRight, Settings2, ShieldCheck, X, PlayCircle, Search, 
-  FileText, CheckCircle, Handshake, CreditCard, Truck, Receipt, 
-  Activity, Settings, ExternalLink, ChevronDown, ChevronUp
+  ChevronRight, Settings2, ShieldCheck, X, PlayCircle, Search,
+  FileText, CheckCircle, Handshake, CreditCard, Truck, Receipt,
+  Activity, Settings, ExternalLink, ChevronDown, ChevronUp, Gavel
 } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
@@ -88,6 +88,9 @@ const CORE_JOURNEY_STEPS = [
 ];
 
 const ADDITIONAL_SHORTCUTS = [
+  { label: 'Demo Hub', href: '/demo', icon: PlayCircle, role: 'PUBLIC' },
+  { label: 'Live Bidding Calendar', href: '/demo/live-bidding', icon: Gavel, role: 'SALES' },
+  { label: 'Explore (Guest Browsing)', href: '/explore', icon: Search, role: 'PUBLIC' },
   { label: 'Admin Control Center', href: '/admin', icon: Settings, role: 'ADMIN' },
   { label: 'Deal Health Intelligence', href: '/deals/DF-2048/health', icon: Activity, role: 'OPS' },
   { label: 'Trust Intelligence Profile', href: '/vendors/vertex-systems/trust', icon: ShieldCheck, role: 'PUBLIC' },

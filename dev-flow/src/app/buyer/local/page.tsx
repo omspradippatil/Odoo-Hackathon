@@ -70,7 +70,9 @@ export default function LocalSellersPage() {
           image: product.image,
           quantity: 1,
           unitPrice: product.sellingPrice,
-          availableQuantity: product.stock
+          availableQuantity: product.stock,
+          distanceKm: product.distanceKm,
+          sellerLocation: product.sellerLocation
         };
         m.demoState.setCartItems([...m.demoState.getCartItems(), newItem]);
       }

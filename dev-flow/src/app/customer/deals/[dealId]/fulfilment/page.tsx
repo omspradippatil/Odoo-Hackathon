@@ -70,6 +70,13 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
               </div>
               <h1 className="text-3xl font-bold text-navy tracking-tight mb-2">Track your delivery</h1>
               <div className="text-sm font-medium text-navy/60">Your order will arrive in <strong className="text-navy">{localOrder ? '1 shipment' : '2 shipments'}</strong>.</div>
+              {localOrder?.estimatedDelivery && !isConfirmed && (
+                <div className="inline-flex items-center gap-2 mt-3 px-3 py-2 rounded-xl bg-lime/15 border border-lime/30 text-xs font-bold text-navy">
+                  <Truck className="w-3.5 h-3.5 text-lime-700 shrink-0" />
+                  Estimated delivery {localOrder.estimatedDelivery.label}
+                  <span className="font-medium text-navy/50">• {localOrder.estimatedDelivery.rangeLabel}</span>
+                </div>
+              )}
             </div>
             <div className={cn("px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2 border shadow-sm bg-white text-navy border-navy/10")}>
               <Package className="w-4 h-4" />

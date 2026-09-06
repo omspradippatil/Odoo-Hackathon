@@ -10,6 +10,7 @@ import { ArrowRight, Search, ShieldCheck, MapPin, Activity, Check, Filter, X, Ch
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { assignAliases } from "@/lib/anonymity";
 
 // --- MOCK DATA ---
 const MOCK_VENDORS: VendorMatch[] = [
@@ -139,13 +140,12 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
   }, []);
 
   // Compute display vendors based on anonymous flag
-  const displayVendors = MOCK_VENDORS.map((v, i) => {
+  const vendorAliases = assignAliases(resolvedParams.id, MOCK_VENDORS.map((v) => v.vendorId));
+  const displayVendors = MOCK_VENDORS.map((v) => {
     if (isAnonymous) {
-      // Create a stable deterministic fake ID based on the index to prevent hydration mismatch/jumping if we wanted, but since it's a demo it's fine.
-      const fakeId = String.fromCharCode(65 + i) + (10 + i * 7); 
       return {
         ...v,
-        displayName: `Vendor #${fakeId}`
+        displayName: `Vendor "${vendorAliases[v.vendorId]}"`,
       };
     }
     return v;

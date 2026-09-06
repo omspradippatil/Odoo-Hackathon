@@ -1,3 +1,5 @@
+import { estimateDelivery } from "@/lib/deliveryEstimate";
+
 export interface DemoNotification {
   id: string;
   title: string;
@@ -17,6 +19,76 @@ export type QuotationApprovalState =
   | 'REJECTED' 
   | 'REAPPROVAL_REQUIRED' 
   | 'REAPPROVAL_PENDING';
+
+export type BiddingStatus = 'SCHEDULED' | 'LIVE' | 'CLOSED';
+
+export interface BidEntry {
+  id: string;
+  vendorName: string;
+  vendorTier: 'GOLD' | 'SILVER' | 'BRONZE';
+  amount: number;
+  timestamp: string;
+  isYou?: boolean;
+}
+
+export interface BuyerProfile {
+  company: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  deliveryAddress: string;
+  gstin: string;
+}
+
+export interface BiddingSession {
+  id: string;
+  title: string;
+  requirementId: string;
+  quantity: number;
+  unit: string;
+  reservePrice: number;
+  scheduledStart: string;
+  durationMinutes: number;
+  bids: BidEntry[];
+  createdAt: string;
+  anonymous: boolean;
+  buyer: BuyerProfile;
+  awardedBidId?: string;
+  sellerConfirmed?: boolean;
+}
+
+// BIDDING: both sides masked. AWARDED: buyer picked a bid, seller has yet to accept.
+// CONFIRMED: seller accepted — identities and customer contact details are released.
+export type DealStage = 'BIDDING' | 'AWARDED' | 'CONFIRMED';
+
+export function getDealStage(session: BiddingSession): DealStage {
+  if (session.awardedBidId && session.sellerConfirmed) return 'CONFIRMED';
+  if (session.awardedBidId) return 'AWARDED';
+  return 'BIDDING';
+}
+
+// A vendor's real name is only visible once they have won and accepted the deal.
+// Reveal is keyed on the vendor, not the single winning bid — otherwise their own
+// earlier bids stay aliased in the same ladder and can be correlated back by tier.
+export function isIdentityRevealed(session: BiddingSession, bid: BidEntry): boolean {
+  if (!session.anonymous) return true;
+  if (getDealStage(session) !== 'CONFIRMED') return false;
+  const awarded = session.bids.find((b) => b.id === session.awardedBidId);
+  return !!awarded && awarded.vendorName === bid.vendorName;
+}
+
+export function getSessionStatus(session: BiddingSession, now: Date = new Date()): BiddingStatus {
+  const start = new Date(session.scheduledStart).getTime();
+  const end = start + session.durationMinutes * 60_000;
+  if (now.getTime() < start) return 'SCHEDULED';
+  if (now.getTime() < end) return 'LIVE';
+  return 'CLOSED';
+}
+
+export function getLeadingBid(session: BiddingSession): BidEntry | undefined {
+  if (!session.bids.length) return undefined;
+  return session.bids.reduce((best, bid) => (bid.amount < best.amount ? bid : best));
+}
 
 const INITIAL_NOTIFICATIONS: DemoNotification[] = [
   {
@@ -103,6 +175,7 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
 
 const NOTIFICATIONS_STORAGE_KEY = "devflow_demo_notifications";
 const APPROVAL_STATE_STORAGE_KEY = "devflow_demo_approval_state_";
+const BIDDING_STORAGE_KEY = "devflow_demo_bidding_sessions";
 
 // In-memory subscribers
 type Listener = () => void;
@@ -281,6 +354,7 @@ export const demoState = {
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
     const total = cartItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0);
     const platformFee = total * 0.02;
+    const delivery = estimateDelivery(cartItems);
     const newOrder = {
       id: orderId,
       buyerId: "USER-LOCAL-01",
@@ -290,6 +364,7 @@ export const demoState = {
       paymentStatus: "ESCROW_HELD",
       fulfilmentStatus: "PENDING_DISPATCH",
       createdAt: new Date().toISOString(),
+      estimatedDelivery: delivery,
       title: `Local Order - ${cartItems.length} items`,
       items: cartItems.map((item: any) => ({
         productId: item.productId,
@@ -315,6 +390,159 @@ export const demoState = {
       });
     }
     return orderId;
+  },
+
+  // Live Bidding (reverse auction — lowest compliant bid leads)
+  getBiddingSessions(): BiddingSession[] {
+    if (typeof window === "undefined") return seedBiddingSessions();
+    try {
+      const stored = sessionStorage.getItem(BIDDING_STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+      const seeded = seedBiddingSessions();
+      sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(seeded));
+      return seeded;
+    } catch {
+      return seedBiddingSessions();
+    }
+  },
+
+  getBiddingSession(sessionId: string): BiddingSession | undefined {
+    return this.getBiddingSessions().find((s) => s.id === sessionId);
+  },
+
+  scheduleBiddingSession(input: {
+    title: string;
+    quantity: number;
+    unit?: string;
+    reservePrice: number;
+    scheduledStart: string;
+    durationMinutes?: number;
+    anonymous?: boolean;
+  }): string {
+    const id = `BID-${Math.floor(1000 + Math.random() * 9000)}`;
+    const session: BiddingSession = {
+      id,
+      title: input.title,
+      requirementId: `REQ-${Math.floor(1000 + Math.random() * 9000)}`,
+      quantity: input.quantity,
+      unit: input.unit || "units",
+      reservePrice: input.reservePrice,
+      scheduledStart: input.scheduledStart,
+      durationMinutes: input.durationMinutes ?? 45,
+      bids: [],
+      createdAt: new Date().toISOString(),
+      anonymous: input.anonymous ?? true,
+      buyer: DEMO_BUYER,
+    };
+
+    if (typeof window !== "undefined") {
+      try {
+        const sessions = [session, ...this.getBiddingSessions()];
+        sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(sessions));
+        biddingListeners.forEach((l) => l());
+        this.addNotification({
+          title: "Bidding Scheduled",
+          message: `${input.title} opens ${new Date(input.scheduledStart).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}`,
+          type: "negotiation",
+          targetUrl: `/demo/live-bidding?session=${id}`,
+          badgeText: "Bidding",
+        });
+      } catch (e) {
+        console.error("Failed to schedule bidding session", e);
+      }
+    }
+    return id;
+  },
+
+  placeBid(sessionId: string, bid: { vendorName: string; vendorTier: BidEntry["vendorTier"]; amount: number; isYou?: boolean }): void {
+    if (typeof window === "undefined") return;
+    try {
+      const sessions = this.getBiddingSessions().map((session) => {
+        if (session.id !== sessionId) return session;
+        const entry: BidEntry = {
+          id: `bid-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          vendorName: bid.vendorName,
+          vendorTier: bid.vendorTier,
+          amount: bid.amount,
+          timestamp: new Date().toISOString(),
+          isYou: bid.isYou,
+        };
+        return { ...session, bids: [entry, ...session.bids] };
+      });
+      sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(sessions));
+      biddingListeners.forEach((l) => l());
+    } catch (e) {
+      console.error("Failed to place bid", e);
+    }
+  },
+
+  // Buyer picks a winning bid. The vendor stays masked until they accept.
+  awardBid(sessionId: string, bidId: string): void {
+    if (typeof window === "undefined") return;
+    try {
+      const sessions = this.getBiddingSessions().map((session) =>
+        session.id === sessionId ? { ...session, awardedBidId: bidId, sellerConfirmed: false } : session
+      );
+      sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(sessions));
+      biddingListeners.forEach((l) => l());
+
+      const session = sessions.find((s) => s.id === sessionId);
+      if (session) {
+        this.addNotification({
+          title: "Bid Awarded",
+          message: `${session.title} awarded — awaiting seller acceptance.`,
+          type: "negotiation",
+          targetUrl: `/demo/live-bidding?session=${sessionId}`,
+          badgeText: "Awarded",
+        });
+      }
+    } catch (e) {
+      console.error("Failed to award bid", e);
+    }
+  },
+
+  // Seller accepts the award. This is the moment identities unmask and the
+  // buyer's contact and delivery details are released to the winning vendor.
+  confirmDealBySeller(sessionId: string): void {
+    if (typeof window === "undefined") return;
+    try {
+      const sessions = this.getBiddingSessions().map((session) =>
+        session.id === sessionId && session.awardedBidId ? { ...session, sellerConfirmed: true } : session
+      );
+      sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(sessions));
+      biddingListeners.forEach((l) => l());
+
+      const session = sessions.find((s) => s.id === sessionId);
+      if (session) {
+        this.addNotification({
+          title: "Deal Confirmed",
+          message: `${session.title} confirmed — customer details released to the seller.`,
+          type: "system",
+          targetUrl: `/demo/live-bidding?session=${sessionId}`,
+          badgeText: "Confirmed",
+        });
+      }
+    } catch (e) {
+      console.error("Failed to confirm deal", e);
+    }
+  },
+
+  cancelBiddingSession(sessionId: string): void {
+    if (typeof window === "undefined") return;
+    try {
+      const sessions = this.getBiddingSessions().filter((s) => s.id !== sessionId);
+      sessionStorage.setItem(BIDDING_STORAGE_KEY, JSON.stringify(sessions));
+      biddingListeners.forEach((l) => l());
+    } catch (e) {
+      console.error("Failed to cancel bidding session", e);
+    }
+  },
+
+  subscribeBidding(callback: Listener): () => void {
+    biddingListeners.add(callback);
+    return () => {
+      biddingListeners.delete(callback);
+    };
   },
 
   // Mock Products
@@ -345,3 +573,93 @@ export const demoState = {
 };
 
 const cartListeners: Set<Listener> = new Set();
+const biddingListeners: Set<Listener> = new Set();
+
+const DEMO_BUYER: BuyerProfile = {
+  company: "ABC Enterprises Pvt Ltd",
+  contactName: "Rhea Malhotra",
+  email: "procurement@abcenterprises.in",
+  phone: "+91 98204 41172",
+  deliveryAddress: "12th Floor, Tower B, Tech Park, Andheri East, Mumbai 400093",
+  gstin: "27AABCA1234F1Z5",
+};
+
+// Seeds are anchored to the current clock so the demo always has one live room,
+// upcoming rooms on the calendar, and a settled room to inspect.
+function seedBiddingSessions(): BiddingSession[] {
+  const now = new Date();
+
+  const at = (dayOffset: number, hour: number, minute = 0) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() + dayOffset);
+    d.setHours(hour, minute, 0, 0);
+    return d.toISOString();
+  };
+
+  const liveStart = new Date(now.getTime() - 6 * 60_000).toISOString();
+  const closedStart = at(-2, 11);
+
+  const seeds: Omit<BiddingSession, "anonymous" | "buyer">[] = [
+    {
+      id: "BID-2048",
+      title: "50 Enterprise Laptops",
+      requirementId: "REQ-2048",
+      quantity: 50,
+      unit: "units",
+      reservePrice: 94000,
+      scheduledStart: liveStart,
+      durationMinutes: 45,
+      createdAt: closedStart,
+      bids: [
+        { id: "bid-s1", vendorName: "Vertex Systems", vendorTier: "GOLD", amount: 91500, timestamp: new Date(now.getTime() - 5 * 60_000).toISOString() },
+        { id: "bid-s2", vendorName: "Nova Supply Co", vendorTier: "SILVER", amount: 90800, timestamp: new Date(now.getTime() - 4 * 60_000).toISOString() },
+        { id: "bid-s3", vendorName: "Orbit Traders", vendorTier: "BRONZE", amount: 90200, timestamp: new Date(now.getTime() - 2 * 60_000).toISOString() },
+      ],
+    },
+    {
+      id: "BID-2049",
+      title: "120 Ergonomic Office Chairs",
+      requirementId: "REQ-2049",
+      quantity: 120,
+      unit: "units",
+      reservePrice: 12000,
+      scheduledStart: at(1, 11),
+      durationMinutes: 60,
+      createdAt: now.toISOString(),
+      bids: [],
+    },
+    {
+      id: "BID-2050",
+      title: "Annual Network Hardware Refresh",
+      requirementId: "REQ-2050",
+      quantity: 30,
+      unit: "racks",
+      reservePrice: 245000,
+      scheduledStart: at(3, 15, 30),
+      durationMinutes: 90,
+      createdAt: now.toISOString(),
+      bids: [],
+    },
+    {
+      id: "BID-2051",
+      title: "Warehouse Forklift Fleet",
+      requirementId: "REQ-2051",
+      quantity: 8,
+      unit: "units",
+      reservePrice: 680000,
+      scheduledStart: closedStart,
+      durationMinutes: 45,
+      createdAt: at(-5, 9),
+      bids: [
+        { id: "bid-c1", vendorName: "Vertex Systems", vendorTier: "GOLD", amount: 664000, timestamp: at(-2, 11, 12) },
+        { id: "bid-c2", vendorName: "Orbit Traders", vendorTier: "BRONZE", amount: 651000, timestamp: at(-2, 11, 26) },
+        { id: "bid-c3", vendorName: "Nova Supply Co", vendorTier: "SILVER", amount: 648500, timestamp: at(-2, 11, 39) },
+      ],
+      // Already settled, so this room demonstrates the post-reveal state.
+      awardedBidId: "bid-c3",
+      sellerConfirmed: true,
+    },
+  ];
+
+  return seeds.map((seed) => ({ ...seed, anonymous: true, buyer: DEMO_BUYER }));
+}
