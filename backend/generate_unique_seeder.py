@@ -1,4 +1,5 @@
-package com.devflow.backend.config;
+with open("src/main/java/com/devflow/backend/config/DataSeeder.java", "w") as f:
+    f.write("""package com.devflow.backend.config;
 
 import com.devflow.backend.deal.Deal;
 import com.devflow.backend.deal.DealRepository;
@@ -291,7 +292,7 @@ public class DataSeeder implements CommandLineRunner {
             Product p = products.get(i);
             String stage = dealStages[rng.nextInt(dealStages.length)];
             deals.add(new Deal("REQ-" + (2000 + i), 
-                "Bulk Procurement of " + p.getName().replaceAll(" \\[SKU-.*\\]", ""), 
+                "Bulk Procurement of " + p.getName().replaceAll(" \\\\[SKU-.*\\\\]", ""), 
                 p.getCategory(), 
                 p.getBasePrice() * 50, 
                 p.getBasePrice() * 45, 
@@ -390,3 +391,5 @@ public class DataSeeder implements CommandLineRunner {
         log.info("Finished seeding completely UNIQUE massive dataset with distinct images!");
     }
 }
+"""
+    )
