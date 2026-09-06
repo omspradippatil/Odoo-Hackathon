@@ -26,4 +26,18 @@ public class Product {
     private Double basePrice;
 
     private Boolean active;
+
+    // Added fields for local seller product viewing
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+    
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    private String sellerId;
+    private String sellerName;
+    private String city;
+    private Integer stock;
+    private Integer trustScore;
+    private String verificationStatus;
 }
