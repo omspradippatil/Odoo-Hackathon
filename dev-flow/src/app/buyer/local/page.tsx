@@ -6,7 +6,7 @@ import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { 
   Search, MapPin, Building2, ShieldCheck, Star, Package, 
-  ChevronLeft, ChevronRight, Truck, Store, ArrowRight, MessageSquare, Scale, X, Send
+  ChevronLeft, ChevronRight, Truck, Store, ArrowRight, MessageSquare, Scale, X, Send, ShoppingCart, Plus, Minus, Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as motion from "framer-motion/client";
@@ -34,6 +34,84 @@ export default function LocalSellersPage() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  
+  // Cart
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    import("@/lib/demoState").then(m => {
+      setCartItems(m.demoState.getCartItems());
+      const unsub = m.demoState.subscribeCart(() => setCartItems(m.demoState.getCartItems()));
+      return () => unsub();
+    });
+  }, []);
+
+  const addToCart = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    import("@/lib/demoState").then(m => {
+      const currentCart = m.demoState.getCartItems();
+      const existing = currentCart.find(i => i.productId === product.id);
+      if (existing) {
+        if (existing.quantity < product.stock) {
+           existing.quantity += 1;
+           m.demoState.setCartItems([...currentCart]);
+        }
+      } else {
+        const newItem = {
+          id: Math.random().toString(36).substr(2, 9),
+          productId: product.id,
+          sellerId: product.sellerId,
+          sellerName: product.sellerName,
+          name: product.name,
+          image: product.image,
+          quantity: 1,
+          unitPrice: product.sellingPrice,
+          availableQuantity: product.stock
+        };
+        m.demoState.setCartItems([...currentCart, newItem]);
+      }
+      setIsCartOpen(true);
+    });
+  };
+
+  const updateQuantity = (id: string, delta: number) => {
+    import("@/lib/demoState").then(m => {
+      const currentCart = m.demoState.getCartItems();
+      const item = currentCart.find(i => i.id === id);
+      if (item) {
+        const newQ = item.quantity + delta;
+        if (newQ > 0 && newQ <= item.availableQuantity) {
+          item.quantity = newQ;
+          m.demoState.setCartItems([...currentCart]);
+        } else if (newQ === 0) {
+          m.demoState.setCartItems(currentCart.filter(i => i.id !== id));
+        }
+      }
+    });
+  };
+
+  const removeCartItem = (id: string) => {
+    import("@/lib/demoState").then(m => {
+      const currentCart = m.demoState.getCartItems();
+      m.demoState.setCartItems(currentCart.filter(i => i.id !== id));
+    });
+  };
+
+  const cartItemCount = cartItems.reduce((acc, i) => acc + i.quantity, 0);
+  const cartSubtotal = cartItems.reduce((acc, i) => acc + (i.unitPrice * i.quantity), 0);
+
+  const handleCheckout = () => {
+    // Guest checkout logic
+    import("@/lib/authService").then(m => {
+      const user = m.authService.getCurrentUser();
+      if (!user) {
+        router.push("/login?returnTo=/buyer/checkout");
+      } else {
+        router.push("/buyer/checkout");
+      }
+    });
+  };
 
   useEffect(() => {
     fetch("http://localhost:8080/api/products")
@@ -142,6 +220,19 @@ export default function LocalSellersPage() {
           <div>
             <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Local Sellers</h1>
             <p className="text-navy/60 font-medium text-lg">Discover products available immediately in your area.</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-3 rounded-xl bg-white border border-navy/10 shadow-sm text-navy hover:bg-navy/5 transition-colors"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              {cartItemCount > 0 && (
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-coral text-white text-xs font-bold flex items-center justify-center shadow-md">
+                  {cartItemCount}
+                </div>
+              )}
+            </button>
           </div>
         </div>
 
@@ -270,10 +361,10 @@ export default function LocalSellersPage() {
                       <MessageSquare className="w-3.5 h-3.5" /> Chat
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); router.push("/login?returnTo=/buyer/requirements/new"); }}
+                      onClick={(e) => addToCart(product, e)}
                       className="flex-1 py-2 px-2 text-[10px] md:text-xs font-bold text-white bg-navy hover:bg-navy/90 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-1.5"
                     >
-                      Buy Now <ArrowRight className="w-3.5 h-3.5" />
+                      Add to Cart <Plus className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -392,6 +483,68 @@ export default function LocalSellersPage() {
                   </tbody>
                 </table>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* CART DRAWER */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <div className="fixed inset-0 z-[120] flex justify-end">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-navy/60 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
+            <motion.div 
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="bg-white w-full max-w-md h-full relative z-10 shadow-2xl flex flex-col"
+            >
+              {/* Header */}
+              <div className="p-6 border-b border-navy/5 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-navy flex items-center gap-2"><ShoppingCart className="w-6 h-6 text-cobalt" /> Your Cart</h2>
+                <button onClick={() => setIsCartOpen(false)} className="p-2 bg-warm rounded-full hover:bg-navy/5"><X className="w-5 h-5 text-navy" /></button>
+              </div>
+              
+              {/* Items */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {cartItems.length === 0 ? (
+                  <div className="text-center py-20 opacity-50">
+                    <ShoppingCart className="w-12 h-12 mx-auto mb-4" />
+                    <p className="font-bold">Your cart is empty.</p>
+                  </div>
+                ) : (
+                  cartItems.map(item => (
+                    <div key={item.id} className="flex gap-4 p-4 border border-navy/5 rounded-2xl shadow-sm">
+                      <img src={item.image} className="w-20 h-20 object-cover rounded-xl" />
+                      <div className="flex-1">
+                        <div className="text-sm font-bold text-navy mb-1 leading-tight">{item.name}</div>
+                        <div className="text-[10px] text-navy/50 uppercase tracking-widest mb-2">{item.sellerName}</div>
+                        <div className="font-bold text-navy">{formatCurrency(item.unitPrice)}</div>
+                        
+                        <div className="flex items-center justify-between mt-3">
+                          <div className="flex items-center gap-3 bg-navy/5 rounded-lg px-2 py-1">
+                            <button onClick={() => updateQuantity(item.id, -1)} className="text-navy hover:text-cobalt"><Minus className="w-4 h-4" /></button>
+                            <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                            <button onClick={() => updateQuantity(item.id, 1)} className="text-navy hover:text-cobalt"><Plus className="w-4 h-4" /></button>
+                          </div>
+                          <button onClick={() => removeCartItem(item.id)} className="text-coral hover:bg-coral/10 p-1.5 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              
+              {/* Footer */}
+              {cartItems.length > 0 && (
+                <div className="p-6 bg-navy text-white shadow-[0_-10px_20px_rgba(0,0,0,0.1)]">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-sm font-medium text-white/70">Subtotal</span>
+                    <span className="text-xl font-bold">{formatCurrency(cartSubtotal)}</span>
+                  </div>
+                  <button onClick={handleCheckout} className="w-full py-4 bg-cobalt hover:bg-cobalt/90 text-white font-bold rounded-xl shadow-lg transition-colors flex items-center justify-center gap-2">
+                    Proceed to Checkout <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </motion.div>
           </div>
         )}

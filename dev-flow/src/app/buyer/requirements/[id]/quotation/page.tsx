@@ -253,6 +253,18 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
+        {demoState.getAnonymousBidding() && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 bg-lime/10 border border-lime/20 rounded-2xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-full bg-lime/20 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-lime-700" />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold text-lime-800 uppercase tracking-widest mb-1">Identity Revealed</div>
+              <div className="text-sm font-bold text-navy">Commercial selection confirmed. Vendor identities (Vertex Systems, NexaByte) are now unmasked for quotation building.</div>
+            </div>
+          </motion.div>
+        )}
+
         {/* SIGNATURE MOTION LINE */}
         <div className="w-full bg-white p-4 rounded-2xl border border-navy/5 shadow-sm overflow-x-auto no-scrollbar">
           <div className="flex items-center min-w-[700px] justify-between relative px-4">

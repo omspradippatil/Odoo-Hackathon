@@ -167,6 +167,9 @@ export default function NewRequirementPage() {
     setErrors({});
     setIsCreating(true);
     
+    // Save anonymous bidding flag for the demo
+    import("@/lib/demoState").then(m => m.demoState.setAnonymousBidding(req.anonymousBiddingEnabled));
+    
     setTimeout(() => {
       // Stable Demo ID
       router.push("/buyer/requirements/REQ-1048");

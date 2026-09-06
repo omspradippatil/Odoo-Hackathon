@@ -219,5 +219,48 @@ export const demoState = {
     return () => {
       approvalStateListeners.delete(callback);
     };
+  },
+  
+  // Anonymous Bidding
+  getAnonymousBidding(): boolean {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("devflow_demo_anon_bidding") === "true";
+  },
+  setAnonymousBidding(enabled: boolean): void {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("devflow_demo_anon_bidding", enabled.toString());
+  },
+
+  // Cart
+  getCartItems(): any[] {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(sessionStorage.getItem("devflow_demo_cart") || "[]");
+    } catch { return []; }
+  },
+  setCartItems(items: any[]): void {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("devflow_demo_cart", JSON.stringify(items));
+    cartListeners.forEach(l => l());
+  },
+  subscribeCart(callback: Listener): () => void {
+    cartListeners.add(callback);
+    return () => {
+      cartListeners.delete(callback);
+    };
+  },
+
+  // Local Orders
+  getLocalOrders(): any[] {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(sessionStorage.getItem("devflow_demo_local_orders") || "[]");
+    } catch { return []; }
+  },
+  setLocalOrders(orders: any[]): void {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("devflow_demo_local_orders", JSON.stringify(orders));
   }
 };
+
+const cartListeners: Set<Listener> = new Set();

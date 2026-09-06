@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRightLeft, Eye, EyeOff, Loader2, CheckCircle2, ChevronRight, Briefcase, ShoppingBag, Store, UserCog, Calculator } from "lucide-react";
+import { ArrowRightLeft, Eye, EyeOff, Loader2, CheckCircle2, ChevronRight, Briefcase, ShoppingBag, Store, UserCog, Calculator, MapPin } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/Input";
@@ -29,6 +29,7 @@ function SignupContent() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -36,6 +37,10 @@ function SignupContent() {
     email: "",
     phone: "",
     company: "",
+    state: "",
+    town: "",
+    village: "",
+    address: "",
     role: UserRole.BUYER as UserRole,
     password: "",
     confirmPassword: "",
@@ -45,6 +50,21 @@ function SignupContent() {
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError("");
+  };
+
+  const handleAutoDetect = () => {
+    setIsDetecting(true);
+    // Simulate network delay for geolocation/geocoding
+    setTimeout(() => {
+      setFormData(prev => ({
+        ...prev,
+        state: "Maharashtra",
+        town: "Palghar",
+        village: "Boisar",
+        address: "123 Smart City Road, Boisar, Palghar, Maharashtra 401501"
+      }));
+      setIsDetecting(false);
+    }, 1500);
   };
 
   const validateStep1 = () => {
@@ -187,6 +207,85 @@ function SignupContent() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Company / Organization <span className="text-navy/30 font-normal lowercase tracking-normal">(Optional)</span></label>
                     <Input placeholder="Acme Corp" value={formData.company} onChange={e => handleChange("company", e.target.value)} autoComplete="organization" />
+                  </div>
+
+                  <div className="space-y-1.5 pt-4 border-t border-navy/10 mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-bold text-navy/70 uppercase tracking-widest ml-1">Location Details</label>
+                      <button type="button" onClick={handleAutoDetect} className="text-[10px] font-bold text-coral flex items-center gap-1.5 hover:text-coral/80 transition-colors bg-coral/10 px-3 py-1.5 rounded-full uppercase tracking-wider">
+                        {isDetecting ? <Loader2 className="w-3 h-3 animate-spin" /> : <MapPin className="w-3 h-3" />}
+                        {isDetecting ? "Detecting..." : "Auto-Detect Address"}
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-navy/50 uppercase tracking-widest ml-1">State</label>
+                        <div className="relative">
+                          <select 
+                            className="w-full bg-white border border-navy/10 rounded-xl px-4 py-3.5 text-sm font-medium text-navy focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/20 transition-all shadow-sm appearance-none"
+                            value={formData.state}
+                            onChange={e => handleChange("state", e.target.value)}
+                          >
+                            <option value="">Select State</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Karnataka">Karnataka</option>
+                          </select>
+                          <ChevronRight className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-navy/40 rotate-90 pointer-events-none" />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-navy/50 uppercase tracking-widest ml-1">Town</label>
+                        <div className="relative">
+                          <select 
+                            className="w-full bg-white border border-navy/10 rounded-xl px-4 py-3.5 text-sm font-medium text-navy focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/20 transition-all shadow-sm appearance-none"
+                            value={formData.town}
+                            onChange={e => handleChange("town", e.target.value)}
+                          >
+                            <option value="">Select Town</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Palghar">Palghar</option>
+                            <option value="Bhayandar">Bhayandar</option>
+                            <option value="Surat">Surat</option>
+                            <option value="Bengaluru">Bengaluru</option>
+                          </select>
+                          <ChevronRight className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-navy/40 rotate-90 pointer-events-none" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-3">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-navy/50 uppercase tracking-widest ml-1">Village/Area</label>
+                        <div className="relative">
+                          <select 
+                            className="w-full bg-white border border-navy/10 rounded-xl px-4 py-3.5 text-sm font-medium text-navy focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/20 transition-all shadow-sm appearance-none"
+                            value={formData.village}
+                            onChange={e => handleChange("village", e.target.value)}
+                          >
+                            <option value="">Select Village</option>
+                            <option value="Boisar">Boisar</option>
+                            <option value="Safale">Safale</option>
+                            <option value="Virar">Virar</option>
+                            <option value="Koramangala">Koramangala</option>
+                          </select>
+                          <ChevronRight className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-navy/40 rotate-90 pointer-events-none" />
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-navy/50 uppercase tracking-widest ml-1">Detected Address</label>
+                        <div className="relative">
+                          <Input 
+                            placeholder="Address will appear here..." 
+                            value={formData.address} 
+                            readOnly 
+                            className={formData.address ? "bg-lime/5 border-lime/20 text-navy font-semibold pr-10" : "bg-navy/5 cursor-not-allowed text-navy/60"}
+                          />
+                          {formData.address && <CheckCircle2 className="w-4 h-4 text-lime absolute right-4 top-1/2 -translate-y-1/2" />}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="pt-6">

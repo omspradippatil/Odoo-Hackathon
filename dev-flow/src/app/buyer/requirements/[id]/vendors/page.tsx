@@ -129,8 +129,38 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
   const [compareList, setCompareList] = useState<VendorMatch[]>([]);
   
   const [showSplit, setShowSplit] = useState(true);
+  
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    import("@/lib/demoState").then(m => setIsAnonymous(m.demoState.getAnonymousBidding()));
+  }, []);
+
+  // Compute display vendors based on anonymous flag
+  const displayVendors = MOCK_VENDORS.map((v, i) => {
+    if (isAnonymous) {
+      // Create a stable deterministic fake ID based on the index to prevent hydration mismatch/jumping if we wanted, but since it's a demo it's fine.
+      const fakeId = String.fromCharCode(65 + i) + (10 + i * 7); 
+      return {
+        ...v,
+        displayName: `Vendor #${fakeId}`
+      };
+    }
+    return v;
+  });
+
+  const displaySplit = isAnonymous ? {
+    ...MOCK_SPLIT,
+    vendors: MOCK_SPLIT.vendors.map((sv, i) => {
+      const match = displayVendors.find(dv => dv.vendorId === sv.vendor.vendorId);
+      return {
+        ...sv,
+        vendor: match || sv.vendor
+      };
+    })
+  } : displaySplit;
 
   // Fake analysis sequence
   useEffect(() => {
@@ -248,7 +278,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                 <div className="bg-navy/5 p-4 border-b border-navy/5 flex items-center justify-between">
                   <h2 className="text-xs font-bold text-navy uppercase tracking-widest">Match Overview</h2>
                   <button onClick={() => setShowWhyModal(true)} className="text-xs font-bold text-cobalt hover:text-navy uppercase tracking-widest flex items-center gap-1 transition-colors">
-                    Why DEV FLOW prefers Vertex <ArrowRight className="w-3 h-3" />
+                    Why DEV FLOW prefers {displayVendors[0].displayName.split(' ')[0]} <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
                 
@@ -256,7 +286,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                   {/* CHEAPEST */}
                   <div className="flex-1 p-6 md:p-8 flex flex-col items-center text-center opacity-70 hover:opacity-100 transition-opacity">
                     <div className="text-[10px] font-bold text-coral uppercase tracking-widest bg-coral/10 px-3 py-1 rounded-full mb-6">Cheapest Quote</div>
-                    <div className="text-xl font-bold text-navy mb-2">QuickByte Traders</div>
+                    <div className="text-xl font-bold text-navy mb-2">{displayVendors[1].displayName}</div>
                     <div className="text-3xl font-bold text-navy mb-4">₹4,40,000</div>
                     <TrustBadge tier="BRONZE" score={61} label="Limited Platform History" />
                     <div className="space-y-2 mt-6 text-sm font-medium text-navy/60 w-full bg-warm/50 p-4 rounded-xl">
@@ -275,7 +305,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                   <div className="flex-1 p-6 md:p-8 flex flex-col items-center text-center bg-lime/5 border-l border-navy/5 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-lime/20 rounded-full blur-2xl pointer-events-none" />
                     <div className="text-[10px] font-bold text-lime-800 uppercase tracking-widest bg-lime/20 px-3 py-1 rounded-full mb-6 z-10">Best Overall Value</div>
-                    <div className="text-xl font-bold text-navy mb-2 z-10">Vertex Systems</div>
+                    <div className="text-xl font-bold text-navy mb-2 z-10">{displayVendors[0].displayName}</div>
                     <div className="text-3xl font-bold text-navy mb-4 z-10">₹4,70,000</div>
                     <div className="z-10"><TrustBadge tier="GOLD" score={92} label="Highly Reliable History" /></div>
                     <div className="space-y-2 mt-6 text-sm font-medium text-navy/60 w-full bg-white/60 p-4 rounded-xl z-10 border border-lime/10">
@@ -285,7 +315,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                     <div className="mt-6 text-xs font-bold text-navy/70 z-10 bg-white px-4 py-2 rounded-lg border border-navy/5 shadow-sm inline-flex items-center gap-2">
                       <span className="text-coral">+ ₹30,000</span> but <span className="text-lime-700">+31 Trust</span> & <span className="text-lime-700">3 days faster</span>
                     </div>
-                    <button onClick={() => handleSelect(MOCK_VENDORS[0])} className="w-full mt-6 py-3.5 bg-navy text-white font-bold rounded-xl shadow-lg shadow-navy/20 z-10 hover:bg-navy/90 transition-colors">Select Recommended</button>
+                    <button onClick={() => handleSelect(displayVendors[0])} className="w-full mt-6 py-3.5 bg-navy text-white font-bold rounded-xl shadow-lg shadow-navy/20 z-10 hover:bg-navy/90 transition-colors">Select Recommended</button>
                   </div>
                 </div>
               </div>
@@ -341,12 +371,12 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                       {/* Middle Nodes */}
                       <div className="absolute left-1/2 -translate-x-1/2 top-0 flex flex-col items-center z-10">
                         <div className="bg-white px-3 py-1.5 rounded-lg border border-navy/10 shadow-sm text-xs font-bold text-navy flex items-center gap-2">
-                          Vertex <span className="text-cobalt">30</span>
+                          {displayVendors[0].displayName.split(' ')[0]} <span className="text-cobalt">30</span>
                         </div>
                       </div>
                       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 flex flex-col items-center z-10">
                         <div className="bg-white px-3 py-1.5 rounded-lg border border-navy/10 shadow-sm text-xs font-bold text-navy flex items-center gap-2">
-                          NexaByte <span className="text-cobalt">20</span>
+                          {displayVendors[2].displayName.split(' ')[0]} <span className="text-cobalt">20</span>
                         </div>
                       </div>
 
@@ -362,7 +392,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                         <div className="text-[9px] font-bold text-navy/40 uppercase tracking-widest mb-1">Blended Value</div>
                         <div className="text-lg font-bold text-navy">₹4,64,000</div>
                       </div>
-                      <button onClick={() => handleSelect(MOCK_SPLIT)} className="w-full py-2.5 bg-cobalt text-white text-xs font-bold rounded-xl shadow-md shadow-cobalt/20 hover:bg-cobalt/90 transition-colors">Use Split Fulfilment</button>
+                      <button onClick={() => handleSelect(displaySplit)} className="w-full py-2.5 bg-cobalt text-white text-xs font-bold rounded-xl shadow-md shadow-cobalt/20 hover:bg-cobalt/90 transition-colors">Use Split Fulfilment</button>
                     </div>
                   </div>
                 </div>
@@ -370,7 +400,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
 
               {/* VENDOR LIST */}
               <div className="space-y-4">
-                {MOCK_VENDORS.map(v => (
+                {displayVendors.map(v => (
                   <VendorCard key={v.vendorId} vendor={v} onSelect={handleSelect} isComparing={false} />
                 ))}
               </div>
@@ -390,7 +420,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                   <BarChart2 className="w-12 h-12 text-navy/20 mx-auto mb-4" />
                   <p className="text-navy font-bold mb-6">Select vendors from the list below to compare.</p>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    {MOCK_VENDORS.map(v => (
+                    {displayVendors.map(v => (
                       <VendorCard key={v.vendorId} vendor={v} isComparing={true} isSelectedForCompare={compareList.find(c => c.vendorId === v.vendorId)} onCompare={handleCompareToggle} />
                     ))}
                   </div>
@@ -448,7 +478,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                   <div className="bg-navy/5 p-6 rounded-2xl">
                     <h3 className="text-sm font-bold text-navy mb-4">Add more vendors to compare</h3>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      {MOCK_VENDORS.filter(v => !compareList.find(c => c.vendorId === v.vendorId)).map(v => (
+                      {displayVendors.filter(v => !compareList.find(c => c.vendorId === v.vendorId)).map(v => (
                         <VendorCard key={v.vendorId} vendor={v} isComparing={true} isSelectedForCompare={false} onCompare={handleCompareToggle} />
                       ))}
                     </div>
@@ -520,7 +550,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
 
               <div className="flex-1 overflow-y-auto space-y-8 no-scrollbar pb-10">
                 <div>
-                  <h3 className="text-2xl font-bold text-navy mb-4 leading-tight">Vertex Systems is not the cheapest option.</h3>
+                  <h3 className="text-2xl font-bold text-navy mb-4 leading-tight">{displayVendors[0].displayName} is not the cheapest option.</h3>
                   <p className="text-navy/70 font-medium text-lg">DEV FLOW recommends it because:</p>
                 </div>
 
@@ -552,7 +582,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
               </div>
 
               <div className="pt-6 border-t border-navy/10">
-                <button onClick={() => { setShowWhyModal(false); handleSelect(MOCK_VENDORS[0]); }} className="w-full py-4 rounded-xl bg-navy text-white font-bold shadow-lg hover:bg-navy/90 transition-colors">Select Vertex Systems</button>
+                <button onClick={() => { setShowWhyModal(false); handleSelect(displayVendors[0]); }} className="w-full py-4 rounded-xl bg-navy text-white font-bold shadow-lg hover:bg-navy/90 transition-colors">Select {displayVendors[0].displayName}</button>
               </div>
             </motion.div>
           </>
