@@ -1,5 +1,11 @@
 package com.devflow.backend.config;
 
+import com.devflow.backend.deal.Deal;
+import com.devflow.backend.deal.DealRepository;
+import com.devflow.backend.notification.Notification;
+import com.devflow.backend.notification.NotificationRepository;
+import com.devflow.backend.quotation.Quotation;
+import com.devflow.backend.quotation.QuotationRepository;
 import com.devflow.backend.inventory.Inventory;
 import com.devflow.backend.inventory.InventoryRepository;
 import com.devflow.backend.product.Product;
@@ -14,6 +20,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -25,15 +32,24 @@ public class DataSeeder implements CommandLineRunner {
     private final WarehouseRepository warehouseRepository;
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
+    private final DealRepository dealRepository;
+    private final NotificationRepository notificationRepository;
+    private final QuotationRepository quotationRepository;
 
     public DataSeeder(VendorRepository vendorRepository,
                       WarehouseRepository warehouseRepository,
                       ProductRepository productRepository,
-                      InventoryRepository inventoryRepository) {
+                      InventoryRepository inventoryRepository,
+                      DealRepository dealRepository,
+                      NotificationRepository notificationRepository,
+                      QuotationRepository quotationRepository) {
         this.vendorRepository = vendorRepository;
         this.warehouseRepository = warehouseRepository;
         this.productRepository = productRepository;
         this.inventoryRepository = inventoryRepository;
+        this.dealRepository = dealRepository;
+        this.notificationRepository = notificationRepository;
+        this.quotationRepository = quotationRepository;
     }
 
     @Override
@@ -65,6 +81,29 @@ public class DataSeeder implements CommandLineRunner {
         List<Inventory> inventoryList = createInventory(warehouses, products, 500);
         inventoryRepository.saveAll(inventoryList);
         log.info("Successfully seeded {} inventory stock records.", inventoryList.size());
+
+        if (dealRepository.count() == 0) {
+            seedDeals();
+            seedNotifications();
+            quotationRepository.save(new Quotation("QT-2048", "DRAFT"));
+        }
+    }
+
+    private void seedDeals() {
+        dealRepository.save(new Deal("REQ-2048", "50 High-Performance Engineering Workstations", "IT & Computing", 2000000.0, 1840000.0, "COMPARING", 12, 3, "Apex Industrial Supplies Ltd", LocalDate.parse("2026-08-26"), "Mumbai, Maharashtra", false));
+        dealRepository.save(new Deal("REQ-1985", "120 Solenoid Directional Valves CETOP 3", "Hydraulics & Pneumatics", 3000000.0, 2891000.0, "APPROVED", 6, 4, "Bosch Rexroth India", LocalDate.parse("2026-08-14"), "Jamshedpur, Jharkhand", false));
+        dealRepository.save(new Deal("REQ-1990", "15 Industrial VFD Motor Drives 7.5kW", "Electrical & Power", 700000.0, 630000.0, "NEGOTIATING", 8, 3, "ABB Power & Robotics", LocalDate.parse("2026-08-28"), "Hyderabad, Telangana", false));
+        dealRepository.save(new Deal("REQ-2055", "400 Deep Groove Ball Bearings 6205", "Mechanical Components", 1100000.0, 967600.0, "FULFILLED", 15, 6, "SKF Bearings India", LocalDate.parse("2026-08-05"), "Ludhiana, Punjab", false));
+        dealRepository.save(new Deal("REQ-2104", "500m 4-Core Armored Copper Busbar Cable", "Electrical & Power", 4000000.0, 3681600.0, "SOURCING", 10, 1, "Polycab Wires Ltd", LocalDate.parse("2026-09-02"), "Bengaluru, Karnataka", false));
+    }
+
+    private void seedNotifications() {
+        notificationRepository.save(new Notification("notif-1", "Approval Requested", "Approval requested for QT-2048 (12% discount exceeds 5% authority)", "approval", "10m ago", false, "/approvals/QT-2048", "Approval"));
+        notificationRepository.save(new Notification("notif-2", "Customer Counter-Offer", "Customer requested a 15% discount on quotation V2", "negotiation", "25m ago", false, "/negotiation/QT-2048", "Negotiation"));
+        notificationRepository.save(new Notification("notif-3", "Payment Received", "Payment of ₹2.52L received for Deal DF-2048", "payment", "1h ago", false, "/operations/payments/DF-2048", "Payment"));
+        notificationRepository.save(new Notification("notif-4", "Warehouse Dispatch", "Shipment from Mumbai warehouse dispatched (Trk #WB-88219)", "fulfilment", "2h ago", true, "/operations/fulfilment/DF-2048", "Fulfilment"));
+        notificationRepository.save(new Notification("notif-5", "Delivery Confirmed", "Delivery confirmation received for Nova Retail expansion", "fulfilment", "3h ago", true, "/customer/deals/DF-2048/fulfilment", "Delivery"));
+        notificationRepository.save(new Notification("notif-6", "Invoice Generated", "INV-2048-01 generated for ₹8.40L", "billing", "Yesterday", true, "/operations/billing/DF-2048", "Billing"));
     }
 
     private List<Vendor> createVendors() {

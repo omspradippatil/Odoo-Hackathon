@@ -249,7 +249,7 @@ export const demoState = {
       cartListeners.delete(callback);
     };
   },
-
+  
   // Local Orders
   getLocalOrders(): any[] {
     if (typeof window === "undefined") return [];
@@ -257,9 +257,70 @@ export const demoState = {
       return JSON.parse(sessionStorage.getItem("devflow_demo_local_orders") || "[]");
     } catch { return []; }
   },
-  setLocalOrders(orders: any[]): void {
-    if (typeof window === "undefined") return;
-    sessionStorage.setItem("devflow_demo_local_orders", JSON.stringify(orders));
+  createLocalOrder(cartItems: any[]): string {
+    const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const total = cartItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0);
+    const platformFee = total * 0.02;
+    const newOrder = {
+      id: orderId,
+      buyerId: "USER-LOCAL-01",
+      subtotal: total,
+      platformFee: platformFee,
+      total: total + platformFee,
+      paymentStatus: "ESCROW_HELD",
+      fulfilmentStatus: "PENDING_DISPATCH",
+      createdAt: new Date().toISOString(),
+      title: `Local Order - ${cartItems.length} items`,
+      items: cartItems.map((item: any) => ({
+        productId: item.productId,
+        sellerId: item.sellerId,
+        sellerName: item.sellerName,
+        name: item.name,
+        image: item.image,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice
+      }))
+    };
+    
+    const orders = this.getLocalOrders();
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("devflow_demo_local_orders", JSON.stringify([newOrder, ...orders]));
+      this.setCartItems([]); // Clear cart
+      this.addNotification({
+        title: "Order Placed",
+        message: `Local order ${orderId} placed successfully.`,
+        type: "payment",
+        targetUrl: `/customer/deals/${orderId}/payment`,
+        badgeText: "Local Order"
+      });
+    }
+    return orderId;
+  },
+
+  // Mock Products
+  getMockProducts(): any[] {
+    return [
+      {
+        id: "PRD-1", name: "Dell Latitude 5420 (Refurbished)", category: "Electronics", brand: "Dell", 
+        sellerName: "Gadget Fix", sellerId: "VND-LOC-01", price: 35000, originalPrice: 45000, sellingPrice: 35000, 
+        image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=800",
+        stock: 5, sellerLocation: "Mumbai", trustScore: 88, verificationStatus: "VERIFIED", distanceKm: 4.2, 
+        rating: 4.5, trustTier: "Silver", availabilityStatus: "Low Stock", deliveryAvailable: true, pickupAvailable: true
+      },
+      {
+        id: "PRD-2", name: "Ergonomic Office Chair", category: "Furniture", brand: "Herman Miller", 
+        sellerName: "Office Solutions", sellerId: "VND-LOC-02", price: 12000, originalPrice: 15000, sellingPrice: 12000, 
+        image: "https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&q=80&w=800",
+        stock: 12, sellerLocation: "Pune", trustScore: 92, verificationStatus: "VERIFIED", distanceKm: 120, 
+        rating: 4.8, trustTier: "Gold", availabilityStatus: "In Stock", deliveryAvailable: true, pickupAvailable: false
+      },
+      {
+        id: "PRD-3", name: "Logitech MX Master 3S", category: "Electronics", brand: "Logitech", 
+        sellerName: "Tech Store", sellerId: "VND-LOC-03", price: 8500, originalPrice: 10000, sellingPrice: 8500, 
+        image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=800",
+        stock: 25, sellerLocation: "Mumbai", trustScore: 95, verificationStatus: "VERIFIED", distanceKm: 2.1, 
+      }
+    ];
   }
 };
 

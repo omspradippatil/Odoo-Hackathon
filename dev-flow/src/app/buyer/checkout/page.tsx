@@ -18,39 +18,24 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
-    import("@/lib/demoState").then(m => {
-      setCartItems(m.demoState.getCartItems());
-    });
+    fetch("http://localhost:8080/api/cart")
+      .then(res => res.json())
+      .then(data => setCartItems(data))
+      .catch(err => console.error("Failed to load cart", err));
   }, []);
 
-  const cartSubtotal = cartItems.reduce((acc, i) => acc + (i.unitPrice * i.quantity), 0);
-  const platformFee = cartSubtotal * 0.02; // 2% fee
-  const total = cartSubtotal + platformFee;
+  const total = cartItems.reduce((acc, item) => acc + item.quantity * item.unitPrice, 0);
+  const platformFee = total * 0.02;
+  const orderTotal = total + platformFee;
 
   const handleConfirmOrder = () => {
     setIsProcessing(true);
+    
+    // Simulate secure DEV FLOW escrow payment delay
     setTimeout(() => {
       import("@/lib/demoState").then(m => {
-        const newOrderId = `ORD-${Math.floor(Math.random() * 9000) + 1000}`;
-        setOrderId(newOrderId);
-        
-        const newOrder = {
-          id: newOrderId,
-          buyerId: "USER-LOCAL-01",
-          items: cartItems,
-          subtotal: cartSubtotal,
-          platformFee,
-          total,
-          paymentStatus: "PAYMENT_PROTECTED",
-          fulfilmentStatus: "PROCESSING",
-          createdAt: new Date().toISOString(),
-          title: `Local Order (${cartItems.length} items)`
-        };
-
-        const currentOrders = m.demoState.getLocalOrders();
-        m.demoState.setLocalOrders([newOrder, ...currentOrders]);
-        m.demoState.setCartItems([]);
-        
+        const orderId = m.demoState.createLocalOrder(cartItems);
+        setOrderId(orderId);
         setIsProcessing(false);
         setIsSuccess(true);
       });
@@ -132,7 +117,7 @@ export default function CheckoutPage() {
               <div className="space-y-4 text-sm font-medium">
                 <div className="flex justify-between">
                   <span className="text-white/70">Subtotal</span>
-                  <span>{formatCurrency(cartSubtotal)}</span>
+                  <span>{formatCurrency(total)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">Platform Fee (2%)</span>
@@ -143,7 +128,7 @@ export default function CheckoutPage() {
               <div className="pt-6 mt-6 border-t border-white/20">
                 <div className="flex justify-between items-end mb-6">
                   <div className="text-[10px] font-bold text-white/50 uppercase tracking-widest">TOTAL</div>
-                  <div className="text-2xl font-bold">{formatCurrency(total)}</div>
+                  <div className="text-2xl font-bold">{formatCurrency(orderTotal)}</div>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 bg-white/10 rounded-xl mb-6 text-xs text-white/80">

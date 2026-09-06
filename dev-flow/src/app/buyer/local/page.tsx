@@ -42,21 +42,24 @@ export default function LocalSellersPage() {
   useEffect(() => {
     import("@/lib/demoState").then(m => {
       setCartItems(m.demoState.getCartItems());
-      const unsub = m.demoState.subscribeCart(() => setCartItems(m.demoState.getCartItems()));
-      return () => unsub();
+      return m.demoState.subscribeCart(() => {
+        setCartItems(m.demoState.getCartItems());
+      });
+    }).then(unsubscribe => {
+      return () => unsubscribe && unsubscribe();
     });
   }, []);
 
-  const addToCart = (product: any, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const addToCart = (product: any, e?: any) => {
+    if (e) e.stopPropagation();
     import("@/lib/demoState").then(m => {
-      const currentCart = m.demoState.getCartItems();
-      const existing = currentCart.find(i => i.productId === product.id);
+      const existing = m.demoState.getCartItems().find((i: any) => i.productId === product.id);
       if (existing) {
-        if (existing.quantity < product.stock) {
-           existing.quantity += 1;
-           m.demoState.setCartItems([...currentCart]);
-        }
+        if (existing.quantity >= product.stock) return;
+        const updated = m.demoState.getCartItems().map((i: any) => 
+          i.productId === product.id ? { ...i, quantity: i.quantity + 1 } : i
+        );
+        m.demoState.setCartItems(updated);
       } else {
         const newItem = {
           id: Math.random().toString(36).substr(2, 9),
@@ -69,7 +72,7 @@ export default function LocalSellersPage() {
           unitPrice: product.sellingPrice,
           availableQuantity: product.stock
         };
-        m.demoState.setCartItems([...currentCart, newItem]);
+        m.demoState.setCartItems([...m.demoState.getCartItems(), newItem]);
       }
       setIsCartOpen(true);
     });
@@ -77,24 +80,23 @@ export default function LocalSellersPage() {
 
   const updateQuantity = (id: string, delta: number) => {
     import("@/lib/demoState").then(m => {
-      const currentCart = m.demoState.getCartItems();
-      const item = currentCart.find(i => i.id === id);
-      if (item) {
-        const newQ = item.quantity + delta;
-        if (newQ > 0 && newQ <= item.availableQuantity) {
-          item.quantity = newQ;
-          m.demoState.setCartItems([...currentCart]);
-        } else if (newQ === 0) {
-          m.demoState.setCartItems(currentCart.filter(i => i.id !== id));
-        }
+      const existing = m.demoState.getCartItems().find((i: any) => i.id === id);
+      if (!existing) return;
+      const newQuantity = existing.quantity + delta;
+      if (newQuantity <= 0) {
+        removeCartItem(id);
+      } else if (newQuantity <= existing.availableQuantity) {
+        const updated = m.demoState.getCartItems().map((i: any) => 
+          i.id === id ? { ...i, quantity: newQuantity } : i
+        );
+        m.demoState.setCartItems(updated);
       }
     });
   };
 
   const removeCartItem = (id: string) => {
     import("@/lib/demoState").then(m => {
-      const currentCart = m.demoState.getCartItems();
-      m.demoState.setCartItems(currentCart.filter(i => i.id !== id));
+      m.demoState.setCartItems(m.demoState.getCartItems().filter((i: any) => i.id !== id));
     });
   };
 
@@ -115,8 +117,12 @@ export default function LocalSellersPage() {
 
   useEffect(() => {
     fetch("http://localhost:8080/api/products")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Backend not available");
+        return res.json();
+      })
       .then(data => {
+        // ... previous code for mapping ...
         const mapped = data.map((p: any) => {
           // Generate deterministic mock data for missing fields based on ID
           const mockDist = (p.id % 15) + 1.2;
@@ -150,7 +156,11 @@ export default function LocalSellersPage() {
       })
       .catch(err => {
         console.error("Error fetching products:", err);
-        setLoading(false);
+        // Fallback to mock data for demo
+        import("@/lib/demoState").then(m => {
+          setDbProducts(m.demoState.getMockProducts());
+          setLoading(false);
+        });
       });
   }, []);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Package, Truck, Check, MapPin, AlertCircle, CheckCircle2, MessageSquare, ArrowRight, X, Image as ImageIcon, Activity } from "lucide-react";
 import * as motion from "framer-motion/client";
@@ -17,6 +17,17 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
   const [issueType, setIssueType] = useState('Quantity Mismatch');
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [localOrder, setLocalOrder] = useState<any>(null);
+
+  useEffect(() => {
+    if (resolvedParams.dealId.startsWith("ORD-")) {
+      import("@/lib/demoState").then(m => {
+        const orders = m.demoState.getLocalOrders();
+        const order = orders.find((o: any) => o.id === resolvedParams.dealId);
+        if (order) setLocalOrder(order);
+      });
+    }
+  }, [resolvedParams.dealId]);
 
   const handleAction = () => {
     setIsSubmitting(true);
@@ -58,11 +69,11 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
                 <span>Deal {resolvedParams.dealId}</span> <span className="text-navy/20">•</span> <span>Order Progress</span>
               </div>
               <h1 className="text-3xl font-bold text-navy tracking-tight mb-2">Track your delivery</h1>
-              <div className="text-sm font-medium text-navy/60">Your order will arrive in <strong className="text-navy">2 shipments</strong>.</div>
+              <div className="text-sm font-medium text-navy/60">Your order will arrive in <strong className="text-navy">{localOrder ? '1 shipment' : '2 shipments'}</strong>.</div>
             </div>
             <div className={cn("px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2 border shadow-sm bg-white text-navy border-navy/10")}>
               <Package className="w-4 h-4" />
-              {isConfirmed ? '30 / 50 DELIVERED' : '30 / 50 SHIPPED'}
+              {isConfirmed ? (localOrder ? `${localOrder.items.length} / ${localOrder.items.length} DELIVERED` : '30 / 50 DELIVERED') : (localOrder ? `${localOrder.items.length} / ${localOrder.items.length} SHIPPED` : '30 / 50 SHIPPED')}
             </div>
           </div>
         </div>
@@ -73,8 +84,10 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
           <div className="bg-white rounded-3xl border border-navy/5 shadow-sm overflow-hidden">
             <div className="bg-navy/5 px-6 py-4 border-b border-navy/5 flex items-center justify-between">
               <div>
-                <h2 className="text-xs font-bold text-navy uppercase tracking-widest">Shipment 1</h2>
-                <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mt-1">30 Business Laptops</div>
+                <h2 className="text-xs font-bold text-navy uppercase tracking-widest">{localOrder ? 'Complete Shipment' : 'Shipment 1'}</h2>
+                <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mt-1">
+                  {localOrder ? localOrder.items.map((i: any) => `${i.quantity}x ${i.name}`).join(', ') : '30 Business Laptops'}
+                </div>
               </div>
               <div className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5",
                 isConfirmed ? "bg-lime/20 text-lime-800" : "bg-orange-100 text-orange-700"
@@ -148,26 +161,28 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
           </div>
 
           {/* SHIPMENT 2 */}
-          <div className="bg-white rounded-3xl border border-navy/5 shadow-sm overflow-hidden opacity-80">
-            <div className="bg-navy/5 px-6 py-4 border-b border-navy/5 flex items-center justify-between">
-              <div>
-                <h2 className="text-xs font-bold text-navy uppercase tracking-widest">Shipment 2</h2>
-                <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mt-1">20 Business Laptops</div>
+          {!localOrder && (
+            <div className="bg-white rounded-3xl border border-navy/5 shadow-sm overflow-hidden opacity-80">
+              <div className="bg-navy/5 px-6 py-4 border-b border-navy/5 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold text-navy uppercase tracking-widest">Shipment 2</h2>
+                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mt-1">20 Business Laptops</div>
+                </div>
+                <div className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 bg-cobalt/10 text-cobalt">
+                  <Package className="w-3 h-3" /> Preparing
+                </div>
               </div>
-              <div className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 bg-cobalt/10 text-cobalt">
-                <Package className="w-3 h-3" /> Preparing
+              <div className="p-6 md:p-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Expected Completion</div>
+                  <div className="text-sm font-bold text-navy">09 Sep 2026</div>
+                </div>
+                <div className="text-xs font-medium text-navy/60">
+                  This shipment is currently being packed at the warehouse.
+                </div>
               </div>
             </div>
-            <div className="p-6 md:p-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div>
-                <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Expected Completion</div>
-                <div className="text-sm font-bold text-navy">09 Sep 2026</div>
-              </div>
-              <div className="text-xs font-medium text-navy/60">
-                This shipment is currently being packed at the warehouse.
-              </div>
-            </div>
-          </div>
+          )}
 
         </div>
       </main>

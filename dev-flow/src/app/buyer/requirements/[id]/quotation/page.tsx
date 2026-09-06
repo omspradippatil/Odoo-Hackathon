@@ -85,12 +85,12 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
   const [approvalError, setApprovalError] = useState<string | null>(null);
 
   useEffect(() => {
-    const syncState = () => {
-      setApprovalState(demoState.getQuotationApprovalState('QT-2048'));
-    };
-    syncState();
-    const unsub = demoState.subscribeQuotationState(syncState);
-    return () => unsub();
+    fetch("http://localhost:8080/api/quotations/QT-2048")
+      .then(res => res.json())
+      .then(data => {
+        setApprovalState(data.approvalState as QuotationApprovalState);
+      })
+      .catch(err => console.error("Failed to load quotation", err));
   }, []);
 
   // MOCK BUSINESS LOGIC (Will be owned by Spring Boot later)
@@ -188,22 +188,35 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
     setIsRequestingApproval(true);
     setApprovalError(null);
 
-    setTimeout(() => {
-      try {
-        demoState.setQuotationApprovalState('QT-2048', 'PENDING_APPROVAL');
-        demoState.addNotification({
-          title: "Approval Requested",
-          message: "Approval requested for QT-2048 (Discount exceeds current approval authority)",
-          type: "approval",
-          targetUrl: "/approvals/QT-2048",
-          badgeText: "Approval"
-        });
-        setIsRequestingApproval(false);
-      } catch {
-        setIsRequestingApproval(false);
-        setApprovalError("Approval request could not be submitted. Please try again.");
-      }
-    }, 700);
+    const updatedQuotation = { id: 'QT-2048', approvalState: 'PENDING_APPROVAL' };
+    
+    fetch("http://localhost:8080/api/quotations", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedQuotation)
+    })
+    .then(() => {
+      const notif = {
+        title: "Approval Requested",
+        message: "Approval requested for QT-2048 (Discount exceeds current approval authority)",
+        type: "approval",
+        targetUrl: "/approvals/QT-2048",
+        badgeText: "Approval"
+      };
+      return fetch("http://localhost:8080/api/notifications", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notif)
+      });
+    })
+    .then(() => {
+      setApprovalState('PENDING_APPROVAL');
+      setIsRequestingApproval(false);
+    })
+    .catch(() => {
+      setIsRequestingApproval(false);
+      setApprovalError("Approval request could not be submitted. Please try again.");
+    });
   };
 
   const handleContinue = () => {

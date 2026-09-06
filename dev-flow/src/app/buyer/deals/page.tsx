@@ -24,84 +24,19 @@ interface BuyerDeal {
   deliveryCity: string;
 }
 
-const SAMPLE_BUYER_DEALS: BuyerDeal[] = [
-  {
-    id: "REQ-2048",
-    title: "50 High-Performance Engineering Workstations",
-    category: "IT & Computing",
-    targetBudget: 2000000,
-    bestQuote: 1840000,
-    stage: "COMPARING",
-    vendorCount: 12,
-    quoteCount: 3,
-    topVendor: "Apex Industrial Supplies Ltd",
-    createdAt: "2026-08-26",
-    deliveryCity: "Mumbai, Maharashtra"
-  },
-  {
-    id: "REQ-1985",
-    title: "120 Solenoid Directional Valves CETOP 3",
-    category: "Hydraulics & Pneumatics",
-    targetBudget: 3000000,
-    bestQuote: 2891000,
-    stage: "APPROVED",
-    vendorCount: 6,
-    quoteCount: 4,
-    topVendor: "Bosch Rexroth India",
-    createdAt: "2026-08-14",
-    deliveryCity: "Jamshedpur, Jharkhand"
-  },
-  {
-    id: "REQ-1990",
-    title: "15 Industrial VFD Motor Drives 7.5kW",
-    category: "Electrical & Power",
-    targetBudget: 700000,
-    bestQuote: 630000,
-    stage: "NEGOTIATING",
-    vendorCount: 8,
-    quoteCount: 3,
-    topVendor: "ABB Power & Robotics",
-    createdAt: "2026-08-28",
-    deliveryCity: "Hyderabad, Telangana"
-  },
-  {
-    id: "REQ-2055",
-    title: "400 Deep Groove Ball Bearings 6205",
-    category: "Mechanical Components",
-    targetBudget: 1100000,
-    bestQuote: 967600,
-    stage: "FULFILLED",
-    vendorCount: 15,
-    quoteCount: 6,
-    topVendor: "SKF Bearings India",
-    createdAt: "2026-08-05",
-    deliveryCity: "Ludhiana, Punjab"
-  },
-  {
-    id: "REQ-2104",
-    title: "500m 4-Core Armored Copper Busbar Cable",
-    category: "Electrical & Power",
-    targetBudget: 4000000,
-    bestQuote: 3681600,
-    stage: "SOURCING",
-    vendorCount: 10,
-    quoteCount: 1,
-    topVendor: "Polycab Wires Ltd",
-    createdAt: "2026-09-02",
-    deliveryCity: "Bengaluru, Karnataka"
-  }
-];
-
 export default function BuyerDealsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("ALL");
 
-  const [localDeals, setLocalDeals] = useState<BuyerDeal[]>([]);
+  const [allDeals, setAllDeals] = useState<BuyerDeal[]>([]);
+
   useEffect(() => {
-    import("@/lib/demoState").then(m => {
-      const orders = m.demoState.getLocalOrders();
-      setLocalDeals(orders.map((o: any) => ({
+    Promise.all([
+      fetch("http://localhost:8080/api/deals").then(res => res.json()),
+      fetch("http://localhost:8080/api/orders").then(res => res.json())
+    ]).then(([deals, orders]) => {
+      const formattedOrders = orders.map((o: any) => ({
         id: o.id,
         title: o.title,
         category: "Local Shopping",
@@ -110,14 +45,13 @@ export default function BuyerDealsPage() {
         stage: "APPROVED",
         vendorCount: 1,
         quoteCount: 1,
-        topVendor: o.items[0]?.sellerName || "Local Vendor",
-        createdAt: o.createdAt.split('T')[0],
+        topVendor: o.items && o.items.length > 0 ? o.items[0].sellerName : "Local Vendor",
+        createdAt: o.createdAt ? o.createdAt.split('T')[0] : "",
         deliveryCity: "Mumbai, Maharashtra"
-      })));
-    });
+      }));
+      setAllDeals([...formattedOrders, ...deals]);
+    }).catch(err => console.error("Failed to fetch deals", err));
   }, []);
-
-  const allDeals = [...localDeals, ...SAMPLE_BUYER_DEALS];
 
   const filtered = allDeals.filter((deal) => {
     const match = 
@@ -213,7 +147,7 @@ export default function BuyerDealsPage() {
           {filtered.map((deal) => (
             <div 
               key={deal.id}
-              onClick={() => router.push("/buyer/requirements/" + deal.id)}
+              onClick={() => router.push(deal.id.startsWith("ORD-") ? `/customer/deals/${deal.id}/fulfilment` : `/buyer/requirements/${deal.id}`)}
               className="bg-white p-6 rounded-3xl border border-navy/5 shadow-sm hover:shadow-md transition-all cursor-pointer group"
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">

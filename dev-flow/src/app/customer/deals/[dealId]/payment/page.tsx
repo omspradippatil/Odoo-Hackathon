@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Activity, Check, ArrowRight, Lock, CreditCard, Building2, Smartphone, FileText, CheckCircle2 } from "lucide-react";
 import * as motion from "framer-motion/client";
@@ -18,6 +18,17 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<'UPI' | 'CARD' | 'NET_BANKING' | 'TRANSFER'>('UPI');
   const [showDemoCheckout, setShowDemoCheckout] = useState(false);
+  const [localOrder, setLocalOrder] = useState<any>(null);
+
+  useEffect(() => {
+    if (resolvedParams.dealId.startsWith("ORD-")) {
+      import("@/lib/demoState").then(m => {
+        const orders = m.demoState.getLocalOrders();
+        const order = orders.find((o: any) => o.id === resolvedParams.dealId);
+        if (order) setLocalOrder(order);
+      });
+    }
+  }, [resolvedParams.dealId]);
 
   const handlePayment = () => {
     setIsProcessing(true);
@@ -123,13 +134,15 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
               <div className="flex flex-col sm:flex-row justify-between gap-6 mb-6 pb-6 border-b border-navy/5">
                 <div>
                   <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">One-Time Amount</div>
-                  <div className="text-2xl font-bold text-navy">₹8,40,000</div>
+                  <div className="text-2xl font-bold text-navy">{localOrder ? formatCurrency(localOrder.total) : '₹8,40,000'}</div>
                 </div>
-                <div>
-                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Recurring Subscription</div>
-                  <div className="text-lg font-bold text-navy/60">₹55,000 / month</div>
-                  <div className="text-[9px] font-bold text-navy/40 uppercase tracking-widest mt-1">Starts after activation</div>
-                </div>
+                {!localOrder && (
+                  <div>
+                    <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Recurring Subscription</div>
+                    <div className="text-lg font-bold text-navy/60">₹55,000 / month</div>
+                    <div className="text-[9px] font-bold text-navy/40 uppercase tracking-widest mt-1">Starts after activation</div>
+                  </div>
+                )}
               </div>
               
               <div className="bg-navy/5 p-6 rounded-2xl border border-navy/10">
@@ -139,24 +152,26 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                   <div className="flex items-center justify-between p-4 bg-white rounded-xl shadow-sm border border-navy/5 relative overflow-hidden">
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-cobalt" />
                     <div>
-                      <div className="text-xs font-bold text-navy mb-1">Milestone 1: 30% Advance</div>
+                      <div className="text-xs font-bold text-navy mb-1">{localOrder ? 'Full Payment' : 'Milestone 1: 30% Advance'}</div>
                       <div className="text-[10px] font-bold text-cobalt uppercase tracking-widest">Due Now</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-navy">₹2,52,000</div>
+                      <div className="text-lg font-bold text-navy">{localOrder ? formatCurrency(localOrder.total) : '₹2,52,000'}</div>
                       {isProtected && <div className="text-[10px] font-bold text-lime-700 uppercase tracking-widest mt-1 flex items-center gap-1 justify-end"><Check className="w-3 h-3" /> Paid</div>}
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-warm/50 rounded-xl border border-navy/5 opacity-70">
-                    <div>
-                      <div className="text-xs font-bold text-navy mb-1">Milestone 2: 70% Balance</div>
-                      <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">Due After Delivery Confirmation</div>
+                  {!localOrder && (
+                    <div className="flex items-center justify-between p-4 bg-warm/50 rounded-xl border border-navy/5 opacity-70">
+                      <div>
+                        <div className="text-xs font-bold text-navy mb-1">Milestone 2: 70% Balance</div>
+                        <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">Due After Delivery Confirmation</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-navy/60">₹5,88,000</div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-navy/60">₹5,88,000</div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -208,7 +223,7 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                   </div>
                   
                   <div className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1 relative z-10">Due Today</div>
-                  <div className="text-4xl font-bold mb-4 relative z-10">₹2,52,000</div>
+                  <div className="text-4xl font-bold mb-4 relative z-10">{localOrder ? formatCurrency(localOrder.total) : '₹2,52,000'}</div>
                   
                   <div className="space-y-4 pt-4 border-t border-white/10 relative z-10">
                     <div className="flex justify-between items-center text-sm font-medium">
@@ -268,7 +283,7 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                         ) : status === 'PAYMENT_FAILED' ? (
                           <><Lock className="w-4 h-4" /> Try Again</>
                         ) : (
-                          <><Lock className="w-4 h-4" /> Pay ₹2,52,000 Securely</>
+                          <><Lock className="w-4 h-4" /> Pay {localOrder ? formatCurrency(localOrder.total) : '₹2,52,000'} Securely</>
                         )}
                       </button>
                       
@@ -295,8 +310,8 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                         View Deal Progress <ArrowRight className="w-4 h-4" />
                       </button>
                       
-                      <button className="w-full py-3 text-navy/60 hover:text-navy text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
-                        <FileText className="w-3 h-3" /> View Payment Receipt
+                      <button onClick={() => router.push(`/customer/deals/${resolvedParams.dealId}/billing`)} className="w-full py-3 text-navy/60 hover:text-navy text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-colors">
+                        <FileText className="w-3 h-3" /> View Invoice
                       </button>
                     </div>
                   )}
@@ -314,7 +329,7 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                 disabled={isProcessing}
                 className={cn("w-full py-4 rounded-xl text-white font-bold shadow-lg flex items-center justify-center gap-2", status === 'PAYMENT_FAILED' ? "bg-red-600" : "bg-navy")}
               >
-                {isProcessing ? <><Activity className="w-5 h-5 animate-spin" /> Opening...</> : status === 'PAYMENT_FAILED' ? <><Lock className="w-4 h-4" /> Try Again</> : <><Lock className="w-4 h-4" /> Pay ₹2,52,000</>}
+                {isProcessing ? <><Activity className="w-5 h-5 animate-spin" /> Opening...</> : status === 'PAYMENT_FAILED' ? <><Lock className="w-4 h-4" /> Try Again</> : <><Lock className="w-4 h-4" /> Pay {localOrder ? formatCurrency(localOrder.total) : '₹2,52,000'}</>}
               </button>
             ) : (
               <button 
@@ -336,8 +351,8 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl relative">
               <div className="bg-[#02042B] p-6 text-white text-center">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Demo Payment Mode</div>
-                <div className="text-3xl font-bold mb-1">₹2,52,000</div>
-                <div className="text-sm font-medium text-white/70">Milestone 1: 30% Advance</div>
+                <div className="text-3xl font-bold mb-1">{localOrder ? formatCurrency(localOrder.total) : '₹2,52,000'}</div>
+                <div className="text-sm font-medium text-white/70">{localOrder ? 'Full Payment' : 'Milestone 1: 30% Advance'}</div>
               </div>
               
               <div className="p-8 space-y-6">
