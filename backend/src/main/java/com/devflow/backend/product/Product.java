@@ -24,6 +24,8 @@ public class Product {
     private String brand;
 
     private Double basePrice;
+    private Double originalPrice;
+    private Double sellingPrice;
 
     private Boolean active;
 

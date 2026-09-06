@@ -344,6 +344,8 @@ public class DataSeeder implements CommandLineRunner {
                 .category((String) d[1])
                 .brand((String) d[2])
                 .basePrice((Double) d[3])
+                .originalPrice(((Double) d[3]) * 1.25) // 25% higher
+                .sellingPrice((Double) d[3])
                 .active((Boolean) d[4])
                 .imageUrl(img)
                 .sellerName("Vertex Industrial")

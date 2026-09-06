@@ -27,6 +27,8 @@ export default function LocalSellersPage() {
           sellerName: p.sellerName || "Local Vendor",
           sellerId: p.sellerId || "VND-LOC-00",
           price: p.basePrice || 0,
+          originalPrice: p.originalPrice,
+          sellingPrice: p.sellingPrice || p.basePrice || 0,
           image: p.imageUrl || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
           stock: p.stock || 10,
           sellerLocation: p.city || "Mumbai",
@@ -141,7 +143,7 @@ export default function LocalSellersPage() {
   };
 
   return (
-    <WorkspaceLayout role={UserRole.BUYER}>
+    <WorkspaceLayout role={UserRole.BUYER} requireAuth={false}>
       <div className="space-y-6 md:space-y-8 pb-24">
         
         {/* HEADER */}

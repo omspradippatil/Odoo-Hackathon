@@ -22,13 +22,13 @@ export default function SellerHome() {
           </div>
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => router.push('/seller')}
+              onClick={() => router.push('/seller/products/new')}
               className="px-6 py-3.5 rounded-xl bg-white border border-navy/10 text-navy font-bold hover:bg-navy/5 transition-colors shadow-sm"
             >
-              Manage Products
+              Add New Product
             </button>
             <button 
-              onClick={() => router.push('/seller')}
+              onClick={() => router.push('/seller/opportunities')}
               className="px-6 py-3.5 rounded-xl bg-navy text-white font-bold hover:bg-navy/90 transition-colors shadow-lg shadow-navy/20"
             >
               View Opportunities
@@ -76,7 +76,7 @@ export default function SellerHome() {
                 </div>
 
                 <div className="flex justify-end pt-4 border-t border-navy/5">
-                  <button onClick={() => router.push('/seller')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Submit Quote <ArrowRight className="w-4 h-4" /></button>
+                  <button onClick={() => router.push('/seller/products/new')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Submit Quote <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
 
@@ -89,7 +89,7 @@ export default function SellerHome() {
                   <div className="bg-navy/10 text-navy px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Match: Medium</div>
                 </div>
                 <div className="flex justify-end pt-4 border-t border-navy/5">
-                  <button onClick={() => router.push('/seller')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Details <ArrowRight className="w-4 h-4" /></button>
+                  <button onClick={() => router.push('/seller/products/new')} className="flex items-center gap-2 text-sm font-bold text-cobalt hover:text-navy transition-colors">Review Details <ArrowRight className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
