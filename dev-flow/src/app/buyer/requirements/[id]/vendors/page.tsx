@@ -160,7 +160,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
         vendor: match || sv.vendor
       };
     })
-  } : displaySplit;
+  } : MOCK_SPLIT;
 
   // Fake analysis sequence
   useEffect(() => {

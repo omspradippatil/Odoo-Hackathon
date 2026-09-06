@@ -60,7 +60,12 @@ const NAV_CONFIG: Record<UserRole, NavItem[]> = {
     { label: "Fulfilment", href: "/operations/fulfilment", icon: Activity },
     { label: "Profile", href: "/operations/profile", icon: User },
   ],
-  [UserRole.ADMIN]: [] // Placeholder
+  [UserRole.ADMIN]: [],
+  [UserRole.CUSTOMER]: [
+    { label: "Home", href: "/customer", icon: Home },
+    { label: "My Quotes", href: "/customer/quotes", icon: FileText },
+    { label: "My Deals", href: "/customer/deals", icon: Briefcase }
+  ] // Placeholder
 };
 
 const ROLE_TITLES = {
@@ -69,7 +74,8 @@ const ROLE_TITLES = {
   [UserRole.SALES_REP]: "Sales Workspace",
   [UserRole.SALES_MANAGER]: "Approval Center",
   [UserRole.FINANCE_OPERATIONS]: "Operations Workspace",
-  [UserRole.ADMIN]: "Admin"
+  [UserRole.ADMIN]: "Admin",
+  [UserRole.CUSTOMER]: "Customer Portal"
 };
 
 function isNavItemActive(itemHref: string, pathname: string): boolean {
@@ -98,6 +104,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
   const navItems = NAV_CONFIG[role] || [];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
@@ -110,10 +117,37 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
   React.useEffect(() => {
     const user = sessionStorage.getItem("devflow_user");
     setIsGuest(!user);
+    if (user) { setCurrentUser(JSON.parse(user)); }
     setIsLoaded(true);
   }, []);
   
   if (!isLoaded) return null; // Hydration guard
+
+  // RBAC Enforcement
+  if (requireAuth && currentUser && role && currentUser.role !== role) {
+    return (
+      <div className="min-h-screen bg-warm text-navy selection:bg-coral/20 flex flex-col relative items-center justify-center p-4">
+        <Navbar />
+        <FlowPathBackground />
+        <div className="relative z-10 max-w-md w-full text-center bg-white p-10 rounded-3xl border border-navy/10 shadow-2xl shadow-navy/5">
+          <div className="w-16 h-16 bg-coral/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <ShieldCheck className="w-8 h-8 text-coral" />
+          </div>
+          <h2 className="text-2xl font-bold text-navy mb-3">Access Restricted</h2>
+          <p className="text-navy/60 font-medium mb-8">
+            You do not have the required permissions to view this workspace. Your current role is <strong>{currentUser.role}</strong>.
+          </p>
+          <button 
+            onClick={() => router.push('/')}
+            className="w-full py-3.5 rounded-xl font-bold text-white bg-navy shadow-lg shadow-navy/20 hover:bg-navy/90 transition-colors"
+          >
+            Return Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
 
   if (isGuest) {
     return (
@@ -175,10 +209,10 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
             className="w-full p-4 border-t border-white/5 bg-white/5 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">U</div>
+              <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">{currentUser?.fullName?.charAt(0) || "U"}</div>
               <div className="text-left">
-                <div className="text-sm font-bold text-white">Demo User</div>
-                <div className="text-xs font-medium text-white/50">Settings</div>
+                <div className="text-sm font-bold text-white">{currentUser?.fullName || "Demo User"}</div>
+                <div className="text-xs font-medium text-white/50">{currentUser?.role || "Settings"}</div>
               </div>
             </div>
             <Settings className="w-4 h-4 text-white/40" />

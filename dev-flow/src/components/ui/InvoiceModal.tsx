@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { X, Download } from "lucide-react";
+import { X, Download, Printer } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 

@@ -17,19 +17,30 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
   const [status, setStatus] = useState<PaymentStatus>('PAYMENT_PENDING');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<'UPI' | 'CARD' | 'NET_BANKING' | 'TRANSFER'>('UPI');
+  const [showDemoCheckout, setShowDemoCheckout] = useState(false);
 
   const handlePayment = () => {
     setIsProcessing(true);
-    setStatus('PAYMENT_INITIATED');
-    
-    // Simulate payment gateway delay and confirmation
+    // Simulate backend call to create Razorpay order
     setTimeout(() => {
-      setStatus('PAYMENT_RECEIVED');
-      setTimeout(() => {
-        setIsProcessing(false);
-        setStatus('PAYMENT_PROTECTED');
-      }, 1500);
-    }, 2000);
+      setIsProcessing(false);
+      setShowDemoCheckout(true);
+    }, 800);
+  };
+
+  const simulateSuccess = () => {
+    setShowDemoCheckout(false);
+    setIsProcessing(true);
+    setStatus('PAYMENT_RECEIVED');
+    setTimeout(() => {
+      setIsProcessing(false);
+      setStatus('PAYMENT_PROTECTED');
+    }, 1500);
+  };
+
+  const simulateFailure = () => {
+    setShowDemoCheckout(false);
+    setStatus('PAYMENT_FAILED');
   };
 
   const isProtected = status === 'PAYMENT_PROTECTED';
@@ -238,6 +249,13 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                         ))}
                       </div>
                       
+                      {status === 'PAYMENT_FAILED' && (
+                        <div className="bg-red-50 border border-red-100 p-4 rounded-xl text-center mb-6">
+                          <div className="text-sm font-bold text-red-900 mb-1">Payment was not completed.</div>
+                          <div className="text-xs font-medium text-red-800/70">Please try again or select a different payment method.</div>
+                        </div>
+                      )}
+                      
                       <button 
                         onClick={handlePayment}
                         disabled={isProcessing}
@@ -246,12 +264,21 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
                         )}
                       >
                         {isProcessing ? (
-                          <><Activity className="w-4 h-4 animate-spin" /> Processing Payment...</>
+                          <><Activity className="w-4 h-4 animate-spin" /> Opening Secure Payment...</>
+                        ) : status === 'PAYMENT_FAILED' ? (
+                          <><Lock className="w-4 h-4" /> Try Again</>
                         ) : (
                           <><Lock className="w-4 h-4" /> Pay ₹2,52,000 Securely</>
                         )}
                       </button>
-                      <p className="text-[9px] font-bold text-navy/30 uppercase tracking-widest text-center mt-4">Payment gateway integration placeholder</p>
+                      
+                      {status === 'PAYMENT_FAILED' && (
+                         <button onClick={() => setStatus('PAYMENT_PENDING')} className="w-full mt-3 py-3 text-navy/60 hover:text-navy text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors">
+                           Return to Deal
+                         </button>
+                      )}
+                      
+                      {!status.includes('FAILED') && <p className="text-[9px] font-bold text-navy/30 uppercase tracking-widest text-center mt-4">Demo Payment Enabled</p>}
                     </>
                   ) : (
                     <div className="space-y-4">
@@ -285,9 +312,9 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
               <button 
                 onClick={handlePayment}
                 disabled={isProcessing}
-                className="w-full py-4 rounded-xl bg-navy text-white font-bold shadow-lg flex items-center justify-center gap-2"
+                className={cn("w-full py-4 rounded-xl text-white font-bold shadow-lg flex items-center justify-center gap-2", status === 'PAYMENT_FAILED' ? "bg-red-600" : "bg-navy")}
               >
-                {isProcessing ? <Activity className="w-5 h-5 animate-spin" /> : <><Lock className="w-4 h-4" /> Pay ₹2,52,000</>}
+                {isProcessing ? <><Activity className="w-5 h-5 animate-spin" /> Opening...</> : status === 'PAYMENT_FAILED' ? <><Lock className="w-4 h-4" /> Try Again</> : <><Lock className="w-4 h-4" /> Pay ₹2,52,000</>}
               </button>
             ) : (
               <button 
@@ -301,6 +328,35 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
 
         </div>
       </main>
+
+      {/* RAZORPAY DEMO CHECKOUT MODAL */}
+      <AnimatePresence>
+        {showDemoCheckout && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl relative">
+              <div className="bg-[#02042B] p-6 text-white text-center">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-2">Demo Payment Mode</div>
+                <div className="text-3xl font-bold mb-1">₹2,52,000</div>
+                <div className="text-sm font-medium text-white/70">Milestone 1: 30% Advance</div>
+              </div>
+              
+              <div className="p-8 space-y-6">
+                <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl text-sm font-medium text-orange-800 text-center">
+                  This is a simulated checkout. No real payment will be processed.
+                </div>
+                
+                <button onClick={simulateSuccess} className="w-full py-4 rounded-xl bg-lime-600 hover:bg-lime-700 text-white font-bold shadow-lg shadow-lime-600/20 transition-colors flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" /> Simulate Success
+                </button>
+                
+                <button onClick={simulateFailure} className="w-full py-4 rounded-xl bg-white border-2 border-navy/10 text-navy font-bold hover:bg-navy/5 transition-colors">
+                  Simulate Failure / Close
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

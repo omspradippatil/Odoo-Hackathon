@@ -4,7 +4,7 @@ import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
-import { Check, ShieldCheck, Activity, ArrowRight, MessageSquare, TrendingDown, Clock, Eye, Send, Lock } from "lucide-react";
+import { Check, ShieldCheck, Activity, ArrowRight, MessageSquare, TrendingDown, Clock, Eye, Send, Lock, Video, Mic, MicOff, Camera, PhoneOff, Users, Calendar, VideoOff } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { cn } from "@/lib/utils";
 import { demoState } from "@/lib/demoState";
@@ -18,6 +18,12 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
   // Internal simulated state (starts in "Counter-offer received" state)
   const [reapprovalRequested, setReapprovalRequested] = useState(false);
   const [isRequestingReapproval, setIsRequestingReapproval] = useState(false);
+
+  // Meeting Integration State
+  const [showMeetingModal, setShowMeetingModal] = useState(false);
+  const [meetingLive, setMeetingLive] = useState(true);
+  const [micOn, setMicOn] = useState(true);
+  const [camOn, setCamOn] = useState(true);
 
   useEffect(() => {
     const st = demoState.getQuotationApprovalState(resolvedParams.quotationId);
@@ -280,6 +286,42 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
               </div>
             </div>
 
+            {/* MEETING INTEGRATION CARD */}
+            <div className="bg-white rounded-3xl border border-navy/10 shadow-sm overflow-hidden mb-6">
+              <div className="bg-navy p-4 flex justify-between items-center text-white">
+                <h3 className="text-xs font-bold uppercase tracking-widest flex items-center gap-2"><Video className="w-4 h-4 text-cobalt" /> Commercial Discussion</h3>
+                <span className={cn("text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-full", meetingLive ? "bg-red-500/20 text-red-300" : "bg-white/10 text-white/60")}>
+                  {meetingLive ? "LIVE" : "SCHEDULED"}
+                </span>
+              </div>
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <div className="text-sm font-bold text-navy">Deal: {resolvedParams.quotationId}</div>
+                    <div className="text-xs font-medium text-navy/60 flex items-center gap-1.5 mt-1"><Calendar className="w-3.5 h-3.5" /> Today • 4:30 PM</div>
+                  </div>
+                </div>
+                
+                <div className="bg-navy/5 p-3 rounded-xl mb-4">
+                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-2 flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> Participants</div>
+                  <div className="flex flex-wrap gap-2 text-xs font-bold text-navy/80">
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Nova Retail</span>
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Vertex Systems</span>
+                    <span className="bg-white px-2 py-1 rounded shadow-sm">Sales Rep</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setShowMeetingModal(true)}
+                  disabled={!meetingLive}
+                  className={cn("w-full py-3 rounded-xl text-sm font-bold shadow-sm transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed", meetingLive ? "bg-cobalt hover:bg-cobalt/90 text-white shadow-cobalt/20" : "bg-navy/5 text-navy/40")}
+                >
+                  <Video className="w-4 h-4" /> 
+                  {meetingLive ? "Join Demo Meeting" : "Join Meeting"}
+                </button>
+              </div>
+            </div>
+
             {/* VERSION HISTORY */}
             <div className="bg-white rounded-3xl border border-navy/10 shadow-sm p-6">
               <h3 className="text-xs font-bold text-navy uppercase tracking-widest mb-6">Version History</h3>
@@ -324,8 +366,61 @@ export default function InternalNegotiationPage({ params }: { params: Promise<{ 
             )}
           </button>
         </div>
-
       </div>
+
+      {/* DEMO MEETING MODAL */}
+      {showMeetingModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-black text-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[80vh] relative border border-white/10">
+            {/* Header */}
+            <div className="p-4 bg-black/50 backdrop-blur border-b border-white/10 flex justify-between items-center absolute top-0 left-0 right-0 z-10">
+              <div className="flex items-center gap-3">
+                <div className="bg-red-500 rounded-full w-2 h-2 animate-pulse" />
+                <span className="font-bold text-sm">Demo Meeting • Commercial Discussion</span>
+                <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest text-white/50 ml-2">Deal: {resolvedParams.quotationId}</span>
+              </div>
+              <div className="text-white/50 text-sm font-medium bg-white/5 px-3 py-1 rounded-full"><Users className="w-4 h-4 inline-block mr-1" /> 3</div>
+            </div>
+
+            {/* Video Grid */}
+            <div className="flex-1 bg-black p-4 pt-20 grid grid-cols-2 gap-4 auto-rows-fr">
+              {/* Participant 1 */}
+              <div className="bg-navy/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center group">
+                <div className="w-20 h-20 bg-coral rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg">NR</div>
+                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2">Nova Retail</div>
+              </div>
+              {/* Participant 2 */}
+              <div className="bg-navy/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center group">
+                <div className="w-20 h-20 bg-lime-600 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg">VS</div>
+                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2">Vertex Systems <MicOff className="w-3 h-3 text-red-400" /></div>
+              </div>
+              {/* You */}
+              <div className="bg-navy/80 rounded-2xl border border-white/10 relative overflow-hidden flex items-center justify-center group col-span-2 md:col-span-1 md:col-start-1 md:col-end-3 mx-auto w-full md:w-1/2">
+                {!camOn ? (
+                  <div className="w-20 h-20 bg-cobalt rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-lg">ME</div>
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-tr from-cobalt/20 to-navy opacity-50" />
+                )}
+                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2">You (Sales Rep) {!micOn && <MicOff className="w-3 h-3 text-red-400" />}</div>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="p-6 bg-black/80 backdrop-blur border-t border-white/10 flex justify-center items-center gap-6 relative z-10">
+              <button onClick={() => setMicOn(!micOn)} className={cn("w-14 h-14 rounded-full flex items-center justify-center transition-colors", micOn ? "bg-white/10 hover:bg-white/20 text-white" : "bg-red-500/20 text-red-500 hover:bg-red-500/30")}>
+                {micOn ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
+              </button>
+              <button onClick={() => setCamOn(!camOn)} className={cn("w-14 h-14 rounded-full flex items-center justify-center transition-colors", camOn ? "bg-white/10 hover:bg-white/20 text-white" : "bg-red-500/20 text-red-500 hover:bg-red-500/30")}>
+                {camOn ? <Video className="w-6 h-6" /> : <VideoOff className="w-6 h-6" />}
+              </button>
+              <button onClick={() => setShowMeetingModal(false)} className="w-16 h-12 rounded-2xl bg-red-600 hover:bg-red-700 text-white flex items-center justify-center transition-colors ml-4 shadow-lg shadow-red-600/20">
+                <PhoneOff className="w-6 h-6" />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
     </WorkspaceLayout>
   );
 }

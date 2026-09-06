@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
@@ -97,7 +97,29 @@ export default function BuyerDealsPage() {
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("ALL");
 
-  const filtered = SAMPLE_BUYER_DEALS.filter((deal) => {
+  const [localDeals, setLocalDeals] = useState<BuyerDeal[]>([]);
+  useEffect(() => {
+    import("@/lib/demoState").then(m => {
+      const orders = m.demoState.getLocalOrders();
+      setLocalDeals(orders.map((o: any) => ({
+        id: o.id,
+        title: o.title,
+        category: "Local Shopping",
+        targetBudget: o.total,
+        bestQuote: o.total,
+        stage: "APPROVED",
+        vendorCount: 1,
+        quoteCount: 1,
+        topVendor: o.items[0]?.sellerName || "Local Vendor",
+        createdAt: o.createdAt.split('T')[0],
+        deliveryCity: "Mumbai, Maharashtra"
+      })));
+    });
+  }, []);
+
+  const allDeals = [...localDeals, ...SAMPLE_BUYER_DEALS];
+
+  const filtered = allDeals.filter((deal) => {
     const match = 
       deal.title.toLowerCase().includes(search.toLowerCase()) ||
       deal.id.toLowerCase().includes(search.toLowerCase()) ||
@@ -137,7 +159,7 @@ export default function BuyerDealsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div className="bg-white rounded-2xl p-5 border border-navy/5 shadow-sm">
             <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">ACTIVE DEALS</div>
-            <div className="text-2xl font-bold text-navy">5 Orders</div>
+            <div className="text-2xl font-bold text-navy">{allDeals.length} Orders</div>
             <div className="text-xs text-navy/60 mt-1 font-medium">₹90.09 L procurement value</div>
           </div>
           <div className="bg-white rounded-2xl p-5 border border-navy/5 shadow-sm">

@@ -2,35 +2,28 @@ import { User, UserRole, AuthResponse } from "@/types/auth";
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const MOCK_USERS: Record<string, User> = {
+  "buyer@devflow.com": { id: "usr_buyer", email: "buyer@devflow.com", fullName: "Kadambari Ganore", role: UserRole.BUYER, createdAt: new Date().toISOString() },
+  "seller@devflow.com": { id: "usr_seller", email: "seller@devflow.com", fullName: "Vertex Systems", role: UserRole.SELLER, createdAt: new Date().toISOString() },
+  "sales@devflow.com": { id: "usr_sales", email: "sales@devflow.com", fullName: "Rahul Mehta", role: UserRole.SALES_MANAGER, createdAt: new Date().toISOString() },
+  "ops@devflow.com": { id: "usr_ops", email: "ops@devflow.com", fullName: "Finance Team", role: UserRole.FINANCE_OPERATIONS, createdAt: new Date().toISOString() },
+  "customer@devflow.com": { id: "usr_customer", email: "customer@devflow.com", fullName: "Nova Retail", role: UserRole.CUSTOMER, createdAt: new Date().toISOString() },
+  "admin@devflow.com": { id: "usr_admin", email: "admin@devflow.com", fullName: "System Admin", role: UserRole.ADMIN, createdAt: new Date().toISOString() }
+};
+
 export const authService = {
   async login(email: string, password: string):Promise<AuthResponse> {
-    await delay(1200);
+    await delay(800);
 
-    if (email === "demo@devflow.com" && password === "Demo123!") {
-      const user = {
-        id: "usr_12345",
-        email: "demo@devflow.com",
-        fullName: "Demo User",
-        role: UserRole.BUYER,
-        createdAt: new Date().toISOString()
-      };
-      sessionStorage.setItem("devflow_user", JSON.stringify(user));
-      return { user, token: "mock-jwt-token" };
-    }
-
-    if (password === "wrong") {
-        throw new Error("Email or password is incorrect.");
-    }
+    // Enforce strict login credentials matching mock database
+    const user = MOCK_USERS[email.toLowerCase()];
     
-    if (!email.includes("@")) throw new Error("Please enter a valid email address.");
+    // In a real app, Spring Boot would hash and verify password. 
+    // Here we strictly check 'password123' to simulate proper authentication.
+    if (!user || password !== "password123") {
+      throw new Error("Incorrect email or password.");
+    }
 
-    const user = {
-      id: "usr_99999",
-      email,
-      fullName: "New User",
-      role: UserRole.BUYER, // Defaulting if random login
-      createdAt: new Date().toISOString()
-    };
     sessionStorage.setItem("devflow_user", JSON.stringify(user));
     return { user, token: "mock-jwt-token" };
   },
@@ -40,6 +33,11 @@ export const authService = {
     
     if (!payload.email || !payload.password) {
       throw new Error("Invalid payload");
+    }
+    
+    // Disallow admin signup
+    if (payload.role === UserRole.ADMIN || payload.role === "ADMIN") {
+      throw new Error("Cannot sign up as Administrator.");
     }
 
     const user = {
@@ -56,12 +54,11 @@ export const authService = {
   },
 
   async logout(): Promise<void> {
-    await delay(500);
+    await delay(300);
     sessionStorage.removeItem("devflow_user");
   },
 
   async getCurrentUser(): Promise<User | null> {
-    await delay(300);
     if (typeof window !== "undefined") {
       const stored = sessionStorage.getItem("devflow_user");
       if (stored) return JSON.parse(stored);
