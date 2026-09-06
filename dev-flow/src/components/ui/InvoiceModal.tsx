@@ -5,6 +5,8 @@ import { X, Download, Printer } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 
+import { exportToExcel } from "@/lib/exportUtils";
+
 interface InvoiceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,6 +14,37 @@ interface InvoiceModalProps {
 
 export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
   const invoiceRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadExcel = () => {
+    const headers = [
+      "Invoice Number", "Date", "Due Date", "Billed To", "Customer GSTIN",
+      "Seller", "Seller GSTIN", "Deal Reference", "Quotation", "Place of Supply",
+      "Item Description", "Qty", "Unit Price (INR)", "Taxable Value (INR)",
+      "CGST (9%)", "SGST (9%)", "Total Amount (INR)"
+    ];
+    const rows: (string | number)[][] = [
+      [
+        "INV-2048-01",
+        "14 Aug 2026",
+        "28 Aug 2026",
+        "Nova Retail Ltd.",
+        "27AADCB2230M1Z2",
+        "Vertex Systems",
+        "27AABCV1234N1Z5",
+        "DF-2048",
+        "QT-2048",
+        "27 (Maharashtra)",
+        "Dell Latitude 5450 Enterprise Laptop (16GB RAM, 512GB SSD)",
+        50,
+        16800,
+        840000,
+        75600,
+        75600,
+        991200
+      ]
+    ];
+    exportToExcel("DEV-FLOW-INV-2048-01.xlsx", "Tax Invoice", headers, rows);
+  };
 
   const handleDownload = async () => {
     if (!invoiceRef.current) return;
@@ -58,12 +91,20 @@ export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
             {/* Header Toolbar */}
             <div className="bg-navy p-4 flex justify-between items-center text-white shrink-0">
               <div className="font-bold text-sm tracking-widest uppercase">Invoice Preview</div>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={handleDownloadExcel}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+                  title="Download XLSX Spreadsheet"
+                >
+                  <Download className="w-3.5 h-3.5" /> XLSX
+                </button>
                 <button 
                   onClick={handleDownload}
-                  className="px-4 py-1.5 bg-cobalt hover:bg-cobalt/90 text-white text-xs font-bold rounded-lg flex items-center gap-2 transition-colors"
+                  className="px-3 py-1.5 bg-cobalt hover:bg-cobalt/90 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-sm"
+                  title="Download PDF"
                 >
-                  <Download className="w-3.5 h-3.5" /> Download PDF
+                  <Download className="w-3.5 h-3.5" /> PDF
                 </button>
                 <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
                   <X className="w-4 h-4" />

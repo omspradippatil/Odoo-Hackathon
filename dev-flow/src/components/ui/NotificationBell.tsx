@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { 
-  Bell, CheckCheck, X, ShieldCheck, CreditCard, Truck, 
+  Bell, Check, CheckCheck, X, ShieldCheck, CreditCard, Truck, 
   Receipt, Handshake, Info, ArrowRight 
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -234,9 +234,23 @@ export function NotificationBell({ className, iconClassName }: NotificationBellP
                         </div>
                       </div>
 
-                      {/* Unread blue dot */}
+                      {/* Unread indicator / action */}
                       {!item.read && (
-                        <div className="w-2 h-2 rounded-full bg-cobalt shrink-0 mt-1.5" />
+                        <div className="flex flex-col items-center gap-2 shrink-0 mt-1">
+                          <div className="w-2 h-2 rounded-full bg-cobalt" />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              demoState.markAsRead(item.id);
+                            }}
+                            className="p-1 rounded-md text-navy/30 hover:text-cobalt hover:bg-navy/5 transition-colors opacity-0 group-hover:opacity-100"
+                            title="Mark as read"
+                            aria-label="Mark as read"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       )}
                     </button>
                   ))

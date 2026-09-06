@@ -4,7 +4,28 @@ import React from "react";
 import { PieChart, Download, Filter, TrendingUp, Calendar, ChevronDown, CheckCircle2, DollarSign } from "lucide-react";
 import { PLATFORM_CONFIG } from "@/lib/pricingConfig";
 
+import { exportToExcel } from "@/lib/exportUtils";
+
 export default function ReportsPage() {
+  const handleExport = () => {
+    const headers = ["Metric", "Value", "Notes"];
+    const rows = [
+      ["Deal Value", "₹4.8 Cr", "Total platform GMV"],
+      ["Completed Deals", "428", "Fully delivered & billed"],
+      ["Platform Revenue", "₹12.84L", "From 3% transaction fee"],
+      ["On-Time Fulfilment", "93%", "Delivered within SLA"],
+      ["Outstanding Invoices", "₹18.4L", "Awaiting settlement"],
+      ["Monthly ARR", "₹6.8L", "Annual recurring revenue run rate"],
+      ["Conversion - Requirements", "1240", "100% of funnel"],
+      ["Conversion - Quotes Created", "982", "79% of funnel"],
+      ["Conversion - Approved Internally", "714", "57% of funnel"],
+      ["Conversion - Accepted by Customer", "586", "47% of funnel"],
+      ["Conversion - Fulfilled", "472", "38% of funnel"],
+      ["Conversion - Completed & Billed", "428", "34% of funnel"]
+    ];
+    exportToExcel("DEV-FLOW-Platform-Reports.xlsx", "Platform Reports", headers, rows);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       
@@ -17,8 +38,12 @@ export default function ReportsPage() {
           <button className="px-4 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors text-sm flex items-center justify-center gap-2">
             <Filter className="w-4 h-4" /> Date: 01 Aug - 31 Aug <ChevronDown className="w-3 h-3" />
           </button>
-          <button className="px-4 py-2.5 rounded-xl font-bold text-white bg-navy shadow-lg shadow-navy/20 hover:bg-navy/90 transition-colors text-sm flex items-center justify-center gap-2">
-            <Download className="w-4 h-4" /> Export CSV
+          <button 
+            onClick={handleExport}
+            className="px-4 py-2.5 rounded-xl font-bold text-white bg-navy shadow-lg shadow-navy/20 hover:bg-navy/90 transition-colors text-sm flex items-center justify-center gap-2"
+            title="Download Reports Spreadsheet"
+          >
+            <Download className="w-4 h-4" /> Export CSV / XLSX
           </button>
         </div>
       </div>

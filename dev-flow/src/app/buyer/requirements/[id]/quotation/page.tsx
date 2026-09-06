@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { WorkspaceLayout } from "@/components/layout/WorkspaceLayout";
 import { UserRole } from "@/types/auth";
 import { QuotationItem, QuotationSummary } from "@/types/quotation";
-import { ArrowRight, Check, Activity, ShieldCheck, Tag, Plus, PlusCircle, Building2, MapPin, Package, FileText, Settings, X, MoreHorizontal, Save, Eye, TrendingUp } from "lucide-react";
+import { ArrowRight, Check, Activity, ShieldCheck, Tag, Plus, PlusCircle, Building2, MapPin, Package, FileText, Settings, X, MoreHorizontal, Save, Eye, TrendingUp, Download } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { demoState, QuotationApprovalState } from "@/lib/demoState";
+import { exportToExcel } from "@/lib/exportUtils";
 
 // --- MOCK INITIAL DATA ---
 const INITIAL_ITEMS: QuotationItem[] = [
@@ -83,14 +84,33 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
   const [approvalState, setApprovalState] = useState<QuotationApprovalState>('DRAFT');
   const [isRequestingApproval, setIsRequestingApproval] = useState(false);
   const [approvalError, setApprovalError] = useState<string | null>(null);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
 
   useEffect(() => {
+    // 1. Initial sync from demoState
+    const currentState = demoState.getQuotationApprovalState("QT-2048");
+    if (currentState) {
+      setApprovalState(currentState);
+    }
+    const unsubscribe = demoState.subscribeQuotationState(() => {
+      setApprovalState(demoState.getQuotationApprovalState("QT-2048"));
+    });
+
+    // 2. Fetch from backend if available
     fetch("http://localhost:8080/api/quotations/QT-2048")
       .then(res => res.json())
       .then(data => {
-        setApprovalState(data.approvalState as QuotationApprovalState);
+        if (data && data.approvalState) {
+          setApprovalState(data.approvalState as QuotationApprovalState);
+          demoState.setQuotationApprovalState("QT-2048", data.approvalState);
+        }
       })
-      .catch(err => console.error("Failed to load quotation", err));
+      .catch(() => {
+        // Fallback gracefully to demoState
+      });
+
+    return () => unsubscribe();
   }, []);
 
   // MOCK BUSINESS LOGIC (Will be owned by Spring Boot later)
@@ -183,40 +203,119 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
     setItems([...items, newItem]);
   };
 
-  const handleRequestApproval = () => {
+  const handleRequestApproval = async () => {
     if (isRequestingApproval || approvalState === 'PENDING_APPROVAL' || approvalState === 'APPROVED') return;
     setIsRequestingApproval(true);
     setApprovalError(null);
 
-    const updatedQuotation = { id: 'QT-2048', approvalState: 'PENDING_APPROVAL' };
-    
-    fetch("http://localhost:8080/api/quotations", {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedQuotation)
-    })
-    .then(() => {
-      const notif = {
+    try {
+      // 1. Attempt backend update if available
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 600);
+        await fetch("http://localhost:8080/api/quotations", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: 'QT-2048', approvalState: 'PENDING_APPROVAL' }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+      } catch {
+        // Backend not available, continue seamlessly in controlled demo state
+      }
+
+      // 2. Simulated delay so user sees "Requesting Approval..." button state
+      await new Promise(res => setTimeout(res, 500));
+
+      // 3. Update demo state
+      demoState.setQuotationApprovalState('QT-2048', 'PENDING_APPROVAL');
+      demoState.addNotification({
         title: "Approval Requested",
-        message: "Approval requested for QT-2048 (Discount exceeds current approval authority)",
+        message: "Approval requested for QT-2048",
         type: "approval",
         targetUrl: "/approvals/QT-2048",
         badgeText: "Approval"
-      };
-      return fetch("http://localhost:8080/api/notifications", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(notif)
       });
-    })
-    .then(() => {
+
+      // 4. Update local state
       setApprovalState('PENDING_APPROVAL');
       setIsRequestingApproval(false);
-    })
-    .catch(() => {
+    } catch {
       setIsRequestingApproval(false);
       setApprovalError("Approval request could not be submitted. Please try again.");
+    }
+  };
+
+  const handleSaveDraft = () => {
+    if (isSavingDraft) return;
+    setIsSavingDraft(true);
+    setTimeout(() => {
+      try {
+        const draftData = {
+          quotationId: 'QT-2048',
+          requirementId: resolvedParams.id,
+          items,
+          summary,
+          approvalState,
+          savedAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(`devflow_quotation_draft_${resolvedParams.id}`, JSON.stringify(draftData));
+        demoState.addNotification({
+          title: "Quotation Draft Saved",
+          message: `Draft for quotation QT-2048 was saved successfully.`,
+          type: "system",
+          targetUrl: `/buyer/requirements/${resolvedParams.id}/quotation`,
+          badgeText: "Draft"
+        });
+      } catch (e) {
+        console.error("Failed to save draft", e);
+      }
+      setIsSavingDraft(false);
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 3000);
+    }, 500);
+  };
+
+  const handleExportXLSX = () => {
+    const headers = [
+      "Line #", "Product / Service", "Vendor Name", "Billing Type",
+      "Quantity", "Vendor Cost (INR)", "Selling Price Unit (INR)",
+      "Discount %", "Tax Rate %", "Line Net Value (INR)"
+    ];
+    const rows: (string | number)[][] = items.map((item, idx) => {
+      const base = item.quantity * item.sellingPriceUnit;
+      const disc = (base * item.discountPercent) / 100;
+      const net = base - disc;
+      return [
+        idx + 1,
+        item.productName,
+        item.vendorName,
+        item.billingType,
+        item.quantity,
+        item.vendorCostUnit,
+        item.sellingPriceUnit,
+        item.discountPercent,
+        item.taxRatePercent,
+        net
+      ];
     });
+
+    if (summary) {
+      rows.push([
+        "",
+        "TOTAL COMMERCIAL SUMMARY",
+        "Nova Retail Expansion (DF-2048)",
+        "",
+        items.reduce((sum, it) => sum + it.quantity, 0),
+        summary.totalVendorCost,
+        summary.oneTimeSubtotal,
+        summary.totalDiscount,
+        summary.totalTax,
+        summary.grandTotalOneTime
+      ]);
+    }
+
+    exportToExcel(`QT-2048-Quotation.xlsx`, "Quotation QT-2048", headers, rows);
   };
 
   const handleContinue = () => {
@@ -244,8 +343,19 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
           <div className="flex items-center gap-2 text-[10px] font-bold text-navy/40 uppercase tracking-widest">
             <span>Deals</span> <span className="text-navy/20">/</span> <span>{resolvedParams.id}</span> <span className="text-navy/20">/</span> <span className="text-navy">Build Quotation</span>
           </div>
-          <div className="bg-navy/10 text-navy px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-navy" /> DRAFT
+          <div className={cn(
+            "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 border",
+            approvalState === 'APPROVED' ? "bg-lime/20 text-lime-800 border-lime/30" :
+            approvalState === 'PENDING_APPROVAL' ? "bg-orange-100 text-orange-700 border-orange-200" :
+            "bg-navy/10 text-navy border-transparent"
+          )}>
+            <span className={cn(
+              "w-1.5 h-1.5 rounded-full",
+              approvalState === 'APPROVED' ? "bg-lime" :
+              approvalState === 'PENDING_APPROVAL' ? "bg-orange-500 animate-pulse" :
+              "bg-navy"
+            )} />
+            {approvalState === 'PENDING_APPROVAL' ? 'PENDING APPROVAL' : approvalState === 'APPROVED' ? 'APPROVED' : 'DRAFT'}
           </div>
         </div>
         
@@ -257,11 +367,25 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
             </p>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <button className="px-5 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors flex items-center gap-2">
-              <Eye className="w-4 h-4" /> Preview
+            <button 
+              onClick={handleExportXLSX}
+              className="px-4 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors flex items-center gap-2 text-sm"
+              title="Download Quotation Spreadsheet (.xlsx)"
+            >
+              <Download className="w-4 h-4 text-emerald-600" /> Export XLSX
             </button>
-            <button className="px-5 py-2.5 rounded-xl font-bold text-white bg-navy shadow-lg shadow-navy/20 hover:bg-navy/90 transition-colors flex items-center gap-2">
-              <Save className="w-4 h-4" /> Save Draft
+            <button 
+              onClick={handleSaveDraft}
+              disabled={isSavingDraft}
+              className="px-5 py-2.5 rounded-xl font-bold text-white bg-navy shadow-lg shadow-navy/20 hover:bg-navy/90 transition-colors flex items-center gap-2 text-sm disabled:opacity-75 min-w-[130px] justify-center"
+            >
+              {isSavingDraft ? (
+                <><Activity className="w-4 h-4 animate-spin" /> Saving...</>
+              ) : draftSaved ? (
+                <><Check className="w-4 h-4 text-lime" /> Draft Saved ✓</>
+              ) : (
+                <><Save className="w-4 h-4" /> Save Draft</>
+              )}
             </button>
           </div>
         </div>
@@ -759,14 +883,26 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
 
         {/* MOBILE STICKY CTA */}
         <div className="lg:hidden fixed bottom-[80px] left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-navy/5 z-40 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-          <div className="flex items-center justify-between mb-3 px-2">
+          <div className="flex items-center justify-between mb-2.5 px-1">
             <div>
               <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">TOTAL</div>
               <div className="text-lg font-bold text-navy">{formatCurrency(summary.grandTotalOneTime)}</div>
             </div>
-            <div className="text-right">
-              <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">Margin</div>
-              <div className={cn("text-sm font-bold", summary.marginHealth === 'LOW' ? "text-coral" : "text-lime-700")}>{summary.marginPercentage.toFixed(1)}%</div>
+            <div className="text-right flex items-center gap-2">
+              <button
+                onClick={handleExportXLSX}
+                className="px-2.5 py-1.5 rounded-lg bg-navy/5 text-navy font-bold text-[11px] flex items-center gap-1 border border-navy/10"
+                title="Export XLSX"
+              >
+                <Download className="w-3.5 h-3.5 text-emerald-600" /> XLSX
+              </button>
+              <button
+                onClick={handleSaveDraft}
+                disabled={isSavingDraft}
+                className="px-2.5 py-1.5 rounded-lg bg-navy/5 text-navy font-bold text-[11px] flex items-center gap-1 border border-navy/10 disabled:opacity-50"
+              >
+                {isSavingDraft ? "Saving..." : draftSaved ? "Saved ✓" : "Save Draft"}
+              </button>
             </div>
           </div>
 

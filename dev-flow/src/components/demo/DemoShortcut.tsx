@@ -103,14 +103,9 @@ export function DemoShortcut() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isAuth, setIsAuth] = useState<boolean | null>(null);
-
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== "undefined") {
-      setIsAuth(!!sessionStorage.getItem("devflow_user"));
-    }
-  }, [pathname]);
+  }, []);
 
   // Handle ESC key to close on desktop
   useEffect(() => {
@@ -126,7 +121,7 @@ export function DemoShortcut() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
-  if (!mounted || isAuth === true || isAuth === null) return null;
+  if (!mounted) return null;
 
   // Pages with mobile sticky CTA at bottom-[80px]
   const hasStickyCta = 
@@ -144,14 +139,14 @@ export function DemoShortcut() {
   return (
     <>
       {/* FLOATING LAUNCHER:
-          - Desktop: bottom-6 right-6 (safe area, clear of sidebar & content)
-          - Mobile: bottom-[154px] when sticky CTA is present, or bottom-[92px] above bottom nav
-          - Never covers sidebar, forms, or navigation
+          - Desktop: bottom-6 right-6 (safe area, opposite side from desktop sidebar, clear of content)
+          - Mobile: bottom-[164px] when sticky CTA is present, or bottom-[96px] above bottom nav
+          - Never covers sidebar, forms, or bottom navigation
       */}
       <div 
         className={cn(
           "fixed right-3 sm:right-6 lg:right-6 lg:bottom-6 z-40 transition-all duration-300",
-          hasStickyCta ? "bottom-[154px]" : "bottom-[92px]"
+          hasStickyCta ? "bottom-[164px]" : "bottom-[96px]"
         )}
       >
         <button 

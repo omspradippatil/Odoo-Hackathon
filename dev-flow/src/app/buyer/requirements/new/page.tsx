@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -124,10 +124,6 @@ export default function NewRequirementPage() {
 
   const handleSaveDraft = useCallback(() => {
     if (isDrafting) return;
-    if (req.items.length === 0 && !(req.city ?? "").trim()) {
-      setErrors({ general: "Add at least one item or a delivery location to save a draft." });
-      return;
-    }
     setErrors({});
     setIsDrafting(true);
     setTimeout(() => {
@@ -137,7 +133,7 @@ export default function NewRequirementPage() {
       setIsDrafting(false);
       setDraftSavedId(draftId);
       setTimeout(() => setDraftSavedId(null), 3000);
-    }, 700);
+    }, 500);
   }, [isDrafting, req]);
 
   const handleSubmit = useCallback(() => {

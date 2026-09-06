@@ -235,7 +235,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
       </aside>
 
       {/* MOBILE HEADER */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-navy/5 flex items-center justify-between px-4 z-40 shadow-sm">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-navy/5 flex items-center justify-between px-4 z-50 shadow-sm">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-navy text-white flex items-center justify-center">
             <ArrowRightLeft className="w-4 h-4" />
@@ -294,7 +294,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
 
       {/* MAIN CONTENT */}
       <div className="flex-1 lg:ml-[260px] flex flex-col min-h-screen relative z-10 pt-16 pb-24 lg:pt-0 lg:pb-0">
-        <header className="hidden lg:flex h-20 items-center justify-between px-10 border-b border-navy/5 bg-warm/80 backdrop-blur-md sticky top-0 z-30">
+        <header className="hidden lg:flex h-20 items-center justify-between px-10 border-b border-navy/5 bg-warm/80 backdrop-blur-md sticky top-0 z-40">
           <div className="relative w-96">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/40" />
             <input type="text" placeholder="Search products, suppliers, or deals..." className="w-full h-11 pl-11 pr-4 rounded-full bg-white border border-navy/5 focus:outline-none focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 transition-all text-sm font-medium placeholder:text-navy/30" />

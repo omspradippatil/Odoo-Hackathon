@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { cn } from "@/lib/utils";
+import { exportToExcel } from "@/lib/exportUtils";
 
 interface BillingRecord {
   id: string;
@@ -156,10 +157,31 @@ export default function BillingListPage() {
           
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => alert("Exporting all billing statements to CSV...")} 
+              onClick={() => {
+                const headers = [
+                  "Invoice Number", "Deal ID", "Customer Name", "Billing Type",
+                  "Subtotal (INR)", "Tax Total (INR)", "Grand Total (INR)",
+                  "Status", "Issue Date", "Due Date", "Quotation Ref"
+                ];
+                const rows = SAMPLE_INVOICES.map(inv => [
+                  inv.invoiceNumber,
+                  inv.dealId,
+                  inv.customerName,
+                  inv.billingType,
+                  inv.subtotal,
+                  inv.taxTotal,
+                  inv.grandTotal,
+                  inv.status,
+                  inv.issueDate,
+                  inv.dueDate,
+                  inv.quotationRef
+                ]);
+                exportToExcel("DEV-FLOW-Billing-Invoices.xlsx", "Invoices", headers, rows);
+              }} 
               className="px-4 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors text-sm flex items-center gap-2"
+              title="Download Invoices Spreadsheet"
             >
-              <Download className="w-4 h-4" /> Export CSV
+              <Download className="w-4 h-4" /> Export CSV / XLSX
             </button>
             <button 
               onClick={() => router.push("/operations/billing/DF-2048")} 

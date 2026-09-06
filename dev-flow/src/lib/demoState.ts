@@ -22,7 +22,7 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
   {
     id: "notif-1",
     title: "Approval Requested",
-    message: "Approval requested for QT-2048 (12% discount exceeds 5% authority)",
+    message: "Approval requested for QT-2048",
     type: "approval",
     timestamp: "10m ago",
     read: false,
@@ -32,7 +32,7 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
   {
     id: "notif-2",
     title: "Customer Counter-Offer",
-    message: "Customer requested a 15% discount on quotation V2",
+    message: "Customer requested a 15% discount",
     type: "negotiation",
     timestamp: "25m ago",
     read: false,
@@ -41,18 +41,38 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
   },
   {
     id: "notif-3",
+    title: "Reapproval Required",
+    message: "Reapproval required for quotation V2",
+    type: "approval",
+    timestamp: "35m ago",
+    read: false,
+    targetUrl: "/approvals/QT-2048",
+    badgeText: "Reapproval"
+  },
+  {
+    id: "notif-4",
+    title: "Quotation Approved",
+    message: "QT-2048 was approved",
+    type: "approval",
+    timestamp: "50m ago",
+    read: true,
+    targetUrl: "/negotiation/QT-2048",
+    badgeText: "Approved"
+  },
+  {
+    id: "notif-5",
     title: "Payment Received",
-    message: "Payment of ₹2.52L received for Deal DF-2048",
+    message: "Payment of ₹2.52L received",
     type: "payment",
     timestamp: "1h ago",
-    read: false,
+    read: true,
     targetUrl: "/operations/payments/DF-2048",
     badgeText: "Payment"
   },
   {
-    id: "notif-4",
-    title: "Warehouse Dispatch",
-    message: "Shipment from Mumbai warehouse dispatched (Trk #WB-88219)",
+    id: "notif-6",
+    title: "Shipment Dispatched",
+    message: "Shipment from Mumbai warehouse dispatched",
     type: "fulfilment",
     timestamp: "2h ago",
     read: true,
@@ -60,9 +80,9 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
     badgeText: "Fulfilment"
   },
   {
-    id: "notif-5",
-    title: "Delivery Confirmed",
-    message: "Delivery confirmation received for Nova Retail expansion",
+    id: "notif-7",
+    title: "Delivery Confirmation",
+    message: "Delivery confirmation received",
     type: "fulfilment",
     timestamp: "3h ago",
     read: true,
@@ -70,9 +90,9 @@ const INITIAL_NOTIFICATIONS: DemoNotification[] = [
     badgeText: "Delivery"
   },
   {
-    id: "notif-6",
+    id: "notif-8",
     title: "Invoice Generated",
-    message: "INV-2048-01 generated for ₹8.40L",
+    message: "INV-2048-01 generated",
     type: "billing",
     timestamp: "Yesterday",
     read: true,

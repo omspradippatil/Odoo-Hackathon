@@ -4,8 +4,21 @@ import React, { useState } from "react";
 import { List, Search, Filter, ChevronDown, Download, AlertCircle, FileText, Settings, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { exportToExcel } from "@/lib/exportUtils";
+
 export default function AuditLogPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleExport = () => {
+    const headers = ["Timestamp", "Action", "Actor", "Entity Reference", "Details"];
+    const rows = [
+      ["05 Sep 2026, 18:42:15", "Discount Policy Updated", "Admin User (A. Mehta)", "STANDARD-DISCOUNT-V3", "Changed threshold from 10% to 12%"],
+      ["05 Sep 2026, 14:12:05", "Approval Workflow Created", "Admin User (S. Rao)", "APPR-ENTERPRISE-V1", "Created 2-step manager review flow"],
+      ["04 Sep 2026, 09:30:00", "User Role Changed", "System Provisioning", "USR-8442", "Promoted to Senior Sales Rep"],
+      ["01 Sep 2026, 10:15:00", "Product Catalog Sync", "API Gateway", "BATCH-9021", "Successfully synchronized 1,200 catalog SKUs"]
+    ];
+    exportToExcel("DEV-FLOW-Audit-Log.xlsx", "Audit Log", headers, rows);
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20 relative h-[calc(100vh-6rem)] flex flex-col">
@@ -16,7 +29,11 @@ export default function AuditLogPage() {
           <p className="text-sm font-medium text-navy/60">Immutable record of system configuration and governance changes.</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors text-sm flex items-center justify-center gap-2">
+          <button 
+            onClick={handleExport}
+            className="px-4 py-2.5 rounded-xl font-bold text-navy bg-white border border-navy/10 shadow-sm hover:bg-navy/5 transition-colors text-sm flex items-center justify-center gap-2"
+            title="Download Audit Log Spreadsheet"
+          >
             <Download className="w-4 h-4" /> Export Log
           </button>
         </div>
