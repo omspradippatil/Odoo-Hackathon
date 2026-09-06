@@ -31,7 +31,7 @@ export function ProtectedTransaction() {
             className="mb-6 md:mb-8"
           />
           <p className="text-lg md:text-xl text-navy/70 leading-relaxed max-w-md">
-            For supported transactions, DEV FLOW acts as a trusted middle layer between unknown buyers and sellers, helping reduce transaction risk.
+            For supported transactions, Aakalan360 acts as a trusted middle layer between unknown buyers and sellers, helping reduce transaction risk.
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export function ProtectedTransaction() {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-[10px] font-bold tracking-widest text-navy/40 uppercase">DEV FLOW</div>
+              <div className="text-[10px] font-bold tracking-widest text-navy/40 uppercase">AAKALAN360</div>
               <div className="text-sm font-bold text-navy">PROTECTED DEAL</div>
             </div>
             <div className="ml-auto text-lg font-bold text-navy">₹94,000</div>

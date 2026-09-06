@@ -38,15 +38,20 @@ const PRIORITY_LABELS: Record<string, string> = {
   PRODUCT_QUALITY: "Product Quality", VENDOR_EXPERIENCE: "Vendor Experience", AVAILABILITY: "Availability",
 };
 
-const DRAFT_KEY = "devflow_req_drafts";
+const DRAFT_KEY = "aakalan_req_drafts";
 function getDrafts(): RequirementRequest[] {
   if (typeof window === "undefined") return [];
-  try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? "[]"); } catch { return []; }
+  try { 
+    return JSON.parse(sessionStorage.getItem(DRAFT_KEY) ?? sessionStorage.getItem("devflow_req_drafts") ?? "[]"); 
+  } catch { 
+    return []; 
+  }
 }
 function saveDraftToSession(req: RequirementRequest, id: string) {
   const drafts = getDrafts();
   const updated = req.id ? drafts.map((d) => (d.id === req.id ? { ...req } : d)) : [{ ...req, id, status: "DRAFT" }, ...drafts];
   sessionStorage.setItem(DRAFT_KEY, JSON.stringify(updated));
+  sessionStorage.setItem("devflow_req_drafts", JSON.stringify(updated));
 }
 
 const OptionCard = ({ title, description, selected, onClick, recommended }: {
@@ -154,9 +159,11 @@ export default function NewRequirementPage() {
     const reqId = req.id?.startsWith("REQ-") ? req.id : generateReqId(req);
     setTimeout(() => {
       try {
+        sessionStorage.setItem(`aakalan_req_${reqId}`, JSON.stringify({ ...req, id: reqId, status: "SOURCING" }));
         sessionStorage.setItem(`devflow_req_${reqId}`, JSON.stringify({ ...req, id: reqId, status: "SOURCING" }));
         const drafts = getDrafts().filter((d) => d.id !== req.id);
         sessionStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+        sessionStorage.setItem("devflow_req_drafts", JSON.stringify(drafts));
         router.push(`/buyer/requirements/${reqId}`);
       } catch {
         setIsCreating(false);
@@ -199,7 +206,7 @@ export default function NewRequirementPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-navy/10">
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Create Requirement</h1>
-              <p className="text-navy/60 font-medium text-lg max-w-2xl">Tell DEV FLOW what you are looking for. We will help find the strongest sourcing options.</p>
+              <p className="text-navy/60 font-medium text-lg max-w-2xl">Tell Aakalan360 what you are looking for. We will help find the strongest sourcing options.</p>
             </div>
             <div className="hidden md:flex items-center gap-3">
               <button type="button" onClick={handleCancelClick} className="px-5 py-2.5 rounded-xl font-bold text-navy/60 hover:text-navy hover:bg-navy/5 transition-colors">Cancel</button>
@@ -368,7 +375,7 @@ export default function NewRequirementPage() {
                 <div className="grid sm:grid-cols-3 gap-3">
                   <OptionCard title="Yes" description="Allow Split Fulfilment" selected={req.allowSplitFulfilment === "YES"} onClick={() => setReq((p) => ({ ...p, allowSplitFulfilment: "YES" }))} />
                   <OptionCard title="No" description="Single Vendor Preferred" selected={req.allowSplitFulfilment === "NO"} onClick={() => setReq((p) => ({ ...p, allowSplitFulfilment: "NO" }))} />
-                  <OptionCard title="Auto" description="Let DEV FLOW Decide" selected={req.allowSplitFulfilment === "AUTO"} onClick={() => setReq((p) => ({ ...p, allowSplitFulfilment: "AUTO" }))} recommended />
+                  <OptionCard title="Auto" description="Let Aakalan360 Decide" selected={req.allowSplitFulfilment === "AUTO"} onClick={() => setReq((p) => ({ ...p, allowSplitFulfilment: "AUTO" }))} recommended />
                 </div>
               </div>
               <div className="pt-6 border-t border-navy/5">

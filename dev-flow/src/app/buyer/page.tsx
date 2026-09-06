@@ -89,7 +89,7 @@ export default function BuyerHome() {
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-coral/20 rounded-full blur-2xl pointer-events-none" />
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-4 h-4 text-coral" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-coral">DEV FLOW INSIGHT</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-coral">AAKALAN360 INSIGHT</span>
               </div>
               <p className="text-sm font-medium text-white/80 leading-relaxed mb-6">
                 A vendor offering ₹18,000 less currently has lower delivery reliability. Best overall vendor remains <strong className="text-white">Vertex Systems</strong>.

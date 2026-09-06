@@ -8,6 +8,7 @@ import { NotificationBell } from "@/components/ui/NotificationBell";
 import { cn } from "@/lib/utils";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
@@ -27,12 +28,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex w-[280px] bg-navy flex-col justify-between fixed inset-y-0 left-0 z-40">
         <div>
-          <div className="h-24 flex items-center px-8 border-b border-white/5">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center transition-transform group-hover:scale-105">
-                <ArrowRightLeft className="w-5 h-5" />
-              </div>
-              <span className="font-bold text-lg tracking-tight text-white">DEV FLOW</span>
+          <div className="h-24 flex items-center px-6 border-b border-white/5">
+            <Link href="/" className="flex items-center group">
+              <BrandLogo variant="full" theme="dark" />
             </Link>
           </div>
           
@@ -53,9 +51,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="p-8 border-t border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">JD</div>
+            <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">KG</div>
             <div>
-              <div className="text-sm font-bold text-white">John Doe</div>
+              <div className="text-sm font-bold text-white">Kadambari Ganore</div>
               <div className="text-xs font-medium text-white/50">Buyer Workspace</div>
             </div>
           </div>
@@ -65,10 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* MOBILE HEADER */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-navy/5 flex items-center justify-between px-4 z-40">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-navy text-white flex items-center justify-center">
-            <ArrowRightLeft className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base tracking-tight text-navy">DEV FLOW</span>
+          <BrandLogo variant="responsive" />
         </Link>
         <button onClick={() => setMobileMenuOpen(true)} className="p-2 text-navy">
           <Menu className="w-6 h-6" />

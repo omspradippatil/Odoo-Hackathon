@@ -7,31 +7,45 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ArrowRightLeft, Menu, X } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ fullName?: string; role?: string } | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("devflow_user");
-      if (stored) setUser(JSON.parse(stored));
-    }
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
     window.addEventListener("scroll", handleScroll);
+
+    try {
+      const stored = sessionStorage.getItem("aakalan_user") || sessionStorage.getItem("devflow_user");
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
+    } catch {
+      // ignore
+    }
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleForBusinessClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (typeof window !== "undefined") {
-      const isLanding = window.location.pathname === "/" || window.location.pathname === "";
-      if (isLanding) {
-        const el = document.getElementById("for-business") || document.getElementById("professional");
-        if (el) {
-          e.preventDefault();
-          el.scrollIntoView({ behavior: "smooth" });
-          window.history.pushState(null, "", "#for-business");
+  const handleForBusinessClick = (e: React.MouseEvent) => {
+    if (window.location.pathname !== "/") {
+      return;
+    }
+    e.preventDefault();
+    const el = document.getElementById("two-worlds");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      const allSections = document.querySelectorAll("section");
+      for (const sec of Array.from(allSections)) {
+        if (sec.textContent?.includes("TWO WORLDS") || sec.textContent?.includes("FOR BUSINESS")) {
+          sec.scrollIntoView({ behavior: "smooth" });
+          break;
         }
       }
     }
@@ -51,10 +65,7 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* LOGO */}
           <Link href="/" className="flex items-center gap-2 group z-50 relative">
-            <div className="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center transition-transform group-hover:scale-105">
-              <ArrowRightLeft className="w-5 h-5" />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-navy">DEV FLOW</span>
+            <BrandLogo variant="responsive" />
           </Link>
 
           {/* DESKTOP NAV */}

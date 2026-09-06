@@ -6,6 +6,7 @@ import { ShieldCheck, Activity, Check, X, FileText, ArrowRight, MessageSquare, P
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
@@ -36,7 +37,7 @@ export default function CustomerPortalPage({ params }: { params: Promise<{ quota
         </motion.div>
         <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-2">Deal Confirmed</div>
         <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2 uppercase">QUOTATION ACCEPTED</h1>
-        <p className="text-navy/60 font-medium text-lg max-w-md mx-auto mb-10">Complete the transaction through DEV FLOW to continue to fulfilment.</p>
+        <p className="text-navy/60 font-medium text-lg max-w-md mx-auto mb-10">Complete the transaction through Aakalan360 to continue to fulfilment.</p>
         <button onClick={() => router.push(`/customer/deals/${resolvedParams.quotationId}/payment`)} className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-cobalt text-white font-bold hover:bg-cobalt/90 transition-all shadow-lg shadow-cobalt/20 active:scale-95">
           Continue to Payment <ArrowRight className="w-5 h-5" />
         </button>
@@ -49,7 +50,7 @@ export default function CustomerPortalPage({ params }: { params: Promise<{ quota
       {/* CUSTOMER HEADER */}
       <header className="bg-navy text-white px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
+          <BrandLogo variant="full" theme="dark" />
         </div>
         <div className="flex items-center gap-4 text-sm font-medium">
           <span className="hidden md:inline text-white/60">Nova Retail Portal</span>

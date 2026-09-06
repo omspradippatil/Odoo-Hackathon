@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRightLeft } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export function Footer() {
   return (
@@ -8,14 +8,14 @@ export function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 md:gap-12 lg:gap-8 mb-16 md:mb-20">
         
         <div className="col-span-1 sm:col-span-2 md:col-span-4 lg:col-span-2">
-          <Link href="/" className="flex items-center gap-2 mb-4 md:mb-6 group inline-flex">
-            <div className="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center transition-transform group-hover:scale-105">
-              <ArrowRightLeft className="w-5 h-5" />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-navy">DEV FLOW</span>
+          <Link href="/" className="mb-4 md:mb-6 inline-flex">
+            <BrandLogo variant="full" />
           </Link>
-          <div className="text-xl md:text-2xl font-bold text-navy/40 leading-tight">
-            Better deals.<br />Built on trust.
+          <div className="text-sm font-semibold text-navy/60 leading-relaxed mt-2">
+            For a Smarter Tomorrow
+          </div>
+          <div className="text-lg md:text-xl font-bold text-navy/40 leading-tight mt-1">
+            Better deals. Built on trust.
           </div>
         </div>
 
@@ -49,7 +49,7 @@ export function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto pt-6 md:pt-8 border-t border-navy/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] md:text-xs font-semibold text-navy/40 uppercase tracking-widest text-center md:text-left">
-        <div>&copy; {new Date().getFullYear()} DEV FLOW. ALL RIGHTS RESERVED.</div>
+        <div>&copy; {new Date().getFullYear()} Aakalan360. ALL RIGHTS RESERVED.</div>
         <div>Built for modern commerce.</div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Package, Truck, Check, MapPin, AlertCircle, CheckCircle2, MessageSquare, ArrowRight, X, Image as ImageIcon, Activity } from "lucide-react";
 import * as motion from "framer-motion/client";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ShipmentStatus } from "@/types/fulfilment";
@@ -50,7 +51,7 @@ export default function CustomerFulfilmentPage({ params }: { params: Promise<{ d
       <header className="bg-navy text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shadow-md gap-4">
         <div className="flex items-center justify-between w-full md:w-auto">
           <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
+            <BrandLogo variant="full" theme="dark" />
           </div>
           <div className="md:hidden text-xs font-bold text-white/60 uppercase tracking-widest">{resolvedParams.dealId}</div>
         </div>

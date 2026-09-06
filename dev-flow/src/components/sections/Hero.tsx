@@ -131,7 +131,7 @@ export function Hero() {
                     <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-3xl" />
                     <div className="relative bg-navy text-white rounded-2xl p-6 shadow-2xl border border-navy/10 flex flex-col items-center text-center max-w-[240px]">
                       <Activity className="w-8 h-8 text-coral animate-pulse mb-4" />
-                      <div className="text-[10px] font-bold tracking-widest text-white/50 uppercase mb-2">DEV FLOW IS COMPARING</div>
+                      <div className="text-[10px] font-bold tracking-widest text-white/50 uppercase mb-2">AAKALAN360 IS COMPARING</div>
                       <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
                         <span className="text-lime">Price</span> • <span>Trust</span> • <span>Experience</span> • <span className="text-cobalt">Delivery</span>
                       </div>
@@ -150,7 +150,7 @@ export function Hero() {
                   >
                     <Network className="w-4 h-4 md:w-5 md:h-5 mx-auto mb-1 md:mb-2 text-cobalt" />
                     <p className="text-[11px] md:text-sm font-medium text-navy/80 leading-relaxed">
-                      <span className="text-coral font-bold block md:inline mb-1 md:mb-0">DEV FLOW INTELLIGENCE: </span> 
+                      <span className="text-coral font-bold block md:inline mb-1 md:mb-0">AAKALAN360 INTELLIGENCE: </span> 
                       ₹6K more than the cheapest option, but significantly higher trust and faster fulfilment.
                     </p>
                   </motion.div>

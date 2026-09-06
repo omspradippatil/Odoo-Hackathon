@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const handleConfirmOrder = () => {
     setIsProcessing(true);
     
-    // Simulate secure DEV FLOW escrow payment delay
+    // Simulate secure Aakalan360 payment delay
     setTimeout(() => {
       import("@/lib/demoState").then(m => {
         const orderId = m.demoState.createLocalOrder(cartItems);
@@ -60,8 +60,13 @@ export default function CheckoutPage() {
           <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-2">Order Confirmed</div>
           <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2 uppercase">{orderId}</h1>
           
+<<<<<<< Updated upstream
           <p className="text-navy/60 font-medium text-lg max-w-md mx-auto mb-8">
             Your payment is protected in the DEV FLOW escrow until delivery is fulfilled.
+=======
+          <p className="text-navy/60 font-medium text-lg max-w-md mx-auto mb-10">
+            Payment protected by Aakalan360 until delivery is fulfilled.
+>>>>>>> Stashed changes
           </p>
 
           <div className="bg-white border border-navy/10 rounded-2xl px-6 py-5 shadow-sm mb-10 max-w-sm w-full">

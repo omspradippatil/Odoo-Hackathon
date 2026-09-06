@@ -259,6 +259,7 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
           approvalState,
           savedAt: new Date().toISOString()
         };
+        sessionStorage.setItem(`aakalan_quotation_draft_${resolvedParams.id}`, JSON.stringify(draftData));
         sessionStorage.setItem(`devflow_quotation_draft_${resolvedParams.id}`, JSON.stringify(draftData));
         demoState.addNotification({
           title: "Quotation Draft Saved",
@@ -570,7 +571,7 @@ export default function QuotationBuilderPage({ params }: { params: Promise<{ id:
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-2 px-2">
                 <TrendingUp className="w-5 h-5 text-cobalt" />
-                <h2 className="text-lg font-bold text-navy">DEV FLOW Suggests</h2>
+                <h2 className="text-lg font-bold text-navy">Aakalan360 Suggests</h2>
               </div>
               
               <div className="grid sm:grid-cols-2 gap-4">

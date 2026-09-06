@@ -23,13 +23,17 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "DEV FLOW | The smarter way to make a deal",
-  description: "DEV FLOW is an intelligent deal, procurement and sales operations platform. Source, compare, negotiate, approve and fulfil every deal from one intelligent workspace.",
+  title: "Aakalan360 | The smarter way to make a deal",
+  description: "Aakalan360 is an intelligent deal, procurement and sales operations platform. Insights • Connections • Opportunities — For a Smarter Tomorrow.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/brand/aakalan-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "DEV FLOW",
+    title: "Aakalan360",
   },
 };
 

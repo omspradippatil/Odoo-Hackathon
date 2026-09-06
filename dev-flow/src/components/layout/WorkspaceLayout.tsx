@@ -14,8 +14,19 @@ import { Navbar } from "@/components/sections/Navbar";
 import { AuthGate } from "@/components/ui/AuthGate";
 import { authService } from "@/lib/authService";
 import { NotificationBell } from "@/components/ui/NotificationBell";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
+
+const ROLE_DEFAULT_NAMES: Record<UserRole, string> = {
+  [UserRole.BUYER]: "Kadambari Ganore",
+  [UserRole.SELLER]: "Vertex Systems",
+  [UserRole.SALES_REP]: "Amit Sharma",
+  [UserRole.SALES_MANAGER]: "Rahul Mehta",
+  [UserRole.FINANCE_OPERATIONS]: "Finance Operations",
+  [UserRole.CUSTOMER]: "Nova Retail",
+  [UserRole.ADMIN]: "System Admin",
+};
 
 type NavItem = {
   label: string;
@@ -115,7 +126,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
   };
 
   React.useEffect(() => {
-    const user = sessionStorage.getItem("devflow_user");
+    const user = sessionStorage.getItem("aakalan_user") || sessionStorage.getItem("devflow_user");
     setIsGuest(!user);
     if (user) { setCurrentUser(JSON.parse(user)); }
     setIsLoaded(true);
@@ -168,12 +179,9 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex w-[260px] bg-navy flex-col justify-between fixed inset-y-0 left-0 z-40 border-r border-navy">
         <div>
-          <div className="h-20 flex items-center px-8 border-b border-white/5">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center transition-transform group-hover:scale-105">
-                <ArrowRightLeft className="w-5 h-5" />
-              </div>
-              <span className="font-bold text-lg tracking-tight text-white">DEV FLOW</span>
+          <div className="h-20 flex items-center px-6 border-b border-white/5">
+            <Link href="/" className="flex items-center group">
+              <BrandLogo variant="full" theme="dark" />
             </Link>
           </div>
           <div className="px-8 py-6">
@@ -209,10 +217,10 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
             className="w-full p-4 border-t border-white/5 bg-white/5 rounded-2xl flex items-center justify-between hover:bg-white/10 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">{currentUser?.fullName?.charAt(0) || "U"}</div>
-              <div className="text-left">
-                <div className="text-sm font-bold text-white">{currentUser?.fullName || "Demo User"}</div>
-                <div className="text-xs font-medium text-white/50">{currentUser?.role || "Settings"}</div>
+              <div className="w-10 h-10 rounded-full bg-coral flex items-center justify-center text-white font-bold shadow-lg shadow-coral/20">{(currentUser?.fullName || ROLE_DEFAULT_NAMES[role] || "U").charAt(0)}</div>
+              <div className="text-left truncate max-w-[130px]">
+                <div className="text-sm font-bold text-white truncate">{currentUser?.fullName || ROLE_DEFAULT_NAMES[role]}</div>
+                <div className="text-xs font-medium text-white/50 truncate">{currentUser?.role || ROLE_TITLES[role]}</div>
               </div>
             </div>
             <Settings className="w-4 h-4 text-white/40" />
@@ -237,10 +245,7 @@ export function WorkspaceLayout({ children, role, requireAuth = false }: { child
       {/* MOBILE HEADER */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-navy/5 flex items-center justify-between px-4 z-50 shadow-sm">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-navy text-white flex items-center justify-center">
-            <ArrowRightLeft className="w-4 h-4" />
-          </div>
-          <span className="font-bold text-base tracking-tight text-navy">DEV FLOW</span>
+          <BrandLogo variant="responsive" />
         </Link>
         <div className="flex items-center gap-4">
           <NotificationBell />

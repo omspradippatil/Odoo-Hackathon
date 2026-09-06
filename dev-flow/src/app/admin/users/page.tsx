@@ -21,10 +21,10 @@ interface AdminUser {
 const SAMPLE_USERS: AdminUser[] = [
   { id: "u-1", name: "Kadambari Mehta", email: "k.mehta@novaretail.com", role: "BUYER", organization: "Nova Retail Innovations", status: "ACTIVE", lastLogin: "10 mins ago" },
   { id: "u-2", name: "Vikram Singhania", email: "v.singhania@apexindustrial.in", role: "SELLER", organization: "Apex Industrial Supplies", status: "ACTIVE", lastLogin: "25 mins ago" },
-  { id: "u-3", name: "Rahul Verma", email: "rahul.verma@devflow.sales", role: "SALES_REP", organization: "DEV FLOW Commercial", status: "ACTIVE", lastLogin: "Just now" },
-  { id: "u-4", name: "Vikram Malhotra", email: "v.malhotra@devflow.sales", role: "SALES_MANAGER", organization: "DEV FLOW Commercial", status: "ACTIVE", lastLogin: "1 hour ago" },
-  { id: "u-5", name: "Anita Roy", email: "anita.roy@devflow.ops", role: "FINANCE_OPERATIONS", organization: "DEV FLOW Settlement Ops", status: "ACTIVE", lastLogin: "5 mins ago" },
-  { id: "u-6", name: "Om Shinde", email: "admin@devflow.internal", role: "ADMIN", organization: "Platform Administration", status: "ACTIVE", lastLogin: "Active now" }
+  { id: "u-3", name: "Rahul Verma", email: "rahul.verma@aakalan360.com", role: "SALES_REP", organization: "Aakalan360 Commercial", status: "ACTIVE", lastLogin: "Just now" },
+  { id: "u-4", name: "Vikram Malhotra", email: "v.malhotra@aakalan360.com", role: "SALES_MANAGER", organization: "Aakalan360 Commercial", status: "ACTIVE", lastLogin: "1 hour ago" },
+  { id: "u-5", name: "Anita Roy", email: "anita.roy@aakalan360.com", role: "FINANCE_OPERATIONS", organization: "Aakalan360 Settlement Ops", status: "ACTIVE", lastLogin: "5 mins ago" },
+  { id: "u-6", name: "Om Shinde", email: "admin@aakalan360.com", role: "ADMIN", organization: "Platform Administration", status: "ACTIVE", lastLogin: "Active now" }
 ];
 
 export default function AdminUsersPage() {

@@ -10,8 +10,10 @@ import { InvoiceModal } from "@/components/ui/InvoiceModal";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
+import { BrandLogo } from "@/components/brand/BrandLogo";
+
 export default function CustomerBillingPage({ params }: { params: Promise<{ dealId: string }> }) {
-  const resolvedParams = use(params);
+  const resolvedParams = React.use(params);
   const router = useRouter();
 
   const [showInvoicePreview, setShowInvoicePreview] = useState(false);
@@ -34,7 +36,7 @@ export default function CustomerBillingPage({ params }: { params: Promise<{ deal
       <header className="bg-navy text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shadow-md gap-4">
         <div className="flex items-center justify-between w-full md:w-auto">
           <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
+            <BrandLogo variant="full" theme="dark" />
           </div>
           <div className="md:hidden text-xs font-bold text-white/60 uppercase tracking-widest">{resolvedParams.dealId}</div>
         </div>

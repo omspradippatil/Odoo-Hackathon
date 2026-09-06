@@ -11,6 +11,7 @@ import { OnboardingProfile } from "@/types/onboarding";
 import { Input } from "@/components/ui/Input";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 // Helper components for the forms
 const OptionCard = ({ title, description, selected, onClick, icon: Icon }: any) => (
@@ -23,21 +24,23 @@ const OptionCard = ({ title, description, selected, onClick, icon: Icon }: any) 
   >
     {selected && <div className="absolute top-4 right-4 text-cobalt"><CheckCircle2 className="w-5 h-5" /></div>}
     <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors", selected ? "bg-cobalt text-white" : "bg-navy/5 text-navy/50")}>
-      {Icon && <Icon className="w-5 h-5" />}
+      <Icon className="w-5 h-5" />
     </div>
-    <div className="pr-8">
-      <div className={cn("font-bold mb-1 transition-colors", selected ? "text-cobalt" : "text-navy")}>{title}</div>
-      {description && <div className="text-xs font-medium text-navy/60 leading-relaxed">{description}</div>}
+    <div>
+      <div className="text-sm font-bold text-navy">{title}</div>
+      {description && <div className="text-xs font-medium text-navy/60 mt-0.5 leading-relaxed">{description}</div>}
     </div>
   </button>
 );
 
 const Chip = ({ label, selected, onClick }: any) => (
-  <button
+  <button 
     onClick={onClick}
     className={cn(
-      "px-4 py-2 rounded-full text-sm font-bold border-2 transition-colors duration-200",
-      selected ? "bg-navy text-white border-navy" : "bg-white text-navy/60 border-navy/10 hover:border-navy/30"
+      "px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 border",
+      selected 
+        ? "bg-navy text-white border-navy shadow-sm" 
+        : "bg-white text-navy/70 border-navy/10 hover:border-navy/20 hover:bg-navy/5"
     )}
   >
     {label}
@@ -47,16 +50,17 @@ const Chip = ({ label, selected, onClick }: any) => (
 export default function OnboardingPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [step, setStep] = useState(1);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  
-  const [profile, setProfile] = useState<OnboardingProfile>({
+
+  const [profile, setProfile] = useState<Partial<OnboardingProfile>>({
     role: UserRole.BUYER,
-    dealTypes: [],
-    categories: [],
-    deliveryCapabilities: [],
-    primaryResponsibilities: []
+    dealTypes: ["Professional"],
+    categories: ["IT Hardware & Networking"],
+    deliveryCapabilities: ["Direct Delivery"],
+    primaryResponsibilities: ["Discount Approvals"]
   });
 
   useEffect(() => {
@@ -66,7 +70,7 @@ export default function OnboardingPage() {
         setProfile(prev => ({ ...prev, role: u.role, organization: u.organization || "" }));
       } else {
         // Fallback for testing if refreshed
-        const mockUser: User = { id: "usr_mock", email: "demo@devflow.com", fullName: "Demo User", role: UserRole.BUYER, createdAt: "" };
+        const mockUser: User = { id: "usr_mock", email: "buyer@aakalan360.com", fullName: "Kadambari Ganore", role: UserRole.BUYER, createdAt: "" };
         setUser(mockUser);
         setProfile(prev => ({ ...prev, role: UserRole.BUYER }));
       }
@@ -95,7 +99,8 @@ export default function OnboardingPage() {
       [UserRole.FINANCE_OPERATIONS]: "/operations",
       [UserRole.ADMIN]: "/dashboard",
     };
-    router.push(routes[profile.role] || "/dashboard");
+    const roleKey = profile.role || UserRole.BUYER;
+    router.push(routes[roleKey] || "/dashboard");
   };
 
   const toggleArray = (field: keyof OnboardingProfile, value: string) => {
@@ -134,7 +139,7 @@ export default function OnboardingPage() {
           <div className="space-y-3 mb-10 text-white/60 font-medium">
             <div className="flex items-center gap-2 justify-center"><Check className="w-4 h-4 text-lime" /> Profile created</div>
             <div className="flex items-center gap-2 justify-center"><Check className="w-4 h-4 text-lime" /> Preferences saved</div>
-            <div className="flex items-center gap-2 justify-center"><Check className="w-4 h-4 text-lime" /> DEV FLOW personalized</div>
+            <div className="flex items-center gap-2 justify-center"><Check className="w-4 h-4 text-lime" /> Aakalan360 personalized</div>
           </div>
         </div>
       );
@@ -153,8 +158,7 @@ export default function OnboardingPage() {
       <div className="md:hidden flex flex-col px-6 pt-6 pb-4 bg-white sticky top-0 z-30 border-b border-navy/5 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 text-navy">
-            <ArrowRightLeft className="w-5 h-5" />
-            <span className="font-bold text-sm tracking-widest uppercase">DEV FLOW</span>
+            <BrandLogo variant="responsive" />
           </div>
           <div className="text-xs font-bold text-navy/40 uppercase tracking-widest">
             {step} of 3
@@ -171,8 +175,7 @@ export default function OnboardingPage() {
           <div className="hidden md:block mb-12">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2 text-navy">
-                <ArrowRightLeft className="w-6 h-6" />
-                <span className="font-bold text-lg tracking-tight">DEV FLOW</span>
+                <BrandLogo variant="full" />
               </div>
               <div className="text-xs font-bold text-navy/40 uppercase tracking-widest bg-navy/5 px-3 py-1 rounded-full">
                 Step {step} of 3 • {step === 1 ? "PROFILE" : step === 2 ? "PREFERENCES" : "READY"}
@@ -219,7 +222,7 @@ export default function OnboardingPage() {
                         />
                         <OptionCard 
                           title="Both" 
-                          description="Use DEV FLOW for professional and local deals." 
+                          description="Use Aakalan360 for professional and local deals." 
                           icon={ArrowRightLeft}
                           selected={profile.dealTypes?.includes("Both")} 
                           onClick={() => setSingleArray("dealTypes", "Both")} 
@@ -324,7 +327,7 @@ export default function OnboardingPage() {
                               <ShieldCheck className="w-6 h-6 text-navy/40 shrink-0" />
                               <div>
                                 <div className="text-xs font-bold text-navy/70 uppercase tracking-widest mb-1">Trust Profile <span className="bg-white px-2 py-0.5 rounded text-navy/40 ml-2">Not rated yet</span></div>
-                                <div className="text-xs font-medium text-navy/60 leading-relaxed">Your DEV FLOW Trust Level will grow from verified transactions, buyer feedback, delivery reliability and platform history.</div>
+                                <div className="text-xs font-medium text-navy/60 leading-relaxed">Your Aakalan360 Trust Level will grow from verified transactions, buyer feedback, delivery reliability and platform history.</div>
                               </div>
                             </div>
                           </div>
@@ -371,7 +374,7 @@ export default function OnboardingPage() {
                        "Your workspace is ready."}
                     </h1>
                     <p className="text-navy/60 font-medium text-lg mb-10 max-w-md mx-auto">
-                      Your DEV FLOW profile is fully configured. You can update these preferences anytime in settings.
+                      Your Aakalan360 profile is fully configured. You can update these preferences anytime in settings.
                     </p>
                   </div>
                 )}
@@ -414,7 +417,7 @@ export default function OnboardingPage() {
   );
 }
 
-// Reusable DEV FLOW signature animation components
+// Reusable Aakalan360 signature animation components
 function ProgressLine({ step }: { step: number }) {
   return (
     <div className="relative w-full h-1 bg-navy/10 rounded-full my-2">

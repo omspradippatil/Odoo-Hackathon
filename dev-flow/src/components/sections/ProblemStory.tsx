@@ -61,7 +61,7 @@ export function ProblemStory() {
             viewport={{ once: true }}
             className="flex-1 bg-navy rounded-[32px] md:rounded-3xl p-6 sm:p-8 lg:p-12 text-white relative shadow-2xl shadow-navy/20"
           >
-            <div className="text-xs md:text-sm font-bold text-coral tracking-widest uppercase mb-4">Recommended by DEV FLOW</div>
+            <div className="text-xs md:text-sm font-bold text-coral tracking-widest uppercase mb-4">Recommended by Aakalan360</div>
             <div className="text-4xl md:text-5xl font-bold mb-6 md:mb-8">₹94,000</div>
             
             <div className="space-y-4 md:space-y-6">

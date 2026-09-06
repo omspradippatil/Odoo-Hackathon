@@ -10,6 +10,7 @@ import {
   List, Search, Menu
 } from "lucide-react";
 import { NotificationBell } from "@/components/ui/NotificationBell";
+import { AakalanBrand } from "@/components/brand/AakalanBrand";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -61,11 +62,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-warm/20 font-sans text-navy flex">
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex flex-col w-64 bg-navy text-white h-screen sticky top-0 overflow-y-auto no-scrollbar border-r border-navy/10">
-        <div className="p-6 shrink-0 flex items-center gap-3 border-b border-white/10">
-          <div className="w-6 h-6 rounded-full bg-lime flex items-center justify-center shrink-0">
-            <Settings className="w-3.5 h-3.5 text-navy" />
-          </div>
-          <div className="font-bold tracking-tight text-lg">DEV FLOW <span className="text-white/50 text-sm">Admin</span></div>
+        <div className="p-6 shrink-0 flex items-center border-b border-white/10">
+          <Link href="/" className="flex items-center">
+            <AakalanBrand theme="dark" size="sidebar" badge="Admin" />
+          </Link>
         </div>
         
         <div className="p-4 space-y-6 flex-1">

@@ -11,7 +11,7 @@ export default function ApprovalsProfilePage() {
   const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
     name: "Vikram Malhotra",
-    email: "v.malhotra@devflow.sales",
+    email: "v.malhotra@aakalan360.com",
     phone: "+91 98200 44920",
     roleTitle: "Commercial Sales Director & Approval Authority",
     discountSignoffLimit: "Up to 25% Commercial Discretion",

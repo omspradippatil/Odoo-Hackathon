@@ -3,9 +3,10 @@
 import React, { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRightLeft, Eye, EyeOff, Loader2, CheckCircle2, ShieldCheck, Activity } from "lucide-react";
+import { ArrowRightLeft, Lock, Mail, Eye, EyeOff, Loader2, Sparkles, Activity, ShieldCheck, CheckCircle2 } from "lucide-react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Input } from "@/components/ui/Input";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { authService } from "@/lib/authService";
@@ -68,8 +69,8 @@ function LoginContent() {
   };
 
   const handleDemoLogin = () => {
-    setEmail("demo@devflow.com");
-    setPassword("Demo123!");
+    setEmail("buyer@aakalan360.com");
+    setPassword("password123");
   };
 
   return (
@@ -159,13 +160,10 @@ function LoginContent() {
           
           <div className="mb-10 text-center lg:text-left">
             <Link href="/" className="inline-flex items-center gap-2 mb-8 group">
-              <div className="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center transition-transform group-hover:scale-105">
-                <ArrowRightLeft className="w-5 h-5" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-navy">DEV FLOW</span>
+              <BrandLogo variant="full" />
             </Link>
             
-            <h1 className="text-3xl font-bold text-navy mb-2 tracking-tight">Welcome back.</h1>
+            <h1 className="text-3xl font-bold text-navy mb-2 tracking-tight">Welcome back to Aakalan360.</h1>
             <p className="text-navy/60 font-medium">Continue where your deal left off.</p>
           </div>
 
@@ -229,7 +227,7 @@ function LoginContent() {
           </form>
 
           <div className="mt-8 text-center text-sm font-medium text-navy/60">
-            New to DEV FLOW? <Link href="/signup" className="text-navy font-bold hover:text-cobalt transition-colors inline-flex items-center gap-1">Create Account <ArrowRightLeft className="w-3 h-3" /></Link>
+            New to Aakalan360? <Link href="/signup" className="text-navy font-bold hover:text-cobalt transition-colors inline-flex items-center gap-1">Create Account <ArrowRightLeft className="w-3 h-3" /></Link>
           </div>
 
           <div className="mt-8 relative flex items-center py-4">

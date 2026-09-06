@@ -105,7 +105,7 @@ export default function InternalFulfilmentPage({ params }: { params: Promise<{ d
           <div className="bg-white rounded-3xl border border-navy/10 shadow-sm overflow-hidden">
             <div className="p-6 md:p-8 flex justify-between items-start border-b border-navy/5">
               <div>
-                <h2 className="text-xs font-bold text-navy uppercase tracking-widest mb-2 flex items-center gap-2"><Building2 className="w-4 h-4 text-cobalt" /> DEV FLOW Allocation</h2>
+                <h2 className="text-xs font-bold text-navy uppercase tracking-widest mb-2 flex items-center gap-2"><Building2 className="w-4 h-4 text-cobalt" /> Aakalan360 Allocation</h2>
                 {!simulateBackorder ? (
                   <div className="bg-lime/20 text-lime-800 border border-lime/30 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1">
                     <Check className="w-3 h-3" /> Complete Coverage
@@ -193,7 +193,7 @@ export default function InternalFulfilmentPage({ params }: { params: Promise<{ d
                   </div>
 
                   <div className="bg-white p-5 rounded-2xl border border-coral/20">
-                    <h3 className="text-xs font-bold text-navy uppercase tracking-widest flex items-center gap-2 mb-4"><ShieldCheck className="w-4 h-4 text-cobalt" /> DEV FLOW Alternative Found</h3>
+                    <h3 className="text-xs font-bold text-navy uppercase tracking-widest flex items-center gap-2 mb-4"><ShieldCheck className="w-4 h-4 text-cobalt" /> Aakalan360 Alternative Found</h3>
                     
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                       <div>

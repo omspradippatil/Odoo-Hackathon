@@ -11,7 +11,7 @@ import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-// The 8 Core Evaluator Steps aligned with DEV FLOW's verified narrative
+// The 8 Core Evaluator Steps aligned with Aakalan360's verified narrative
 const CORE_JOURNEY_STEPS = [
   { 
     id: 1, 

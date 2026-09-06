@@ -97,7 +97,7 @@ export function TwoWorlds() {
               <span className="w-2 h-2 rounded-full bg-cobalt" /> Simple transaction-based pricing
             </h4>
             <p className="text-sm md:text-base text-navy/70 font-medium">
-              DEV FLOW earns a <span className="font-bold text-navy">3% platform fee</span> on completed transactions processed through the platform. No large upfront platform cost. The platform earns when a successful transaction is completed.
+              Aakalan360 earns a <span className="font-bold text-navy">3% platform fee</span> on completed transactions processed through the platform. No large upfront platform cost. The platform earns when a successful transaction is completed.
             </p>
           </div>
           <div className="bg-navy/5 rounded-2xl p-4 min-w-[240px] border border-navy/5">
@@ -107,7 +107,7 @@ export function TwoWorlds() {
               <span>₹8,40,000</span>
             </div>
             <div className="flex justify-between items-center text-sm font-bold text-navy border-t border-navy/10 pt-2 mt-2">
-              <span>DEV FLOW Platform Fee (3%)</span>
+              <span>Aakalan360 Platform Fee (3%)</span>
               <span className="text-cobalt">₹25,200</span>
             </div>
           </div>

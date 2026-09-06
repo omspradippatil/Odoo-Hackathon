@@ -7,6 +7,7 @@ import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PaymentStatus } from "@/types/payment";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
 
@@ -63,7 +64,7 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
       <header className="bg-navy text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shadow-md gap-4">
         <div className="flex items-center justify-between w-full md:w-auto">
           <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-            <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
+            <BrandLogo variant="full" theme="dark" />
           </div>
           <div className="md:hidden text-xs font-bold text-white/60 uppercase tracking-widest">{resolvedParams.dealId}</div>
         </div>
@@ -179,12 +180,12 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
             {/* PROTECTED TRANSACTION EXPLAINER */}
             <div className="bg-gradient-to-br from-navy to-slate-900 rounded-3xl p-6 md:p-8 text-white relative overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-48 h-48 bg-lime/20 rounded-full blur-3xl pointer-events-none" />
-              <h2 className="text-xs font-bold uppercase tracking-widest text-lime flex items-center gap-2 mb-6 relative z-10"><ShieldCheck className="w-4 h-4" /> How DEV FLOW Protects The Transaction</h2>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-lime flex items-center gap-2 mb-6 relative z-10"><ShieldCheck className="w-4 h-4" /> How Aakalan360 Protects The Transaction</h2>
               
               <div className="space-y-6 relative z-10">
                 {[
                   { num: '01', title: 'Buyer initiates payment', desc: 'Your payment is securely processed and recorded.' },
-                  { num: '02', title: 'Transaction status is protected', desc: 'DEV FLOW locks the transaction workflow.' },
+                  { num: '02', title: 'Transaction status is protected', desc: 'Aakalan360 locks the transaction workflow.' },
                   { num: '03', title: 'Seller fulfils the order', desc: 'Vendors are notified to begin shipping your items.' },
                   { num: '04', title: 'Buyer confirms delivery', desc: 'You confirm receipt of goods through the portal.' },
                   { num: '05', title: 'Settlement becomes eligible', desc: 'Seller receives settlement based on platform policy.' }
@@ -203,7 +204,7 @@ export default function ProtectedTransactionPage({ params }: { params: Promise<{
               </div>
               
               <div className="mt-4 pt-4 border-t border-white/10 text-[9px] font-medium text-white/40 leading-relaxed relative z-10">
-                Your payment status is linked to this specific deal. Settlement follows the transaction and delivery status. DEV FLOW provides transaction coordination and workflow protection.
+                Your payment status is linked to this specific deal. Settlement follows the transaction and delivery status. Aakalan360 provides transaction coordination and workflow protection.
               </div>
             </div>
 

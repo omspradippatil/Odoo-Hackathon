@@ -248,7 +248,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
           <div className="bg-navy rounded-3xl p-6 md:p-8 text-white shadow-2xl shadow-navy/20 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-cobalt/20 rounded-full blur-3xl pointer-events-none" />
             <div className="relative z-10">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-4">DEV FLOW FOUND</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-4">AAKALAN360 FOUND</div>
               
               <div className="flex flex-wrap gap-6 mb-6">
                 <div><span className="text-3xl font-bold text-white">24</span> <span className="text-sm font-medium text-white/60">matching vendors</span></div>
@@ -278,7 +278,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
                 <div className="bg-navy/5 p-4 border-b border-navy/5 flex items-center justify-between">
                   <h2 className="text-xs font-bold text-navy uppercase tracking-widest">Match Overview</h2>
                   <button onClick={() => setShowWhyModal(true)} className="text-xs font-bold text-cobalt hover:text-navy uppercase tracking-widest flex items-center gap-1 transition-colors">
-                    Why DEV FLOW prefers {displayVendors[0].displayName.split(' ')[0]} <ArrowRight className="w-3 h-3" />
+                    Why Aakalan360 prefers {displayVendors[0].displayName.split(' ')[0]} <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
                 
@@ -526,7 +526,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
 
             <div className="bg-white rounded-3xl p-6 border border-navy/10 shadow-sm text-center">
               <ShieldCheck className="w-8 h-8 text-navy/20 mx-auto mb-3" />
-              <div className="text-sm font-bold text-navy mb-2">DEV FLOW Verified Network</div>
+              <div className="text-sm font-bold text-navy mb-2">Aakalan360 Verified Network</div>
               <p className="text-xs font-medium text-navy/60">
                 All displayed vendors are platform-verified. Trust scores update dynamically based on recent transaction performance.
               </p>
@@ -551,7 +551,7 @@ export default function VendorDiscoveryPage({ params }: { params: Promise<{ id: 
               <div className="flex-1 overflow-y-auto space-y-8 no-scrollbar pb-10">
                 <div>
                   <h3 className="text-2xl font-bold text-navy mb-4 leading-tight">{displayVendors[0].displayName} is not the cheapest option.</h3>
-                  <p className="text-navy/70 font-medium text-lg">DEV FLOW recommends it because:</p>
+                  <p className="text-navy/70 font-medium text-lg">Aakalan360 recommends it because:</p>
                 </div>
 
                 <div className="space-y-4">

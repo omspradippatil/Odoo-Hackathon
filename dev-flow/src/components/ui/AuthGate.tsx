@@ -24,7 +24,7 @@ export function AuthGate({ title = "Sign in to continue your deal." }: { title?:
         
         <h2 className="text-2xl font-bold text-navy mb-3">{title}</h2>
         <p className="text-navy/60 font-medium mb-8 leading-relaxed">
-          You can explore DEV FLOW without an account. Sign in when you're ready to create, negotiate or complete a transaction.
+          You can explore Aakalan360 without an account. Sign in when you're ready to create, negotiate or complete a transaction.
         </p>
 
         <div className="flex flex-col gap-3">

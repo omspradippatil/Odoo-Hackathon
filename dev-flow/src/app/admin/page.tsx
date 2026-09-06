@@ -10,7 +10,7 @@ export default function AdminHome() {
       
       <div>
         <h1 className="text-3xl font-bold text-navy tracking-tight mb-2 uppercase">Control Center</h1>
-        <p className="text-sm font-medium text-navy/60">Configure the business rules that power every DEV FLOW deal.</p>
+        <p className="text-sm font-medium text-navy/60">Configure the business rules that power every Aakalan360 deal.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

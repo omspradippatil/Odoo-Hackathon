@@ -6,13 +6,14 @@ import { ShieldCheck, Star, Package, Clock, MessageSquare, ShieldAlert, ArrowRig
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export default function VendorTrustPage({ params }: { params: Promise<{ vendorId: string }> }) {
   const router = useRouter();
   const [isBronzeMode, setIsBronzeMode] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
   React.useEffect(() => {
-    setIsGuest(!sessionStorage.getItem("devflow_user"));
+    setIsGuest(!sessionStorage.getItem("aakalan_user") && !sessionStorage.getItem("devflow_user"));
   }, []);
   const [animatedScore, setAnimatedScore] = useState(0);
 
@@ -49,7 +50,7 @@ export default function VendorTrustPage({ params }: { params: Promise<{ vendorId
       {/* HEADER */}
       <header className="bg-navy text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shadow-md gap-4 sticky top-0 z-50">
         <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <div className="w-6 h-6 rounded-full bg-lime" /> DEV FLOW
+          <BrandLogo variant="full" theme="dark" />
         </div>
         <div className="flex items-center gap-4 text-sm font-medium">
           <span className="text-white/60">Platform Trust Intelligence</span>

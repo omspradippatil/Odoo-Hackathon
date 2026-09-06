@@ -97,7 +97,7 @@ export default function InternalOperationsPaymentPage({ params }: { params: Prom
 
                <div className="bg-lime/10 border border-lime/30 text-lime-900 px-6 py-4 rounded-xl text-sm font-bold z-10 shadow-sm flex flex-col items-center">
                  <ShieldCheck className="w-6 h-6 text-lime-700 mb-1" />
-                 DEV FLOW
+                 Aakalan360
                  <div className="text-[10px] uppercase tracking-widest mt-1 opacity-70">Holding ₹2.52L</div>
                </div>
 

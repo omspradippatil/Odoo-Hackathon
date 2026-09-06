@@ -73,7 +73,7 @@ export default function OperationsHome() {
                 </div>
 
                 <div className="mb-6">
-                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">DEV FLOW Recommendation:</div>
+                  <div className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-1">Aakalan360 Recommendation:</div>
                   <div className="text-sm font-bold text-navy">Split fulfilment (Mumbai 30 + Pune 20)</div>
                 </div>
 

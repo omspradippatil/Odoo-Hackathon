@@ -10,7 +10,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, onPageChange, className }: PaginationProps) {
-  // A simple implementation of DEV FLOW server-side pagination UX
+  // A simple implementation of Aakalan360 server-side pagination UX
   // Demonstrating the pattern requested in the prompt
   
   const renderPages = () => {

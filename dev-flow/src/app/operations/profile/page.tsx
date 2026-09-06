@@ -12,10 +12,10 @@ export default function OperationsProfilePage() {
   const [saved, setSaved] = useState(false);
   const [formData, setFormData] = useState({
     name: "Anita Roy",
-    email: "anita.roy@devflow.ops",
+    email: "anita.roy@aakalan360.com",
     phone: "+91 98201 49201",
-    roleTitle: "Lead Finance & Escrow Operations Controller",
-    organization: "DEV FLOW Corporate Settlement Ops",
+    roleTitle: "Lead Finance & Settlement Operations Controller",
+    organization: "Aakalan360 Corporate Settlement Ops",
     escrowApprovalLimit: "₹50,00,000",
     twoFactorEnabled: true,
     emailAlerts: true,

@@ -65,25 +65,25 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
 
   return (
     <WorkspaceLayout role={UserRole.SALES_MANAGER}>
-      
+
       {/* JOURNEY HEADER */}
       <div className="mb-8 md:mb-12">
         <div className="flex items-center gap-2 text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-4">
           <span className="cursor-pointer hover:text-navy" onClick={() => router.push('/approvals')}>Approvals</span> <span className="text-navy/20">/</span> <span className="text-navy">{resolvedParams.quotationId}</span>
         </div>
-        
+
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
           <div>
             <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2">Approval Request</h1>
             <h2 className="text-lg font-bold text-navy/60 uppercase tracking-widest">Nova Retail Expansion</h2>
           </div>
-          
+
           <div className="flex flex-col items-start md:items-end gap-1">
-            <div className={cn("px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 border", 
-              isApproved ? "bg-lime/20 text-lime-800 border-lime/30" : 
-              status === 'REJECTED' ? "bg-coral/10 text-coral border-coral/20" :
-              status === 'SENT_BACK' ? "bg-orange-100 text-orange-700 border-orange-200" :
-              "bg-orange-500 text-white border-orange-600 shadow-md shadow-orange-500/20"
+            <div className={cn("px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 border",
+              isApproved ? "bg-lime/20 text-lime-800 border-lime/30" :
+                status === 'REJECTED' ? "bg-coral/10 text-coral border-coral/20" :
+                  status === 'SENT_BACK' ? "bg-orange-100 text-orange-700 border-orange-200" :
+                    "bg-orange-500 text-white border-orange-600 shadow-md shadow-orange-500/20"
             )}>
               {isApproved ? <Check className="w-3 h-3" /> : status === 'PENDING' ? <Activity className="w-3 h-3" /> : <X className="w-3 h-3" />}
               {status === 'PENDING' ? 'PENDING YOUR APPROVAL' : status.replace('_', ' ')}
@@ -96,8 +96,8 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
         <div className="w-full bg-white p-4 rounded-2xl border border-navy/5 shadow-sm overflow-x-auto no-scrollbar">
           <div className="flex items-center min-w-[700px] justify-between relative px-4">
             <div className="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-[2px] bg-navy/5 -z-10" />
-            
-            <motion.div 
+
+            <motion.div
               className={cn("absolute left-[40%] top-1/2 -translate-y-1/2 h-[2px]", isApproved ? "bg-lime" : status === 'PENDING' ? "bg-orange-500" : "bg-coral")}
               initial={{ width: 0 }} animate={{ width: isApproved ? "20%" : "10%" }} transition={{ duration: 1 }}
             />
@@ -113,20 +113,20 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
               { id: 'BILL', label: 'BILL', state: 'idle' },
             ].map((stage, i) => (
               <div key={stage.id} className="flex flex-col items-center gap-2 bg-white px-2 z-10 relative">
-                <div className={cn("w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all", 
+                <div className={cn("w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all",
                   stage.state === 'done' ? "border-lime bg-lime" :
-                  stage.state === 'active' ? "border-orange-500 bg-white shadow-[0_0_10px_rgba(249,115,22,0.4)]" : 
-                  stage.state === 'rejected' ? "border-coral bg-white" :
-                  stage.state === 'next' ? "border-navy bg-white" : "border-navy/10 bg-white")}>
+                    stage.state === 'active' ? "border-orange-500 bg-white shadow-[0_0_10px_rgba(249,115,22,0.4)]" :
+                      stage.state === 'rejected' ? "border-coral bg-white" :
+                        stage.state === 'next' ? "border-navy bg-white" : "border-navy/10 bg-white")}>
                   {stage.state === 'done' && <Check className="w-2.5 h-2.5 text-lime-950" />}
                   {stage.state === 'active' && <motion.div layoutId="flow-dot" className="w-1.5 h-1.5 bg-orange-500 rounded-full" />}
                   {stage.state === 'rejected' && <X className="w-2.5 h-2.5 text-coral" />}
                 </div>
-                <span className={cn("text-[9px] font-bold uppercase tracking-widest", 
-                  stage.state === 'active' ? "text-orange-600" : 
-                  stage.state === 'done' ? "text-lime-700" : 
-                  stage.state === 'rejected' ? "text-coral" :
-                  stage.state === 'next' ? "text-navy" : "text-navy/30")}>
+                <span className={cn("text-[9px] font-bold uppercase tracking-widest",
+                  stage.state === 'active' ? "text-orange-600" :
+                    stage.state === 'done' ? "text-lime-700" :
+                      stage.state === 'rejected' ? "text-coral" :
+                        stage.state === 'next' ? "text-navy" : "text-navy/30")}>
                   {stage.label}
                 </span>
               </div>
@@ -136,10 +136,10 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start relative">
-        
+
         {/* LEFT COLUMN - MAIN AREA */}
         <div className="w-full lg:w-[70%] space-y-8 pb-32 lg:pb-0">
-          
+
           {/* WHY APPROVAL IS REQUIRED */}
           <div className="bg-orange-50 border border-orange-200 rounded-3xl overflow-hidden shadow-sm">
             <div className="bg-orange-500 text-white p-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
@@ -169,7 +169,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
           {/* BEFORE VS AFTER IMPACT */}
           <div className="bg-white rounded-3xl border border-navy/10 shadow-sm p-6 md:p-8">
             <h2 className="text-sm font-bold text-navy uppercase tracking-widest mb-6">Commercial Impact</h2>
-            
+
             <div className="flex flex-col md:flex-row relative">
               {/* BEFORE */}
               <div className="flex-1 p-6 bg-navy/5 rounded-2xl flex flex-col justify-center border border-navy/5">
@@ -237,7 +237,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-navy to-slate-900 rounded-3xl shadow-xl p-6 text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-lime/20 rounded-full blur-2xl pointer-events-none" />
               <h2 className="text-xs font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-lime" /> Sourcing Context</h2>
@@ -265,7 +265,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
           <div className="space-y-4">
             <h2 className="text-lg font-bold text-navy px-2">Deal Health & Justification</h2>
             <div className="bg-white p-6 rounded-3xl border border-navy/10 shadow-sm grid md:grid-cols-2 gap-6">
-              
+
               <div className="space-y-4">
                 <div className="flex justify-between items-center border-b border-navy/5 pb-2">
                   <span className="text-xs font-bold text-navy/40 uppercase tracking-widest">Overall Health</span>
@@ -297,7 +297,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
 
             </div>
           </div>
-          
+
           {/* AUDIT HISTORY */}
           <div className="pt-8">
             <h2 className="text-sm font-bold text-navy uppercase tracking-widest mb-6">Approval History</h2>
@@ -308,7 +308,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
                 <div>
                   <div className="text-xs font-bold text-navy/40 mb-1">Today, 04:18 PM</div>
                   <div className="text-sm font-bold text-navy">Routed to Sales Manager</div>
-                  <div className="text-xs font-medium text-navy/60 mt-0.5">DEV FLOW System</div>
+                  <div className="text-xs font-medium text-navy/60 mt-0.5">Aakalan360 System</div>
                 </div>
               </div>
               <div className="flex gap-6 py-4 relative z-10">
@@ -327,14 +327,14 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
         {/* RIGHT COLUMN - STICKY DECISION WORKSPACE */}
         <div className="hidden lg:block w-[30%]">
           <div className="sticky top-28 space-y-6">
-            
+
             <div className="bg-white rounded-3xl border border-navy/10 shadow-xl shadow-navy/5 overflow-hidden">
               <div className="bg-navy p-6 text-white">
                 <h2 className="text-xs font-bold uppercase tracking-widest text-white/50 mb-6">Approval Path</h2>
-                
+
                 <div className="space-y-0 relative">
                   <div className="absolute left-[9px] top-4 bottom-4 w-[2px] bg-white/10" />
-                  
+
                   <div className="flex items-start gap-4 py-3 relative z-10">
                     <div className="w-5 h-5 rounded-full bg-lime text-lime-950 flex items-center justify-center shrink-0 mt-0.5"><Check className="w-3 h-3" /></div>
                     <div>
@@ -342,7 +342,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
                       <div className="text-xs font-medium text-white/60">Sales Rep • Requested</div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4 py-3 relative z-10">
                     <div className={cn("w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all duration-500", isApproved ? "bg-lime text-lime-950" : status === 'PENDING' ? "bg-orange-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.6)]" : "bg-coral text-white")}>
                       {isApproved ? <Check className="w-3 h-3" /> : status === 'PENDING' ? <motion.div layoutId="path-dot" className="w-2 h-2 bg-white rounded-full" /> : <X className="w-3 h-3" />}
@@ -352,7 +352,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
                       <div className="text-xs font-medium text-white/60">Sales Manager • {status === 'PENDING' ? 'Current' : 'Decided'}</div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4 py-3 relative z-10 opacity-50">
                     <div className="w-5 h-5 rounded-full border-2 border-white/20 bg-transparent flex items-center justify-center shrink-0 mt-0.5" />
                     <div>
@@ -362,7 +362,7 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-6 bg-white">
                 {status === 'PENDING' ? (
                   <div className="space-y-3">
@@ -408,9 +408,9 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
               <button onClick={() => setModalType('APPROVE')} className="flex-[2] py-4 rounded-xl bg-navy text-white font-bold shadow-lg">Approve Deal</button>
             </div>
           ) : (
-             <button onClick={() => router.push(`/negotiation/${resolvedParams.quotationId}`)} className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2">
-               Continue <ArrowRight className="w-5 h-5" />
-             </button>
+            <button onClick={() => router.push(`/negotiation/${resolvedParams.quotationId}`)} className="w-full py-4 rounded-xl bg-cobalt text-white font-bold shadow-lg flex items-center justify-center gap-2">
+              Continue <ArrowRight className="w-5 h-5" />
+            </button>
           )}
         </div>
 
@@ -422,19 +422,19 @@ export default function ApprovalDetailPage({ params }: { params: Promise<{ quota
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-                
+
                 <div className={cn("p-6 text-white flex items-center justify-between", modalType === 'APPROVE' ? "bg-navy" : modalType === 'REJECT' ? "bg-coral" : "bg-orange-500")}>
                   <h2 className="text-lg font-bold uppercase tracking-widest">{modalType === 'APPROVE' ? 'Approve Deal' : modalType === 'REJECT' ? 'Reject Deal' : 'Request Revision'}</h2>
                   <button onClick={() => !isSubmitting && setModalType(null)} className="text-white/60 hover:text-white"><X className="w-5 h-5" /></button>
                 </div>
-                
+
                 <div className="p-6 md:p-8 space-y-6 flex-1">
                   {modalType === 'APPROVE' ? (
                     <div>
                       <p className="text-navy font-medium mb-6">You are authorizing the requested commercial terms. This quotation will proceed to customer negotiation.</p>
                       <div className="bg-navy/5 p-4 rounded-xl text-sm font-medium text-navy/70 mb-4">
                         <strong className="text-navy block mb-1">Quotation: QT-2048</strong>
-                        Discount: 12%<br/>Margin: 18%
+                        Discount: 12%<br />Margin: 18%
                       </div>
                       <textarea placeholder="Optional approval comment..." value={comment} onChange={e => setComment(e.target.value)} className="w-full p-4 rounded-xl bg-warm/50 border border-navy/10 focus:outline-none focus:border-cobalt text-sm resize-none" rows={3} />
                     </div>

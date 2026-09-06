@@ -22,7 +22,7 @@ export default function NotFound() {
           href="/" 
           className="inline-flex items-center gap-2 bg-navy text-white px-8 py-4 rounded-xl font-bold hover:bg-navy/90 transition-all shadow-lg shadow-navy/20"
         >
-          <ArrowLeft className="w-5 h-5" /> Return to DEV FLOW
+          <ArrowLeft className="w-5 h-5" /> Return to Aakalan360
         </Link>
       </div>
     </div>

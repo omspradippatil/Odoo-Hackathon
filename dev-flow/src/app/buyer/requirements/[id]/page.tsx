@@ -26,7 +26,7 @@ export default function RequirementSuccessPage({ params }: { params: Promise<{ i
         <h1 className="text-3xl lg:text-4xl font-bold text-navy tracking-tight mb-2 uppercase">{resolvedParams.id}</h1>
         
         <p className="text-navy/60 font-medium text-lg max-w-md mx-auto mb-10">
-          DEV FLOW is ready to discover matching vendors across our trusted network.
+          Aakalan360 is ready to discover matching vendors across our trusted network.
         </p>
 
         <Link href={`/buyer/requirements/${resolvedParams.id}/vendors`} className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-navy text-white font-bold hover:bg-navy/90 transition-all shadow-lg shadow-navy/20 active:scale-95">

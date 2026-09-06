@@ -36,7 +36,7 @@ export function TrustEngine() {
         
         <div>
           <SectionHeading
-            label="DEV FLOW TRUST ENGINE"
+            label="AAKALAN360 TRUST ENGINE"
             title={
               <span className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
                 A price tells you what it costs.<br />

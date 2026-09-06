@@ -230,7 +230,7 @@ export default function InternalBillingPage({ params }: { params: Promise<{ deal
                 </div>
                 <div className="flex justify-between items-center border-b border-navy/5 pb-3 bg-navy/5 -mx-4 px-4 pt-3 rounded-lg mt-1 mb-1">
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-navy">DEV FLOW Platform Fee</span>
+                    <span className="text-sm font-bold text-navy">Aakalan360 Platform Fee</span>
                     <span className="text-[10px] font-bold text-navy/40 uppercase tracking-widest">3% of Transaction Value</span>
                   </div>
                   <span className="font-bold text-cobalt">₹25,200</span>

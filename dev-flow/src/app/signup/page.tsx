@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/Input";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { authService } from "@/lib/authService";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { UserRole } from "@/types/auth";
 import { cn } from "@/lib/utils";
 
@@ -131,10 +132,14 @@ function SignupContent() {
     <main className="min-h-screen bg-warm flex flex-col lg:flex-row">
       {/* LEFT PANEL - PROGRESS (Desktop) */}
       <div className="hidden lg:flex w-[40%] bg-navy p-12 flex-col relative overflow-hidden">
-        <Link href="/" className="flex items-center gap-2 group z-20 w-fit cursor-pointer mb-20">
-          <ArrowRightLeft className="w-5 h-5 text-white/50 group-hover:text-white transition-colors" />
-          <span className="font-bold text-sm tracking-widest text-white/50 group-hover:text-white uppercase transition-colors">Back to Home</span>
-        </Link>
+        <div className="flex items-center justify-between mb-16 z-20">
+          <Link href="/" className="flex items-center group cursor-pointer">
+            <BrandLogo variant="full" theme="dark" />
+          </Link>
+          <Link href="/" className="flex items-center gap-1.5 text-white/50 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
+            <ArrowRightLeft className="w-4 h-4" /> Home
+          </Link>
+        </div>
 
         <div className="relative z-10 flex flex-col gap-10 mt-10">
           {[
@@ -187,7 +192,7 @@ function SignupContent() {
             {step === 1 && (
               <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                 <h1 className="text-3xl font-bold text-navy mb-2 tracking-tight">Let's start with you.</h1>
-                <p className="text-navy/60 font-medium mb-10">Tell us who's joining DEV FLOW.</p>
+                <p className="text-navy/60 font-medium mb-10">Tell us who's joining Aakalan360.</p>
 
                 {error && <div className="p-4 mb-6 rounded-xl bg-coral/10 text-coral text-sm font-medium">{error}</div>}
 
@@ -301,7 +306,7 @@ function SignupContent() {
             {/* STEP 2: ROLE SELECTION */}
             {step === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h1 className="text-3xl font-bold text-navy mb-2 tracking-tight">How will you use DEV FLOW?</h1>
+                <h1 className="text-3xl font-bold text-navy mb-2 tracking-tight">How will you use Aakalan360?</h1>
                 <p className="text-navy/60 font-medium mb-8">Choose your primary role. Your workspace will be personalized around it.</p>
 
                 <div className="space-y-4 mb-8">
@@ -413,7 +418,7 @@ function SignupContent() {
                   <CheckCircle2 className="w-12 h-12 text-lime" />
                 </motion.div>
 
-                <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4 tracking-tight">Welcome to DEV FLOW,<br />{formData.fullName.split(' ')[0]}.</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4 tracking-tight">Welcome to Aakalan360,<br />{formData.fullName.split(' ')[0]}.</h1>
 
                 <div className="bg-white border border-navy/10 rounded-2xl p-6 mb-10 shadow-lg shadow-navy/5 max-w-sm w-full mx-auto">
                   <div className="text-xs font-bold uppercase tracking-widest text-navy/40 mb-2">Workspace Preparation</div>

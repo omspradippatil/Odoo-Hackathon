@@ -6,6 +6,7 @@ import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 
 import { exportToExcel } from "@/lib/exportUtils";
+import { AakalanBrand } from "@/components/brand/AakalanBrand";
 
 interface InvoiceModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
         991200
       ]
     ];
-    exportToExcel("DEV-FLOW-INV-2048-01.xlsx", "Tax Invoice", headers, rows);
+    exportToExcel("Aakalan360-INV-2048-01.xlsx", "Tax Invoice", headers, rows);
   };
 
   const handleDownload = async () => {
@@ -67,7 +68,7 @@ export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
     
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("DEV-FLOW-INV-2048-01.pdf");
+    pdf.save("Aakalan360-INV-2048-01.pdf");
   };
 
   return (
@@ -125,7 +126,7 @@ export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
                 {/* Header Section */}
                 <div className="flex justify-between items-start border-b-2 border-navy/10 pb-6 mb-8">
                   <div>
-                    <h1 className="text-3xl font-black text-navy tracking-tighter mb-1">DEV FLOW</h1>
+                    <AakalanBrand size="md" className="mb-2" />
                     <div className="text-xs text-navy/60 font-bold uppercase tracking-widest">Tax Invoice</div>
                   </div>
                   <div className="text-right">
@@ -233,12 +234,12 @@ export function InvoiceModal({ isOpen, onClose }: InvoiceModalProps) {
                   <h4 className="text-[10px] font-bold text-navy/40 uppercase tracking-widest mb-2">Terms & Conditions</h4>
                   <p className="text-[10px] text-navy/60 leading-relaxed max-w-xl">
                     1. Payment is due within 14 days of invoice date unless otherwise specified in QT-2048.<br/>
-                    2. Please make all checks payable to DEV FLOW Escrow Account.<br/>
-                    3. For billing inquiries, contact billing@devflow.com.
+                    2. Please make all checks payable to Aakalan360 Settlement Account.<br/>
+                    3. For billing inquiries, contact billing@aakalan360.com.
                   </p>
                   
                   <div className="mt-8 text-center text-[10px] font-bold text-navy/30 uppercase tracking-widest">
-                    Generated securely by DEV FLOW
+                    Generated securely by Aakalan360
                   </div>
                 </div>
 

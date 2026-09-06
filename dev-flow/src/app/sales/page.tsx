@@ -113,7 +113,7 @@ export default function SalesHome() {
             <div className="bg-navy rounded-3xl p-6 text-white shadow-2xl shadow-navy/20 relative overflow-hidden">
               <div className="flex items-center gap-2 mb-6">
                 <Activity className="w-4 h-4 text-lime" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-lime">DEV FLOW DEAL INTELLIGENCE</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-lime">AAKALAN360 DEAL INTELLIGENCE</span>
               </div>
               
               <div className="text-sm font-bold text-white mb-4">For Nova Retail:</div>
