@@ -112,10 +112,6 @@ export function DemoShortcut() {
     }
   }, [pathname]);
 
-  if (isAuth === true || isAuth === null) {
-    return null;
-  }
-
   // Handle ESC key to close on desktop
   useEffect(() => {
     if (!isOpen) return;
@@ -130,7 +126,7 @@ export function DemoShortcut() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
-  if (!mounted) return null;
+  if (!mounted || isAuth === true || isAuth === null) return null;
 
   // Pages with mobile sticky CTA at bottom-[80px]
   const hasStickyCta = 
