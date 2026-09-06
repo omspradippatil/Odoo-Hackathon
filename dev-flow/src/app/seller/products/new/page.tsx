@@ -147,7 +147,7 @@ export default function AddProductPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-navy uppercase tracking-widest">Original Price (₹)</label>
+                <label className="text-xs font-bold text-navy uppercase tracking-widest">MRP (Original Price ₹)</label>
                 <input 
                   required
                   type="number" min="0" step="0.01"
@@ -159,7 +159,7 @@ export default function AddProductPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-navy uppercase tracking-widest">Selling Price (₹)</label>
+                <label className="text-xs font-bold text-navy uppercase tracking-widest">Discounted Selling Price (₹)</label>
                 <input 
                   required
                   type="number" min="0" step="0.01"

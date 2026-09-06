@@ -1,4 +1,6 @@
-"use client";
+const fs = require('fs');
+
+const content = `"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -12,7 +14,7 @@ import { cn } from "@/lib/utils";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 
-const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+const formatCurrency = (val: number) => \`₹\${val.toLocaleString('en-IN', { maximumFractionDigits: 0 })}\`;
 
 export default function LocalSellersPage() {
   const router = useRouter();
@@ -45,7 +47,7 @@ export default function LocalSellersPage() {
           const mockRating = 4.0 + ((p.id % 10) / 10);
           
           return {
-            id: `PRD-${p.id}`,
+            id: \`PRD-\${p.id}\`,
             name: p.name,
             category: p.category,
             brand: p.brand || "Generic",
@@ -455,3 +457,6 @@ export default function LocalSellersPage() {
     </WorkspaceLayout>
   );
 }
+`
+
+fs.writeFileSync('src/app/buyer/local/page.tsx', content);
